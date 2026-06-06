@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP – Conduite &amp; Production de briquettes de papier | Lycée Vaucanson</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vert:#4a9c5d;--vert-clair:#d4edda;--vert-fonce:#2d7a45;
+  --bleu:#4a87c0;--bleu-clair:#d0e6f7;--bleu-fonce:#2b5f96;
+  --gris:#8a9bac;--gris-clair:#e8ecf0;--gris-tres-clair:#f4f6f8;
+  --blanc:#ffffff;--rouge:#e05252;--rouge-clair:#fde8e8;
+  --orange:#e67e22;--orange-clair:#fef3e2;
+  --texte:#2c3e50;--radius:10px;--shadow:0 4px 16px rgba(44,62,80,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Barlow',sans-serif;background:var(--gris-tres-clair);color:var(--texte);min-height:100vh;}
+
+/* HEADER – identique au TP de référence */
+header{
+  background:
+    linear-gradient(135deg,rgba(43,95,150,0.65) 0%,rgba(45,122,69,0.62) 100%),
+    url("https://thumbs.dreamstime.com/b/pile-de-papier-d%C3%A9chiquet%C3%A9-d%C3%A9chiquetage-documents-concept-vol-d-identit%C3%A9-et-fraude-299091728.jpg") center/cover no-repeat;
+  color:#fff;padding:16px 28px;display:flex;align-items:center;gap:20px;
+  box-shadow:0 4px 22px rgba(0,0,0,.28);position:sticky;top:0;z-index:1000;
+}
+header img.logo{height:68px;border-radius:8px;background:#fff;padding:4px;box-shadow:0 2px 10px rgba(0,0,0,.3);}
+.header-text h1{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;line-height:1.2;}
+.header-text p{font-size:.82rem;opacity:.85;margin-top:2px;}
+.header-right{margin-left:auto;display:flex;gap:10px;align-items:flex-start;}
+.header-machine{flex:1;display:flex;align-items:center;justify-content:center;}
+.header-machine span{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,0.4),0 0 30px rgba(255,255,255,0.15);opacity:0.95;}
+.hbox{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;text-align:center;}
+.hbox-label{font-size:.68rem;opacity:.8;text-transform:uppercase;letter-spacing:1px;}
+#timer{font-family:'Barlow Condensed',monospace;font-size:1.75rem;font-weight:700;letter-spacing:2px;}
+#timer.urgent{color:#ffcc00;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+#score-display{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;}
+
+/* PROGRESS */
+.progress-section{background:#fff;padding:13px 28px;border-bottom:2px solid var(--gris-clair);box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:101px;z-index:999;}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:7px;font-size:.8rem;color:var(--gris);font-weight:600;}
+.progress-bar-track{background:var(--gris-clair);border-radius:20px;height:13px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--bleu),var(--vert));transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+.progress-milestones{display:flex;justify-content:space-between;margin-top:7px;}
+.milestone{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.68rem;color:var(--gris);font-weight:600;transition:color .3s;}
+.milestone-dot{width:11px;height:11px;border-radius:50%;background:var(--gris-clair);border:2px solid var(--gris);transition:all .3s;}
+.milestone.done .milestone-dot{background:var(--vert);border-color:var(--vert-fonce);}
+.milestone.done{color:var(--vert-fonce);}
+
+/* CONTAINER */
+.container{max-width:900px;margin:0 auto;padding:28px 18px 60px;}
+
+/* ELEVE BOX – identique au TP de référence */
+.eleve-box{background:#fff;border-radius:var(--radius);padding:18px 22px;margin-bottom:22px;box-shadow:var(--shadow);border-left:5px solid var(--vert);display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;}
+.eleve-box .form-group{flex:1;min-width:180px;}
+.eleve-box label{display:block;font-size:.76rem;font-weight:700;color:var(--gris);margin-bottom:4px;text-transform:uppercase;}
+.eleve-box input,.eleve-box select{width:100%;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.95rem;font-family:'Barlow',sans-serif;background:#fff;}
+.eleve-box input:focus,.eleve-box select:focus{outline:none;border-color:var(--vert);}
+
+/* INTRO */
+.intro-box{background:#fff;border-radius:var(--radius);padding:22px 26px;margin-bottom:26px;box-shadow:var(--shadow);border-left:5px solid var(--bleu);}
+.intro-box h2{font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;color:var(--bleu-fonce);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+.intro-box p{font-size:.93rem;line-height:1.6;color:#555;margin-bottom:7px;}
+
+/* ALERTE SECURITE */
+.alerte-secu{background:#fff3cd;border:2px solid #e67e22;border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:.93rem;line-height:1.7;}
+.alerte-secu .titre-secu{color:#c0392b;font-size:1.05rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.regle-rouge{color:#c0392b;font-weight:800;}
+
+/* SECTION */
+.section-block{background:#fff;border-radius:var(--radius);padding:0;margin-bottom:22px;box-shadow:var(--shadow);overflow:hidden;}
+.section-header{background:linear-gradient(135deg,var(--bleu-fonce),var(--bleu));color:#fff;padding:13px 22px;display:flex;align-items:center;gap:12px;}
+.section-header.vert{background:linear-gradient(135deg,var(--vert-fonce),var(--vert));}
+.section-header.orange{background:linear-gradient(135deg,#c0392b,#e74c3c);}
+.section-header.violet{background:linear-gradient(135deg,#6c3483,#9b59b6);}
+.section-number{background:rgba(255,255,255,.25);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05rem;flex-shrink:0;}
+.section-title-block h2{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.section-title-block p{font-size:.75rem;opacity:.85;margin-top:2px;}
+.section-body{padding:20px 22px;}
+
+/* QUESTION */
+.question-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--gris-clair);}
+.question-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.question-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--bleu);margin-bottom:5px;}
+.competence-tag{display:inline-block;background:var(--bleu-clair);color:var(--bleu-fonce);font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:12px;margin-left:6px;text-transform:uppercase;}
+.question-text{font-size:.95rem;line-height:1.6;color:var(--texte);margin-bottom:12px;font-weight:500;}
+.context-box{background:var(--gris-tres-clair);border:1px solid var(--gris-clair);border-radius:8px;padding:11px 14px;margin-bottom:12px;font-size:.84rem;line-height:1.5;color:#555;}
+.context-box strong{color:var(--bleu-fonce);}
+.secu-note{background:#fff3cd;border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:8px 14px;margin-bottom:10px;font-size:.85rem;}
+.secu-note strong{color:#c0392b;}
+
+/* OPTIONS */
+.options-list{display:flex;flex-direction:column;gap:7px;}
+.option-item{display:flex;align-items:center;gap:11px;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;cursor:pointer;transition:all .2s;font-size:.89rem;}
+.option-item:hover:not(.disabled){border-color:var(--bleu);background:var(--bleu-clair);}
+.option-item input[type=radio],.option-item input[type=checkbox]{width:17px;height:17px;accent-color:var(--bleu);cursor:pointer;flex-shrink:0;}
+.option-item.correct{border-color:var(--vert)!important;background:var(--vert-clair)!important;}
+.option-item.incorrect{border-color:var(--rouge)!important;background:var(--rouge-clair)!important;}
+.option-item.disabled{cursor:default;opacity:.7;}
+
+/* INPUTS */
+.text-input{width:100%;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.93rem;font-family:'Barlow',sans-serif;transition:border-color .2s;resize:vertical;}
+.text-input:focus{outline:none;border-color:var(--bleu);}
+.text-input.correct{border-color:var(--vert);background:var(--vert-clair);}
+.text-input.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.number-input-wrap{display:flex;align-items:center;gap:9px;margin-top:8px;}
+.number-input{width:120px;padding:9px 12px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.98rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-align:center;transition:border-color .2s;}
+.number-input:focus{outline:none;border-color:var(--bleu);}
+.number-input.correct{border-color:var(--vert);background:var(--vert-clair);}
+.number-input.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.unit-label{font-size:.88rem;color:var(--gris);}
+.calc-zone{width:100%;padding:8px 13px;border:1.5px dashed var(--bleu);border-radius:8px;font-size:.88rem;font-family:monospace;resize:vertical;min-height:50px;background:#f9fbff;margin-bottom:8px;}
+.calc-zone:focus{outline:none;border-color:var(--bleu-fonce);}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:.86rem;margin-bottom:8px;}
+.tbl th{background:var(--bleu-fonce);color:#fff;padding:9px 11px;text-align:left;font-weight:700;font-size:.8rem;}
+.tbl td{padding:8px 11px;border-bottom:1px solid var(--gris-clair);vertical-align:middle;}
+.tbl tr:nth-child(even) td{background:var(--gris-tres-clair);}
+.tbl input[type=text],.tbl input[type=number],.tbl select{padding:5px 9px;border:1.5px solid var(--gris-clair);border-radius:6px;font-size:.86rem;font-family:'Barlow',sans-serif;width:100%;}
+.tbl input.correct,.tbl select.correct{border-color:var(--vert);background:var(--vert-clair);}
+.tbl input.incorrect,.tbl select.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.tbl .alert{color:var(--rouge);font-weight:700;}
+.tbl .ok-st{color:var(--vert-fonce);font-weight:600;}
+.tbl.vert th{background:var(--vert-fonce);}
+.tbl.orange th{background:#c0392b;}
+
+/* TABLEAU SUIVI PRODUCTION */
+.tbl-suivi{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:12px;}
+.tbl-suivi th{background:#2c3e50;color:#fff;padding:9px 8px;text-align:center;font-weight:700;font-size:.77rem;border:1px solid #1a252f;}
+.tbl-suivi td{padding:6px 5px;border:1px solid var(--gris-clair);text-align:center;vertical-align:middle;}
+.tbl-suivi tr:nth-child(even) td{background:#f8fafc;}
+.tbl-suivi input[type=text],.tbl-suivi input[type=number],.tbl-suivi select{padding:4px 6px;border:1.5px solid var(--gris-clair);border-radius:5px;font-size:.82rem;font-family:'Barlow',sans-serif;width:100%;min-width:60px;}
+.tbl-suivi .col-num{width:40px;background:#2b5f96;color:#fff;font-weight:800;font-size:.9rem;}
+.conformite-select{appearance:none;-webkit-appearance:none;padding:4px 8px;border-radius:5px;font-weight:700;font-size:.8rem;text-align:center;cursor:pointer;}
+
+/* VALIDATE BTN */
+.validate-btn{margin-top:11px;padding:8px 20px;background:var(--bleu);color:#fff;border:none;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.86rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+.validate-btn:hover{background:var(--bleu-fonce);transform:translateY(-1px);}
+.validate-btn:disabled{background:var(--gris);cursor:not-allowed;transform:none;}
+
+/* FEEDBACK */
+.feedback{display:none;margin-top:9px;padding:9px 13px;border-radius:8px;font-size:.86rem;font-weight:600;align-items:center;gap:7px;line-height:1.5;}
+.feedback.show{display:flex;}
+.feedback.ok{background:var(--vert-clair);color:var(--vert-fonce);border:1px solid var(--vert);}
+.feedback.nok{background:var(--rouge-clair);color:var(--rouge);border:1px solid var(--rouge);}
+
+/* FINAL */
+.final-section{background:#fff;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);text-align:center;border:3px solid var(--vert);margin-top:24px;}
+.final-section h2{font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;color:var(--vert-fonce);margin-bottom:8px;}
+.comp-badge{padding:5px 13px;border-radius:20px;font-size:.8rem;font-weight:700;}
+.comp-badge.validated{background:var(--vert-clair);color:var(--vert-fonce);border:2px solid var(--vert);}
+.comp-badge.partial{background:#fff3cd;color:#856404;border:2px solid #ffc107;}
+.send-btn{margin-top:18px;padding:13px 34px;background:linear-gradient(135deg,var(--vert-fonce),var(--vert));color:#fff;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 4px 16px rgba(45,122,69,.3);letter-spacing:.5px;}
+.send-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,122,69,.4);}
+.send-btn.pdf-btn{background:linear-gradient(135deg,var(--bleu-fonce),var(--bleu));box-shadow:0 4px 16px rgba(43,95,150,.3);margin-right:12px;}
+.send-btn.pdf-btn:hover{box-shadow:0 8px 24px rgba(43,95,150,.4);}
+#send-status{margin-top:12px;font-size:.88rem;color:var(--gris);font-style:italic;}
+#send-status.success{color:var(--vert-fonce);font-style:normal;font-weight:600;}
+
+/* NOTE TABLEAU SUIVI */
+.note-tableau{background:#fff8e8;border:2px solid var(--orange);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:.88rem;line-height:1.6;}
+.note-tableau strong{color:#c0392b;}
+
+@media(max-width:600px){
+  header{flex-wrap:wrap;padding:12px 14px;}
+  .header-right{flex-direction:row;margin-left:0;width:100%;justify-content:space-between;}
+  .tbl-suivi{font-size:.72rem;}
+}
+
+/* IMPRESSION PDF */
+@media print{
+  body>*:not(#print-page){display:none!important;}
+  #print-page{display:block!important;}
+  #print-content{font-family:Arial,sans-serif;font-size:11pt;color:#000;}
+  #print-content h1{font-size:16pt;color:#2b5f96;border-bottom:2px solid #2b5f96;padding-bottom:6px;margin-bottom:12px;}
+  #print-content h2{font-size:13pt;color:#2d7a45;margin:16px 0 6px;border-left:4px solid #2d7a45;padding-left:8px;}
+  #print-content table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10pt;}
+  #print-content th{background:#2b5f96;color:#fff;padding:6px 8px;text-align:left;}
+  #print-content td{padding:5px 8px;border:1px solid #ccc;vertical-align:top;}
+  #print-content .juste{color:#2d7a45;font-weight:bold;}
+  #print-content .faux{color:#e05252;font-weight:bold;}
+  #print-content .note-box{text-align:center;border:3px solid #2b5f96;border-radius:8px;padding:14px;margin:14px 0;}
+  #print-content .note-val{font-size:36pt;font-weight:900;color:#2b5f96;}
+  @page{margin:1.5cm;}
+}
+
+/* ── VERROU IDENTITÉ ── */
+.field-error{border-color:#e74c3c!important;background:#fff5f5!important;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.required-hint{display:none;color:#e74c3c;font-size:.72rem;font-weight:700;margin-top:3px;}
+.required-hint.show{display:block;}
+.eleve-box label .req{color:#e74c3c;margin-left:2px;}
+
+/* ── ÉVALUATION PRONOTE ── */
+.pronote-block{background:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:10px;box-shadow:var(--shadow);border:2px solid var(--vert);}
+.pronote-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;margin-bottom:7px;border:2px solid rgba(0,0,0,.08);}
+.pronote-dot{width:28px;height:28px;border-radius:6px;flex-shrink:0;}
+.pronote-info{min-width:0;}
+.pronote-comp-code{font-weight:800;font-size:.82rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;}
+.pronote-comp-lib{font-size:.77rem;color:#555;margin-top:1px;line-height:1.3;}
+.pronote-right{text-align:right;flex-shrink:0;}
+.pronote-niveau{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;white-space:nowrap;}
+.pronote-pts{font-size:.7rem;color:#888;margin-top:1px;}
+.pronote-score{font-size:.72rem;color:#666;margin-top:2px;}
+.pronote-legende{margin-top:14px;border-top:1px solid var(--gris-clair);padding-top:12px;}
+.pronote-legende-title{font-size:.72rem;color:var(--gris);font-weight:700;text-transform:uppercase;margin-bottom:7px;letter-spacing:.5px;}
+.pronote-legende-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.pronote-leg-item{display:flex;align-items:center;gap:5px;font-size:.7rem;padding:3px 8px;border-radius:4px;background:var(--gris-tres-clair);}
+.pronote-leg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.eval-intro-box{background:var(--bleu-clair);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:.83rem;line-height:1.5;color:var(--bleu-fonce);}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- HEADER – identique au TP de référence                        -->
+<!-- ============================================================ -->
+<header>
+  <img class="logo" src="https://services.ard.fr/fileadmin/users/grenoble-vaucanson/logo.jpg" alt="Lycée Vaucanson" onerror="this.style.display='none'">
+  <div class="header-text">
+    <h1>TP – Conduite &amp; Production de briquettes de papier</h1>
+    <p>BAC PRO PLP &nbsp;·&nbsp; CAP CIP</p>
+    <p>Lycée Polyvalent Vaucanson – Grenoble</p>
+  </div>
+  <div class="header-machine">
+    <span>📄 EcolPap BEMA</span>
+  </div>
+  <div class="header-right">
+    <div class="hbox">
+      <div class="hbox-label">⏱ Temps restant</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div id="timer">2:00:00</div>
+        <button id="pause-btn" onclick="togglePause()" title="Pause / Reprendre" style="background:rgba(255,255,255,0.25);border:2px solid rgba(255,255,255,0.5);border-radius:6px;color:#fff;font-size:1rem;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0;">⏸</button>
+      </div>
+    </div>
+    <div class="hbox">
+      <div class="hbox-label">Questions</div>
+      <div id="score-display">0 / 10</div>
+    </div>
+  </div>
+</header>
+
+<!-- BARRE DE PROGRESSION -->
+<div class="progress-section">
+  <div class="progress-header">
+    <span>Avancement du TP</span>
+    <span id="progress-text">0 / 10 questions validées</span>
+  </div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-milestones">
+    <div class="milestone" id="m1"><div class="milestone-dot"></div>Sécurité</div>
+    <div class="milestone" id="m2"><div class="milestone-dot"></div>Mise en route</div>
+    <div class="milestone" id="m3"><div class="milestone-dot"></div>Préparation</div>
+    <div class="milestone" id="m4"><div class="milestone-dot"></div>Production</div>
+    <div class="milestone" id="m5"><div class="milestone-dot"></div>Fin</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CONTENU PRINCIPAL                                            -->
+<!-- ============================================================ -->
+<div class="container">
+
+  <!-- IDENTITE ÉLÈVE – identique au TP de référence -->
+  <div class="eleve-box">
+    <div class="form-group">
+      <label>Nom <span class="req">*</span></label>
+      <input type="text" id="eleve-nom" placeholder="Votre nom...">
+      <div class="required-hint" id="hint-nom">⚠ Le nom est obligatoire</div>
+    </div>
+    <div class="form-group">
+      <label>Prénom <span class="req">*</span></label>
+      <input type="text" id="eleve-prenom" placeholder="Votre prénom...">
+      <div class="required-hint" id="hint-prenom">⚠ Le prénom est obligatoire</div>
+    </div>
+    <div class="form-group">
+      <label>Classe <span class="req">*</span></label>
+      <select id="eleve-classe">
+        <option value="">-- Sélectionnez votre classe --</option>
+        <option value="2PMIA1">2PMIA1</option>
+        <option value="2PMIA2">2PMIA2</option>
+        <option value="2PMIA3">2PMIA3</option>
+        <option value="2PMIA4">2PMIA4</option>
+        <option value="2PMIA5">2PMIA5</option>
+        <option value="1PLP">1PLP</option>
+        <option value="TPLP">TPLP</option>
+        <option value="1CIP G1">1CIP G1</option>
+        <option value="1CIP G2">1CIP G2</option>
+        <option value="2CIP G1">2CIP G1</option>
+        <option value="2CIP G2">2CIP G2</option>
+      </select>
+      <div class="required-hint" id="hint-classe">⚠ La classe est obligatoire</div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    <h2>📋 Présentation du TP</h2>
+    <p>Vous allez <strong>conduire la machine Ecolpap BEMA</strong> afin de réaliser une <strong>production de 10 briquettes</strong> de papier compacté. Ce TP se déroule en 4 phases : vérifications de sécurité, mise en route de la machine, production et contrôle qualité.</p>
+    <p>Répondez aux questions <strong>dans l'ordre</strong>, puis renseignez le tableau de suivi au fur et à mesure de la production. Validez chaque réponse pour obtenir votre feedback.</p>
+  </div>
+
+  <!-- ALERTE SÉCURITÉ – règles en rouge gras -->
+  <div class="alerte-secu">
+    <div class="titre-secu">⛔ RÈGLES DE SÉCURITÉ OBLIGATOIRES – À RESPECTER IMPÉRATIVEMENT</div>
+    <p><span class="regle-rouge">🍃 INTRODUIRE LES FEUILLES UNE PAR UNE dans la déchiqueteuse.</span> Ne jamais dépasser 4 feuilles par cycle.</p>
+    <p><span class="regle-rouge">📎 NE JAMAIS INTRODUIRE DE FEUILLES AVEC DES AGRAFES OU DES TROMBONES.</span> La présence d'agrafes ou de trombones entraîne la destruction immédiate et irrémédiable des molettes de déchiquetage.</p>
+    <p style="margin-top:8px;">⚠️ Attendre l'éjection complète des bandelettes avant d'engager une nouvelle série. Les deux portes doivent rester fermées pendant toute la production.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PARTIE 1 – SÉCURITÉ                                          -->
+  <!-- ============================================================ -->
+  <div class="section-block">
+    <div class="section-header orange">
+      <div class="section-number">1</div>
+      <div class="section-title-block">
+        <h2>🛡️ Sécurité et vérifications préalables</h2>
+        <p>Compétences : CP02, CP03, CP10 · Questions 1 à 3</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- Q1 -->
+      <div class="question-block" id="qb1">
+        <div class="question-label">Question 1 <span class="competence-tag">CP10</span><span class="competence-tag">CP02</span></div>
+        <div class="question-text">Quelles règles de sécurité s'appliquent à l'alimentation en papier de l'Ecolpap ?<br><em style="font-size:.85rem;color:var(--gris);">Cochez toutes les réponses correctes.</em></div>
+        <div class="secu-note"><strong>🔴 Rappel :</strong> Introduire les feuilles <strong>UNE PAR UNE</strong> – <strong>AUCUNE agrafe ni trombone</strong> toléré.</div>
+        <div class="options-list" id="opts1">
+          <label class="option-item"><input type="checkbox" name="q1" value="a"> Utiliser uniquement du papier format A4 de grammage entre 60 et 100 g/m²</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="b"> Les agrafes sont tolérées si le papier est bien plié</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="c"> Introduire les feuilles une par une (4 feuilles max par cycle)</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="d"> Attendre l'éjection des bandelettes avant d'engager une nouvelle série</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="e"> L'opérateur peut ouvrir l'armoire électrique en cas de problème</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="f"> L'ouverture d'une porte de sécurité provoque un arrêt d'urgence automatique</label>
+        </div>
+        <button class="validate-btn" id="vbtn1" onclick="valider(1)">✔ Valider</button>
+        <div class="feedback" id="fb1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question-block" id="qb2">
+        <div class="question-label">Question 2 <span class="competence-tag">CP03</span></div>
+        <div class="question-text">Numérotez les étapes de mise en service de la machine dans le bon ordre (1 = première action à effectuer).</div>
+        <div class="context-box">Chaque étape ne doit apparaître qu'une seule fois. Indiquez le numéro d'ordre dans le champ à gauche.</div>
+        <table class="tbl" style="margin-bottom:10px;">
+          <tr><th style="width:70px">Ordre</th><th>Action à effectuer</th></tr>
+          <tr><td><input type="number" id="o2_a" min="1" max="5" style="width:55px;text-align:center;"></td><td>Appuyer sur le bouton <strong>« Réarmement »</strong></td></tr>
+          <tr><td><input type="number" id="o2_b" min="1" max="5" style="width:55px;text-align:center;"></td><td>Manœuvrer l'interrupteur sectionneur sur <strong>« 1 »</strong></td></tr>
+          <tr><td><input type="number" id="o2_c" min="1" max="5" style="width:55px;text-align:center;"></td><td>Appuyer sur le bouton <strong>« Remise à zéro »</strong></td></tr>
+          <tr><td><input type="number" id="o2_d" min="1" max="5" style="width:55px;text-align:center;"></td><td>Alimenter la machine en <strong>air comprimé</strong></td></tr>
+          <tr><td><input type="number" id="o2_e" min="1" max="5" style="width:55px;text-align:center;"></td><td>Mettre le commutateur rotatif en <strong>position verticale</strong></td></tr>
+        </table>
+        <button class="validate-btn" id="vbtn2" onclick="valider(2)">✔ Valider</button>
+        <div class="feedback" id="fb2"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="question-block" id="qb3">
+        <div class="question-label">Question 3 <span class="competence-tag">CP02</span></div>
+        <div class="question-text">Après avoir appuyé sur « Réarmement », si toutes les sécurités sont OK, quel est l'état des voyants ?</div>
+        <div class="options-list" id="opts3">
+          <label class="option-item"><input type="radio" name="q3" value="a"> Le voyant rouge « Arrêt général » reste allumé</label>
+          <label class="option-item"><input type="radio" name="q3" value="b"> Le voyant blanc « Sous tension » s'éteint</label>
+          <label class="option-item"><input type="radio" name="q3" value="c"> Le voyant rouge « Arrêt général » s'éteint et le voyant vert « En service » s'allume</label>
+          <label class="option-item"><input type="radio" name="q3" value="d"> Les deux voyants clignotent alternativement</label>
+        </div>
+        <button class="validate-btn" id="vbtn3" onclick="valider(3)">✔ Valider</button>
+        <div class="feedback" id="fb3"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PARTIE 2 – MISE EN ROUTE                                     -->
+  <!-- ============================================================ -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title-block">
+        <h2>⚙️ Mise en route et modes de marche</h2>
+        <p>Compétences : CP03, CP04 · Questions 4 à 5</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- Q4 -->
+      <div class="question-block" id="qb4">
+        <div class="question-label">Question 4 <span class="competence-tag">CP04</span></div>
+        <div class="question-text">Pour démarrer une production automatique, quelle action effectuez-vous après avoir sélectionné le mode automatique ?</div>
+        <div class="options-list" id="opts4">
+          <label class="option-item"><input type="radio" name="q4" value="a"> Appuyer sur le bouton « Phase/phase » pour avancer étape par étape</label>
+          <label class="option-item"><input type="radio" name="q4" value="b"> Appuyer sur « Départ cycle », puis introduire des feuilles dans la déchiqueteuse</label>
+          <label class="option-item"><input type="radio" name="q4" value="c"> Appuyer sur « Remise à zéro » puis attendre 30 secondes</label>
+          <label class="option-item"><input type="radio" name="q4" value="d"> Actionner directement le vérin de compactage depuis le terminal de dialogue</label>
+        </div>
+        <button class="validate-btn" id="vbtn4" onclick="valider(4)">✔ Valider</button>
+        <div class="feedback" id="fb4"></div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="question-block" id="qb5">
+        <div class="question-label">Question 5 <span class="competence-tag">CP04</span></div>
+        <div class="question-text">Quel mode de marche permet de décomposer les étapes du cycle une par une afin de vérifier le fonctionnement de chaque actionneur ?</div>
+        <div class="options-list" id="opts5">
+          <label class="option-item"><input type="radio" name="q5" value="a"> Mode automatique</label>
+          <label class="option-item"><input type="radio" name="q5" value="b"> Mode production « tout de même »</label>
+          <label class="option-item"><input type="radio" name="q5" value="c"> Mode manuel – bouton « Phase/phase »</label>
+          <label class="option-item"><input type="radio" name="q5" value="d"> Mode arrêt d'urgence</label>
+        </div>
+        <button class="validate-btn" id="vbtn5" onclick="valider(5)">✔ Valider</button>
+        <div class="feedback" id="fb5"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PARTIE 3 – PRÉPARATION DE LA PRODUCTION                      -->
+  <!-- ============================================================ -->
+  <div class="section-block">
+    <div class="section-header vert">
+      <div class="section-number">3</div>
+      <div class="section-title-block">
+        <h2>📐 Préparation de la production</h2>
+        <p>Compétences : CP03, CP05 · Questions 6 à 8</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- Q6 – feuilles par briquette -->
+      <div class="question-block" id="qb6">
+        <div class="question-label">Question 6 <span class="competence-tag">CP03</span></div>
+        <div class="question-text">Combien de feuilles de papier sont nécessaires pour produire <strong>une seule briquette</strong> avec l'Ecolpap BEMA ?</div>
+        <div class="context-box">
+          <strong>Rappel extrait de la documentation technique :</strong><br>
+          « Engager une seule série de feuilles (4 au maximum) par cycle. Un cycle = une briquette. »
+        </div>
+        <div class="secu-note"><strong>🔴 Rappel :</strong> Introduire les feuilles <strong>UNE PAR UNE</strong> – ne jamais mettre de lot entier d'un coup.</div>
+        <div class="options-list" id="opts6">
+          <label class="option-item"><input type="radio" name="q6" value="a"> 1 feuille exactement par briquette</label>
+          <label class="option-item"><input type="radio" name="q6" value="b"> Entre 1 et 4 feuilles par briquette (selon l'épaisseur souhaitée), introduites une à une</label>
+          <label class="option-item"><input type="radio" name="q6" value="c"> 10 feuilles minimum par briquette</label>
+          <label class="option-item"><input type="radio" name="q6" value="d"> Autant de feuilles que possible, sans limite</label>
+        </div>
+        <button class="validate-btn" id="vbtn6" onclick="valider(6)">✔ Valider</button>
+        <div class="feedback" id="fb6"></div>
+      </div>
+
+      <!-- Q7 – calcul total feuilles -->
+      <div class="question-block" id="qb7">
+        <div class="question-label">Question 7 <span class="competence-tag">CP03</span><span class="competence-tag">CP05</span></div>
+        <div class="question-text">Vous décidez d'utiliser <strong>4 feuilles par briquette</strong> (la quantité maximale autorisée). Calculez le nombre total de feuilles nécessaires pour produire les <strong>10 briquettes</strong>.</div>
+        <div class="secu-note"><strong>🔴 Rappel :</strong> Ces feuilles devront être introduites <strong>UNE PAR UNE</strong> dans la déchiqueteuse – <strong>AUCUNE agrafe</strong>.</div>
+        <textarea class="calc-zone" id="calc7" placeholder="Posez votre calcul ici :&#10;Exemple : 4 feuilles × 10 briquettes = ..."></textarea>
+        <div class="number-input-wrap">
+          <input type="number" class="number-input" id="n7" min="1" max="500" placeholder="…">
+          <span class="unit-label">feuilles au total</span>
+        </div>
+        <button class="validate-btn" id="vbtn7" onclick="valider(7)">✔ Valider</button>
+        <div class="feedback" id="fb7"></div>
+      </div>
+
+      <!-- Q8 – vérifications pré-production -->
+      <div class="question-block" id="qb8">
+        <div class="question-label">Question 8 <span class="competence-tag">CP03</span></div>
+        <div class="question-text">Complétez ce tableau de vérifications avant de lancer la production (cochez OUI si conforme, NON sinon).</div>
+        <table class="tbl">
+          <tr><th>Vérification préalable</th><th style="width:120px;text-align:center;">Conforme ?</th></tr>
+          <tr>
+            <td>Papier format A4, grammage 80 g/m², <strong>sans agrafes ni trombones</strong></td>
+            <td style="text-align:center;"><select id="t8a" class="conformite-select"><option value="">--</option><option>OUI</option><option>NON</option></select></td>
+          </tr>
+          <tr>
+            <td>Documents contenant des agrafes ou trombones mis de côté (non introduits)</td>
+            <td style="text-align:center;"><select id="t8b" class="conformite-select"><option value="">--</option><option>OUI</option><option>NON</option></select></td>
+          </tr>
+          <tr>
+            <td>Air comprimé raccordé et pression vérifiée</td>
+            <td style="text-align:center;"><select id="t8c" class="conformite-select"><option value="">--</option><option>OUI</option><option>NON</option></select></td>
+          </tr>
+          <tr>
+            <td>Les deux portes de sécurité fermées à clé</td>
+            <td style="text-align:center;"><select id="t8d" class="conformite-select"><option value="">--</option><option>OUI</option><option>NON</option></select></td>
+          </tr>
+          <tr>
+            <td>Zone de travail dégagée et feuilles vérifiées une à une</td>
+            <td style="text-align:center;"><select id="t8e" class="conformite-select"><option value="">--</option><option>OUI</option><option>NON</option></select></td>
+          </tr>
+        </table>
+        <button class="validate-btn" id="vbtn8" onclick="valider(8)">✔ Valider</button>
+        <div class="feedback" id="fb8"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PARTIE 4 – TABLEAU DE SUIVI DE PRODUCTION                    -->
+  <!-- ============================================================ -->
+  <div class="section-block">
+    <div class="section-header violet">
+      <div class="section-number">4</div>
+      <div class="section-title-block">
+        <h2>📊 Tableau de suivi de production</h2>
+        <p>Compétences : CP04, CP05 · Questions 9 à 10</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- Q9 – vérification conformité briquettes -->
+      <div class="question-block" id="qb9">
+        <div class="question-label">Question 9 <span class="competence-tag">CP05</span></div>
+        <div class="question-text">Renseignez le tableau de suivi de production au fur et à mesure que vous produisez chaque briquette. Complétez toutes les colonnes pour chaque briquette réalisée.</div>
+
+        <div class="note-tableau">
+          <strong>📏 Critères de conformité :</strong><br>
+          · <strong>Épaisseur :</strong> entre 4 et 6 cm (mesure au pied à coulisse ou réglet)<br>
+          · <strong>Poids :</strong> entre 80 et 120 g (mesure à la balance)<br>
+          · <strong>Film thermique :</strong> bien rétracté, sans déchirure, briquette entièrement enrobée<br>
+          · <strong>Cohésion :</strong> briquette compacte, qui ne se défait pas à la pression manuelle<br>
+          · <strong>Conformité globale :</strong> OUI si tous les critères sont respectés, NON sinon
+        </div>
+        <div class="secu-note"><strong>🔴 Pendant toute la production :</strong> Introduire les feuilles <strong>UNE PAR UNE</strong> – <strong>AUCUNE agrafe</strong> – Attendre l'éjection avant de relancer.</div>
+
+        <div style="overflow-x:auto;">
+          <table class="tbl-suivi" id="tableau-suivi">
+            <thead>
+              <tr>
+                <th class="col-num">N°</th>
+                <th>Heure de fabrication</th>
+                <th>Nb feuilles utilisées</th>
+                <th>Épaisseur mesurée (cm)</th>
+                <th>Poids mesuré (g)</th>
+                <th>Film thermique correct ?</th>
+                <th>Cohésion correcte ?</th>
+                <th>Conformité globale</th>
+                <th>Observations</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-suivi">
+            </tbody>
+          </table>
+        </div>
+
+        <button class="validate-btn" id="vbtn9" onclick="valider(9)">✔ Valider le tableau de suivi</button>
+        <div class="feedback" id="fb9"></div>
+      </div>
+
+      <!-- Q10 – bilan et arrêt -->
+      <div class="question-block" id="qb10">
+        <div class="question-label">Question 10 <span class="competence-tag">CP05</span><span class="competence-tag">CP08</span></div>
+        <div class="question-text">À partir de votre tableau de suivi, rédigez un compte-rendu de fin de production. Indiquez le nombre de briquettes conformes, les éventuels problèmes rencontrés et une proposition d'amélioration si nécessaire.</div>
+        <div class="context-box">
+          <strong>Votre compte-rendu doit mentionner :</strong><br>
+          · Nombre de briquettes conformes sur 10 produites<br>
+          · Nature des non-conformités éventuelles (épaisseur, poids, film, cohésion)<br>
+          · Cause probable du ou des problèmes rencontrés<br>
+          · Proposition d'amélioration ou d'ajustement de réglage
+        </div>
+        <textarea class="text-input" id="a10" style="min-height:120px;" placeholder="Exemple : Sur les 10 briquettes produites, 9 sont conformes. La briquette n°5 présente un film thermique déchiré, probablement dû à... Pour éviter ce problème, je propose de..."></textarea>
+        <button class="validate-btn" id="vbtn10" onclick="valider(10)">✔ Valider</button>
+        <div class="feedback" id="fb10"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION FINALE                                               -->
+  <!-- ============================================================ -->
+  <!-- SECTION FINALE – masquée, révélée par showFinal() -->
+  <div class="final-section" id="final-section" style="display:none;">
+    <h2>🎓 Récapitulatif du TP</h2>
+    <p style="color:#555;font-size:.93rem;">Évaluation par compétences :</p>
+    <div id="comp-eval-container"><p style="color:#aaa;font-size:.88rem;text-align:center;padding:12px;">Renseignez votre identité puis cliquez sur «&nbsp;Voir mon évaluation&nbsp;».</p></div>
+
+    <div style="background:var(--bleu-clair);border-radius:10px;padding:16px 20px;margin:18px 0;text-align:left;font-size:.88rem;line-height:1.8;">
+      <strong style="color:var(--bleu-fonce);">📌 Comment envoyer votre copie en 2 étapes :</strong><br>
+      <span style="color:#333;">
+        <b>Étape 1 —</b> Cliquez sur <em>« 📄 Télécharger ma correction en PDF »</em> : le fichier PDF se télécharge immédiatement.<br>
+        <b>Étape 2 —</b> Cliquez sur <em>« 📤 Envoyer au professeur »</em> : le dossier de votre classe s'ouvre → déposez-y le fichier PDF.
+      </span>
+    </div>
+
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:6px;">
+      <button class="send-btn" style="background:linear-gradient(135deg,var(--bleu-fonce),var(--bleu));" onclick="lancerPDF()">📄 Télécharger ma correction en PDF</button>
+      <button class="send-btn" id="send-btn" onclick="envoyerNC()">📤 Envoyer au professeur</button>
+    </div>
+    <div id="send-status"></div>
+  </div>
+
+  <!-- BOUTON PERMANENT – toujours visible en bas de page -->
+  <div style="text-align:center;margin-top:22px;">
+    <button onclick="showFinal()" style="padding:12px 28px;background:var(--bleu-fonce);color:#fff;border:none;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.98rem;font-weight:700;cursor:pointer;">
+      📊 Voir mon évaluation &amp; envoyer
+    </button>
+  </div>
+
+</div><!-- fin container -->
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT                                                   -->
+<!-- ============================================================ -->
+<script>
+// ====== GÉNÉRATION DU TABLEAU DE SUIVI ======
+function genTableauSuivi() {
+  const tbody = document.getElementById('tbody-suivi');
+  tbody.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="col-num">${i}</td>
+      <td><input type="text" id="s${i}_heure" placeholder="ex: 09h15" style="min-width:70px;"></td>
+      <td><input type="number" id="s${i}_nb" min="1" max="4" placeholder="1-4" style="min-width:50px;"></td>
+      <td><input type="number" id="s${i}_ep" min="0" max="20" step="0.1" placeholder="cm" style="min-width:60px;"></td>
+      <td><input type="number" id="s${i}_poids" min="0" max="500" placeholder="g" style="min-width:60px;"></td>
+      <td>
+        <select id="s${i}_film" class="conformite-select">
+          <option value="">--</option>
+          <option value="OUI">OUI ✅</option>
+          <option value="NON">NON ❌</option>
+        </select>
+      </td>
+      <td>
+        <select id="s${i}_coh" class="conformite-select">
+          <option value="">--</option>
+          <option value="OUI">OUI ✅</option>
+          <option value="NON">NON ❌</option>
+        </select>
+      </td>
+      <td>
+        <select id="s${i}_conf" class="conformite-select" onchange="updateConf(${i})">
+          <option value="">--</option>
+          <option value="OUI">OUI ✅</option>
+          <option value="NON">NON ❌</option>
+        </select>
+      </td>
+      <td><input type="text" id="s${i}_obs" placeholder="RAS / problème…" style="min-width:90px;"></td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+genTableauSuivi();
+
+function updateConf(i) {
+  const conf = document.getElementById(`s${i}_conf`).value;
+  const td = document.getElementById(`s${i}_conf`).parentElement;
+  if (conf === 'OUI') { td.style.background = '#d4edda'; }
+  else if (conf === 'NON') { td.style.background = '#fde8e8'; }
+  else { td.style.background = ''; }
+}
+
+// ====== TIMER ======
+const DUREE = 2 * 3600;
+let secondes = DUREE;
+let timerPaused = false;
+const timerEl = document.getElementById('timer');
+let timerInterval = setInterval(() => {
+  if (timerPaused) return;
+  secondes--;
+  if (secondes < 0) { secondes = 0; clearInterval(timerInterval); }
+  let h = Math.floor(secondes / 3600);
+  let m = Math.floor((secondes % 3600) / 60);
+  let s = secondes % 60;
+  timerEl.textContent = h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  if (secondes < 900) timerEl.classList.add('urgent');
+}, 1000);
+
+function togglePause() {
+  timerPaused = !timerPaused;
+  const btn = document.getElementById('pause-btn');
+  if (timerPaused) {
+    btn.textContent = '▶';
+    btn.style.background = 'rgba(255,204,0,0.4)';
+    timerEl.style.opacity = '0.5';
+  } else {
+    btn.textContent = '⏸';
+    btn.style.background = 'rgba(255,255,255,0.25)';
+    timerEl.style.opacity = '1';
+  }
+}
+
+// ====== TRACKING COMPORTEMENTAL ======
+const tpStartTime = Date.now();
+let keyCount = 0, pasteCount = 0, pasteDetails = [];
+let keyActiveMs = 0, keyLastStart = null;
+let inactiveMs = 0, inactiveLastStart = null;
+let inactivityTimer = null;
+const qTimestamps = {};
+
+document.addEventListener('keydown', () => { if (!keyLastStart) keyLastStart = Date.now(); resetInactivity(); });
+document.addEventListener('keyup', () => { keyCount++; if (keyLastStart) { keyActiveMs += Date.now() - keyLastStart; keyLastStart = null; } resetInactivity(); });
+document.addEventListener('paste', (e) => {
+  pasteCount++;
+  const block = e.target ? e.target.closest('[id^="qb"]') : null;
+  pasteDetails.push({ zone: block ? block.id.replace('qb','Q') : 'inconnue', heure: new Date().toLocaleTimeString('fr-FR') });
+  resetInactivity();
+});
+function resetInactivity() {
+  if (inactiveLastStart) { inactiveMs += Date.now() - inactiveLastStart; inactiveLastStart = null; }
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => { inactiveLastStart = Date.now(); }, 30000);
+}
+resetInactivity();
+function recordQTime(id) {
+  const now = Date.now();
+  if (!qTimestamps['q'+id]) qTimestamps['q'+id] = { start: tpStartTime };
+  qTimestamps['q'+id].validated = now;
+  qTimestamps['q'+id].seconds = Math.round((now - qTimestamps['q'+id].start) / 1000);
+}
+function fmtDuration(ms) {
+  if (ms < 0) ms = 0;
+  const tot = Math.round(ms / 1000);
+  const h = Math.floor(tot/3600), m = Math.floor((tot%3600)/60), s = tot%60;
+  if (h > 0) return h+'h '+String(m).padStart(2,'0')+'min '+String(s).padStart(2,'0')+'s';
+  if (m > 0) return m+'min '+String(s).padStart(2,'0')+'s';
+  return s+'s';
+}
+function getTrackingStats() {
+  const totalMs = Date.now() - tpStartTime;
+  let keyMs = keyActiveMs + (keyLastStart ? Date.now()-keyLastStart : 0);
+  let inactMs = inactiveMs + (inactiveLastStart ? Date.now()-inactiveLastStart : 0);
+  return { totalMs, keyMs, inactMs, keyCount, pasteCount, pasteDetails, tempsPasseElapsed: DUREE - secondes };
+}
+
+// ====== SCORE ======
+const scores = {};
+const TOTAL_Q = 10;
+const qComp = {
+  q1:'CP10',q2:'CP03',q3:'CP02',q4:'CP04',q5:'CP04',
+  q6:'CP03',q7:'CP05',q8:'CP03',q9:'CP05',q10:'CP08'
+};
+const qTitres = ['',
+  'Regles de securite alimentation papier',
+  'Ordre des etapes de mise en service',
+  'Etat des voyants apres rearmement',
+  'Demarrage production automatique',
+  'Mode manuel phase/phase',
+  'Nombre de feuilles par briquette',
+  'Calcul total feuilles pour 10 briquettes',
+  'Tableau verifications pre-production',
+  'Tableau de suivi de production (10 briquettes)',
+  'Compte-rendu de fin de production'
+];
+
+// ====== LOGIQUE DE VALIDATION ======
+function fb(id, ok, msg) {
+  const el = document.getElementById('fb'+id);
+  el.innerHTML = (ok ? '✅ ' : '❌ ') + msg;
+  el.className = 'feedback show ' + (ok ? 'ok' : 'nok');
+}
+
+function disableQ(id) {
+  const block = document.getElementById('qb'+id);
+  block.querySelectorAll('input, select, textarea, button.validate-btn').forEach(el => el.disabled = true);
+  // Colorier les options radio/checkbox
+  if ([1,3,4,5,6].includes(id)) {
+    const opts = block.querySelectorAll('.option-item');
+    opts.forEach(o => o.classList.add('disabled'));
+  }
+}
+
+function valider(id) {
+  recordQTime(id);
+  let ok = false;
+
+  if (id === 1) {
+    const checked = Array.from(document.querySelectorAll('input[name="q1"]:checked')).map(e=>e.value);
+    const bons = ['a','c','d','f'];
+    ok = bons.every(v=>checked.includes(v)) && checked.every(v=>bons.includes(v));
+    // Colorer options
+    document.querySelectorAll('#opts1 .option-item').forEach(li => {
+      const val = li.querySelector('input').value;
+      if (bons.includes(val)) li.classList.add('correct');
+      else if (checked.includes(val)) li.classList.add('incorrect');
+    });
+    fb(id, ok, ok
+      ? 'Parfait ! Les 4 règles correctes sont cochées : papier A4 60-100g/m², feuilles une à une (max 4), attendre l\'éjection, arrêt d\'urgence si porte ouverte.'
+      : 'Réponses incorrectes. Règles valides : (a) grammage A4 60-100g/m², (c) feuilles une à une max 4, (d) attendre l\'éjection, (f) porte ouverte = arrêt d\'urgence. Les agrafes sont INTERDITES et l\'opérateur ne touche jamais à l\'armoire.');
+  }
+
+  else if (id === 2) {
+    const vals = {
+      o2_a: parseInt(document.getElementById('o2_a').value),
+      o2_b: parseInt(document.getElementById('o2_b').value),
+      o2_c: parseInt(document.getElementById('o2_c').value),
+      o2_d: parseInt(document.getElementById('o2_d').value),
+      o2_e: parseInt(document.getElementById('o2_e').value)
+    };
+    // Ordre correct : air comprimé=1, sectionneur=2, commutateur=3, réarmement=4, remise à zéro=5
+    ok = vals.o2_d===1 && vals.o2_b===2 && vals.o2_e===3 && vals.o2_a===4 && vals.o2_c===5;
+    fb(id, ok, ok
+      ? 'Ordre correct ! 1-Air comprimé → 2-Sectionneur sur "1" → 3-Commutateur vertical → 4-Réarmement → 5-Remise à zéro.'
+      : 'Ordre incorrect. L\'ordre correct est : 1-Alimenter en air comprimé → 2-Interrupteur sectionneur sur "1" → 3-Commutateur rotatif vertical → 4-Réarmement → 5-Remise à zéro.');
+  }
+
+  else if (id === 3) {
+    const sel = document.querySelector('input[name="q3"]:checked');
+    ok = sel && sel.value === 'c';
+    document.querySelectorAll('#opts3 .option-item').forEach(li => {
+      const val = li.querySelector('input').value;
+      if (val === 'c') li.classList.add('correct');
+      else if (sel && val === sel.value && val !== 'c') li.classList.add('incorrect');
+    });
+    fb(id, ok, ok
+      ? 'Correct ! Si toutes les sécurités sont OK (arrêts d\'urgence dégagés, relais thermiques OK, portes fermées, air présent) : voyant rouge "Arrêt général" s\'éteint + voyant vert "En service" s\'allume.'
+      : 'Incorrect. La bonne réponse est (c) : le voyant rouge "Arrêt général" s\'éteint ET le voyant vert "En service" s\'allume, à condition que TOUTES les sécurités soient en état OK.');
+  }
+
+  else if (id === 4) {
+    const sel = document.querySelector('input[name="q4"]:checked');
+    ok = sel && sel.value === 'b';
+    document.querySelectorAll('#opts4 .option-item').forEach(li => {
+      const val = li.querySelector('input').value;
+      if (val === 'b') li.classList.add('correct');
+      else if (sel && val === sel.value && val !== 'b') li.classList.add('incorrect');
+    });
+    fb(id, ok, ok
+      ? 'Correct ! En mode automatique : appuyer sur "Départ cycle" puis introduire les feuilles une à une dans la déchiqueteuse. La machine effectue automatiquement tout le cycle.'
+      : 'Incorrect. En mode automatique, on appuie sur "Départ cycle" puis on introduit les feuilles UNE PAR UNE dans la déchiqueteuse. Le bouton "Phase/phase" est réservé au mode manuel.');
+  }
+
+  else if (id === 5) {
+    const sel = document.querySelector('input[name="q5"]:checked');
+    ok = sel && sel.value === 'c';
+    document.querySelectorAll('#opts5 .option-item').forEach(li => {
+      const val = li.querySelector('input').value;
+      if (val === 'c') li.classList.add('correct');
+      else if (sel && val === sel.value && val !== 'c') li.classList.add('incorrect');
+    });
+    fb(id, ok, ok
+      ? 'Correct ! Le mode manuel avec le bouton "Phase/phase" déroule le grafcet de conduite manuelle étape par étape. Idéal pour vérifier chaque actionneur individuellement.'
+      : 'Incorrect. C\'est le mode manuel – bouton "Phase/phase" – qui décompose les étapes du cycle une par une pour permettre la vérification de chaque actionneur.');
+  }
+
+  else if (id === 6) {
+    const sel = document.querySelector('input[name="q6"]:checked');
+    ok = sel && sel.value === 'b';
+    document.querySelectorAll('#opts6 .option-item').forEach(li => {
+      const val = li.querySelector('input').value;
+      if (val === 'b') li.classList.add('correct');
+      else if (sel && val === sel.value && val !== 'b') li.classList.add('incorrect');
+    });
+    fb(id, ok, ok
+      ? 'Correct ! Un cycle = une briquette, avec 1 à 4 feuilles maximum selon l\'épaisseur souhaitée. Les feuilles doivent impérativement être introduites UNE PAR UNE.'
+      : 'Incorrect. Un cycle produit une briquette. On peut utiliser entre 1 et 4 feuilles par cycle selon l\'épaisseur voulue. Ces feuilles doivent être introduites UNE PAR UNE, jamais en paquet.');
+  }
+
+  else if (id === 7) {
+    const v = parseInt(document.getElementById('n7').value);
+    ok = v === 40;
+    const ni = document.getElementById('n7');
+    ni.classList.add(ok ? 'correct' : 'incorrect');
+    fb(id, ok, ok
+      ? 'Excellent ! 4 feuilles × 10 briquettes = 40 feuilles au total. Rappel : ces 40 feuilles devront être introduites UNE PAR UNE et ne devront comporter aucune agrafe.'
+      : `Incorrect. Le calcul est : 4 feuilles/briquette × 10 briquettes = 40 feuilles au total. Vous avez répondu : ${v||'rien'}. Rappel : feuilles à introduire UNE PAR UNE, sans agrafes.`);
+  }
+
+  else if (id === 8) {
+    const t = {
+      t8a: document.getElementById('t8a').value,
+      t8b: document.getElementById('t8b').value,
+      t8c: document.getElementById('t8c').value,
+      t8d: document.getElementById('t8d').value,
+      t8e: document.getElementById('t8e').value
+    };
+    ok = t.t8a==='OUI' && t.t8b==='OUI' && t.t8c==='OUI' && t.t8d==='OUI' && t.t8e==='OUI';
+    fb(id, ok, ok
+      ? 'Toutes les vérifications sont correctes ! La machine est prête à être utilisée en toute sécurité.'
+      : 'Certaines réponses sont incorrectes. Toutes les vérifications doivent être OUI avant de lancer la production : papier sans agrafes = OUI, agrafes écartées = OUI, air comprimé = OUI, portes fermées = OUI, zone vérifiée = OUI.');
+  }
+
+  else if (id === 9) {
+    // Valider le tableau de suivi : au moins 8 lignes sur 10 renseignées (heure, conformité)
+    let lignesRemplies = 0;
+    let conformes = 0;
+    for (let i = 1; i <= 10; i++) {
+      const heure = document.getElementById(`s${i}_heure`).value.trim();
+      const conf = document.getElementById(`s${i}_conf`).value;
+      if (heure !== '' && conf !== '') lignesRemplies++;
+      if (conf === 'OUI') conformes++;
+    }
+    ok = lignesRemplies >= 8;
+    fb(id, ok, ok
+      ? `Tableau de suivi validé ! ${lignesRemplies}/10 lignes renseignées. ${conformes} briquette(s) conforme(s) sur ${lignesRemplies} produites. Consultez votre tableau pour le bilan.`
+      : `Tableau incomplet. Veuillez renseigner au minimum l'heure et la conformité pour 8 briquettes sur 10 (actuellement ${lignesRemplies}/10 lignes complètes).`);
+  }
+
+  else if (id === 10) {
+    const txt = document.getElementById('a10').value.trim();
+    ok = txt.length >= 50;
+    const ta = document.getElementById('a10');
+    ta.classList.add(ok ? 'correct' : 'incorrect');
+    fb(id, ok, ok
+      ? 'Compte-rendu enregistré. Il sera évalué par votre professeur. Bravo pour votre rédaction !'
+      : 'Réponse trop courte. Développez davantage : nombre de briquettes conformes, non-conformités éventuelles, cause, proposition d\'amélioration (minimum 50 caractères).');
+  }
+
+  if (ok) scores['q'+id] = 1;
+  disableQ(id);
+  updateScore();
+  const allDone = Object.keys(scores).length + 
+    document.querySelectorAll('.feedback.show.nok').length >= TOTAL_Q;
+  if (allDone || Object.keys(scores).length + 
+    document.querySelectorAll('.feedback.show').length >= TOTAL_Q) {
+      }
+}
+
+function updateScore() {
+  const pts = Object.values(scores).reduce((a,b)=>a+b,0);
+  const done = document.querySelectorAll('.feedback.show').length;
+  document.getElementById('score-display').textContent = pts + ' / ' + TOTAL_Q;
+  document.getElementById('progress-fill').style.width = (done / TOTAL_Q * 100) + '%';
+  document.getElementById('progress-text').textContent = done + ' / ' + TOTAL_Q + ' questions validées';
+  // Jalons
+  const jalons = [[1,3,'m1'],[4,5,'m2'],[6,8,'m3'],[9,10,'m4']];
+  jalons.forEach(([from,to,mid]) => {
+    let cnt = 0;
+    for(let i=from;i<=to;i++) if(document.querySelector('#fb'+i+'.show')) cnt++;
+    if (cnt === (to-from+1)) document.getElementById(mid).classList.add('done');
+  });
+  if (done >= TOTAL_Q) document.getElementById('m5').classList.add('done');
+}
+
+// ====== SECTION FINALE ======
+// showFinal remplacée par version Pronote
+
+// ====== RÉCUPÉRER RÉPONSES POUR PDF ======
+function getAns(i) {
+  if (i===1) return Array.from(document.querySelectorAll('input[name="q1"]:checked')).map(e=>e.value).join(',') || '-';
+  if (i===2) return `Air:${document.getElementById('o2_d').value||'?'} Sect:${document.getElementById('o2_b').value||'?'} Comm:${document.getElementById('o2_e').value||'?'} Rearm:${document.getElementById('o2_a').value||'?'} RaZ:${document.getElementById('o2_c').value||'?'}`;
+  if (i===3) { const s=document.querySelector('input[name="q3"]:checked'); return s?s.value:'-'; }
+  if (i===4) { const s=document.querySelector('input[name="q4"]:checked'); return s?s.value:'-'; }
+  if (i===5) { const s=document.querySelector('input[name="q5"]:checked'); return s?s.value:'-'; }
+  if (i===6) { const s=document.querySelector('input[name="q6"]:checked'); return s?s.value:'-'; }
+  if (i===7) return document.getElementById('n7').value || '-';
+  if (i===8) return `A4-sans-agrafes:${document.getElementById('t8a').value} Agrafes-ecartees:${document.getElementById('t8b').value} Air:${document.getElementById('t8c').value} Portes:${document.getElementById('t8d').value} Zone:${document.getElementById('t8e').value}`;
+  if (i===9) {
+    let r = '';
+    for(let j=1;j<=10;j++){
+      const conf = document.getElementById(`s${j}_conf`).value || '--';
+      const ep = document.getElementById(`s${j}_ep`).value || '?';
+      const po = document.getElementById(`s${j}_poids`).value || '?';
+      r += `B${j}:${conf}(${ep}cm/${po}g) `;
+    }
+    return r.trim();
+  }
+  if (i===10) return document.getElementById('a10').value.trim() || '-';
+  return '-';
+}
+
+// ====== GENERATION PDF ======
+function lancerPDF() {
+  const nom = document.getElementById('eleve-nom').value.trim() || '(non renseigne)';
+  const prenom = document.getElementById('eleve-prenom').value.trim() || '(non renseigne)';
+  const classe = document.getElementById('eleve-classe').value || '(non renseigne)';
+  const pts = Object.values(scores).reduce((a,b)=>a+b,0);
+  const dateStr = new Date().toLocaleDateString('fr-FR');
+  const stats = getTrackingStats();
+  const pdfStr = genPDF(nom, prenom, classe, pts, dateStr, stats);
+  const blob = new Blob([pdfStr], {type:'application/pdf'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'TP_EcolPap_Conduite_' + classe + '_' + nom.toUpperCase() + '_' + prenom + '_' + pts + 'sur10.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function genPDF(nom, prenom, classe, pts, dateStr, stats) {
+  const W=595, H=842, ML=40, MR=40, MT=40;
+  let pages=[];
+  let curPage=null;
+  let y=0;
+
+  function newPage(){ curPage={parts:[]}; pages.push(curPage); y=H-MT; }
+  function checkY(needed){ if(!curPage||y<40+needed) newPage(); }
+
+  function safe(s){
+    return String(s||'')
+      .replace(/[éèêëÉÈÊË]/g,'e').replace(/[àâäÀÂÄ]/g,'a')
+      .replace(/[ùûüÙÛÜ]/g,'u').replace(/[îïÎÏ]/g,'i')
+      .replace(/[ôöÔÖ]/g,'o').replace(/[çÇ]/g,'c')
+      .replace(/[ñÑ]/g,'n').replace(/°/g,' ')
+      .replace(/[–—]/g,'-').replace(/[""«»]/g,'"')
+      .replace(/['']/g,"'").replace(/…/g,'...')
+      .replace(/✅|\[OK\]/g,'[OK]').replace(/❌|\[X\]/g,'[X]').replace(/⚠️|\[!\]/g,'[!]')
+      .replace(/[^\x20-\x7E]/g,'?')
+      .replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+  }
+
+  function txt(s,x,yy,sz,bold,r,g,b){
+    r=r===undefined?0:r;g=g===undefined?0:g;b=b===undefined?0:b;
+    const fn=bold?'/F2':'/F1';
+    curPage.parts.push(`BT ${fn} ${sz} Tf ${r} ${g} ${b} rg ${x} ${yy} Td (${safe(s)}) Tj ET`);
+  }
+  function filledRect(x,yy,w,h,r,g,b){ curPage.parts.push(`${r} ${g} ${b} rg ${x} ${yy} ${w} ${h} re f 0 0 0 rg`); }
+  function hLine(x1,yy,x2,lw,r,g,b){ r=r||0.7;g=g||0.7;b=b||0.7;lw=lw||0.5; curPage.parts.push(`${r} ${g} ${b} RG ${lw} w ${x1} ${yy} m ${x2} ${yy} l S 0 0 0 RG`); }
+
+  const CW = W-ML-MR;
+
+  function wrapLines(s, maxChars){
+    const words=String(s||'').split(' ');
+    const lines=[];let cur='';
+    for(const w of words){ if(((cur?cur+' ':'')+w).length<=maxChars){cur=(cur?cur+' ':'')+w;}else{if(cur)lines.push(cur);cur=w;} }
+    if(cur)lines.push(cur);
+    return lines.length?lines:[''];
+  }
+  function addTxt(s,sz,bold,r,g,b,indent){ sz=sz||10;indent=indent||0; const maxChars=Math.floor((CW-indent)/(sz*0.52)); const lines=wrapLines(s,maxChars); for(const l of lines){checkY(sz+5);txt(l,ML+indent,y,sz,bold||false,r||0,g||0,b||0);y-=(sz+4);} }
+  function addSp(h){y-=(h||8);}
+  function addHLine(){checkY(8);hLine(ML,y,W-MR);y-=8;}
+  function addHeader2(s,r,g,b){ checkY(20);const h=16;filledRect(ML,y-2,CW,h,r,g,b);txt(s,ML+5,y+1,10,true,1,1,1);y-=(h+4); }
+  function addTableRow(cells,widths,isHdr,isEven){ const rh=13;checkY(rh+2);const rowY=y-2; if(isHdr)filledRect(ML,rowY,CW,rh,0.17,0.37,0.59); else if(isEven)filledRect(ML,rowY,CW,rh,0.94,0.96,0.97); let x=ML; cells.forEach((c,i)=>{txt(String(c||'').substring(0,widths[i]>100?60:25),x+2,y,8,isHdr,isHdr?1:0,isHdr?1:0,isHdr?1:0);x+=widths[i];});y-=rh; }
+
+  newPage();
+
+  // En-tête
+  const headerH=28;
+  filledRect(ML,y-4,CW,headerH,0.17,0.37,0.59);
+  txt('TP - Conduite EcolPap BEMA - Production 10 briquettes',ML+6,y+10,10,true,1,1,1);
+  txt(nom.toUpperCase()+' '+prenom+' | Classe: '+classe+' | Date: '+dateStr,ML+6,y-1,9,false,0.85,0.95,1);
+  y-=(headerH+8);
+
+  // Note
+  checkY(30);
+  filledRect(ML,y-4,CW,26,0.93,0.97,0.93);
+  txt('NOTE OBTENUE : '+pts+' / 10   |   Questions validees : '+Object.keys(scores).length+' / 10',ML+6,y+6,12,true,0.1,0.4,0.15);
+  const mention='';
+  // mention supprimée
+  y-=36;addSp(4);
+
+  // Compétences
+  const cS={},cT={};
+  for(let i=1;i<=TOTAL_Q;i++){const c=qComp['q'+i];if(!cT[c]){cS[c]=0;cT[c]=0;}cT[c]++;if(scores['q'+i])cS[c]++;}
+  addHeader2('EVALUATION PAR COMPETENCES - CODE PRONOTE', 0.15,0.33,0.07);
+  const _fil2=getFiliere(document.getElementById('eleve-classe').value||'');
+  const _ret2=COMP_RETENUES_CO[_fil2];
+  const _sc2=getScoresCO(_fil2);
+  addTxt('Filiere : '+FILIERE_LABEL[_fil2], 9, true, 0.1,0.23,0.42);
+  addSp(3);
+  addTableRow(['Code','Competence evaluee','Score','Niveau Pronote','Points'],[35,155,45,100,CW-335],true);
+  let _ev2=false;
+  _ret2.forEach(c=>{
+    const t=_sc2.cT[c]||0; const ok=t>0?_sc2.cS[c]:0;
+    const pct=t>0?ok/t:0; const niv=getPronoteNiveau(pct);
+    addTableRow([c,getCompLib(c,_fil2).substring(0,38),(t>0?ok+'/'+t:'N/A'),niv.label,niv.pts+' pt'+(niv.pts>1?'s':'')],[35,155,45,100,CW-335],false,_ev2);
+    _ev2=!_ev2;
+  });
+  addSp(8);addHLine();addSp(4);
+
+  // Détail questions
+  addHeader2('DETAIL DES REPONSES',0.18,0.48,0.27);
+  const wQ=[22,130,50,50,CW-252];
+  addTableRow(['N','Question','Comp.','Resultat','Reponse donnee'],wQ,true);
+  for(let i=1;i<=TOTAL_Q;i++){
+    const ok=scores['q'+i];
+    const res=ok===undefined?'- N/R':(ok===1?'[OK] Juste':'[X] Faux');
+    addTableRow([i,qTitres[i].substring(0,40),qComp['q'+i]||'-',res,getAns(i).substring(0,45)],wQ,false,i%2===0);
+  }
+  addSp(8);addHLine();addSp(4);
+
+  // Tableau de suivi de production
+  addHeader2('TABLEAU DE SUIVI DE PRODUCTION - 10 BRIQUETTES',0.17,0.37,0.59);
+  const wS=[20,55,40,50,45,55,50,55,CW-370];
+  addTableRow(['N','Heure','Nb.feuil.','Epaisseur','Poids(g)','Film OK?','Cohesion?','Conforme?','Obs.'],wS,true);
+  for(let i=1;i<=10;i++){
+    const heure = document.getElementById(`s${i}_heure`).value||'-';
+    const nb = document.getElementById(`s${i}_nb`).value||'-';
+    const ep = document.getElementById(`s${i}_ep`).value||'-';
+    const po = document.getElementById(`s${i}_poids`).value||'-';
+    const film = document.getElementById(`s${i}_film`).value||'-';
+    const coh = document.getElementById(`s${i}_coh`).value||'-';
+    const conf = document.getElementById(`s${i}_conf`).value||'-';
+    const obs = document.getElementById(`s${i}_obs`).value||'';
+    addTableRow([i,heure,nb,ep+'cm',po+'g',film,coh,conf,obs.substring(0,20)],wS,false,i%2===0);
+  }
+  addSp(8);
+
+  // Compte-rendu
+  addHeader2('COMPTE-RENDU DE FIN DE PRODUCTION',0.18,0.48,0.27);
+  const rep10 = document.getElementById('a10').value.trim();
+  const lines10 = wrapLines(rep10, 95);
+  for(const l of lines10){ checkY(12); txt(l,ML,y,9,false,0.2,0.2,0.2); y-=13; }
+  addSp(8);addHLine();addSp(4);
+
+  // Tracking comportemental
+  if(stats){
+    addHeader2('INDICATEURS DE COMPORTEMENT DURANT LE TP',0.17,0.37,0.59);
+    const totalStr=fmtDuration(stats.totalMs);
+    const keyStr=fmtDuration(stats.keyMs);
+    const inactStr=fmtDuration(stats.inactMs);
+    const hh=Math.floor(stats.tempsPasseElapsed/3600),mm=Math.floor((stats.tempsPasseElapsed%3600)/60),ss=stats.tempsPasseElapsed%60;
+    const chronoStr=hh+'h '+String(mm).padStart(2,'0')+'min '+String(ss).padStart(2,'0')+'s';
+    addTxt('Temps total sur le TP : '+totalStr+' | Temps chrono ecoule : '+chronoStr,9,true,0,0,0,0);
+    addTxt('Temps actif clavier : '+keyStr+' | Inactivite detectee (>30s) : '+inactStr,9,false,0.3,0.3,0.3,0);
+    addSp(4);
+    addTxt('Frappes clavier enregistrees : '+stats.keyCount,9,false,0,0,0,0);
+    addSp(2);
+    if(stats.pasteCount===0){
+      addTxt('Copier-coller : aucun coller detecte',9,false,0.18,0.48,0.27,0);
+    }else{
+      addTxt('Copier-coller detecte : '+stats.pasteCount+' occurrence(s)',9,true,0.7,0.1,0.1,0);
+      stats.pasteDetails.forEach(p=>{ addTxt('  - Coller dans '+p.zone+' a '+p.heure,8,false,0.5,0.1,0.1,8); });
+    }
+    addSp(6);
+    addHeader2('HORODATAGE DES VALIDATIONS',0.18,0.48,0.27);
+    const wT=[22,150,65,65,CW-302];
+    addTableRow(['N','Question','Heure valid.','Tps ecoule','Observation'],wT,true);
+    let rowEven=false;
+    for(let i=1;i<=TOTAL_Q;i++){
+      const qt=qTimestamps['q'+i];
+      let heureStr='-',dureeStr='-',obs='';
+      if(qt&&qt.validated){
+        const d=new Date(qt.validated);
+        heureStr=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
+        dureeStr=fmtDuration(qt.seconds*1000);
+        if(qt.seconds<8)obs='[!] Tres rapide';
+        else if(qt.seconds>600)obs='Long (>10min)';
+      }else{obs='Non repondu';}
+      addTableRow([i,qTitres[i].substring(0,35),heureStr,dureeStr,obs],wT,false,rowEven);
+      rowEven=!rowEven;
+    }
+    addSp(8);
+  }
+
+  // Pied de page
+  pages.forEach((p,pi)=>{
+    p.parts.push(`0.6 0.6 0.6 rg`);
+    p.parts.push(`BT /F1 7 Tf 0.5 0.5 0.5 rg ${ML} 22 Td (TP EcolPap BEMA - Conduite - Lycee Vaucanson - ${safe(dateStr)} - Page ${pi+1}/${pages.length}) Tj ET`);
+    p.parts.push(`0 0 0 rg`);
+  });
+
+  // Assemblage PDF
+  let pdf='%PDF-1.4\n%\xff\xff\xff\xff\n';
+  const rebuiltOffsets={};
+  function addObj(content){ const idx=Object.keys(rebuiltOffsets).length+1; rebuiltOffsets[idx]=pdf.length; pdf+=`${idx} 0 obj\n${content}\nendobj\n`; return idx; }
+  const f1=addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  const f2=addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  const fd=`<< /F1 ${f1} 0 R /F2 ${f2} 0 R >>`;
+  const pageRefs=[];
+  for(const p of pages){
+    const stream=p.parts.join('\n');
+    const cIdx=addObj(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
+    const pIdx=addObj(`<< /Type /Page /Parent __PAGES__ /MediaBox [0 0 ${W} ${H}] /Contents ${cIdx} 0 R /Resources << /Font ${fd} >> >>`);
+    pageRefs.push(pIdx);
+  }
+  const pagesIdx=addObj(`<< /Type /Pages /Kids [${pageRefs.map(r=>r+' 0 R').join(' ')}] /Count ${pages.length} >>`);
+  const catIdx=addObj(`<< /Type /Catalog /Pages ${pagesIdx} 0 R >>`);
+  pdf=pdf.split('__PAGES__').join(`${pagesIdx} 0 R`);
+  const finalOffsets={};
+  let pos=0;
+  for(const line of pdf.split('\n')){ const m=line.match(/^(\d+) 0 obj$/); if(m)finalOffsets[parseInt(m[1])]=pos; pos+=line.length+1; }
+  const xrefPos=pdf.length;
+  const numObjs=Object.keys(finalOffsets).length+1;
+  let xref=`xref\n0 ${numObjs}\n`;
+  xref+='0000000000 65535 f \n';
+  for(let i=1;i<numObjs;i++) xref+=String(finalOffsets[i]||0).padStart(10,'0')+' 00000 n \n';
+  xref+=`trailer\n<< /Size ${numObjs} /Root ${catIdx} 0 R >>\nstartxref\n${xrefPos}\n%%EOF`;
+  pdf+=xref;
+  return pdf;
+}
+
+// ====== ENVOI NEXTCLOUD ======
+function envoyerNC() {
+  const classeTokens = {
+    '2PMIA1':'SFkasij3W8ZdY6X','2PMIA2':'KWTiQL5cLkQnRkw','2PMIA3':'Exk55DptbrJHmL8',
+    '2PMIA4':'NyFcyoajmiDHWBN','2PMIA5':'wbF4sqQkLCCr5Nj','1PLP':'Q2LF28DBwcDbaZ3',
+    'TPLP':'rq7TaGNDJc7MxZn','1CIP G1':'ZDYKjyNzsF4LNNC','1CIP G2':'KQp5LCtEKJsGXRT',
+    '2CIP G1':'kybKoENkrz9qKEo','2CIP G2':'5XdDxzyAJDFSgF4'
+  };
+  const classe = document.getElementById('eleve-classe').value;
+  if (!classe) { alert('Sélectionnez votre classe en haut du TP.'); return; }
+  const token = classeTokens[classe];
+  if (!token) { alert('Classe non reconnue.'); return; }
+  const url = 'https://nuage01.apps.education.fr/index.php/s/'+token;
+  const st = document.getElementById('send-status');
+  st.innerHTML = '✅ Dossier de la classe <strong>'+classe+'</strong> ouvert dans un nouvel onglet.<br>'
+    +'<span style="font-size:.84rem;">Déposez-y votre fichier PDF.</span><br>'
+    +'<a href="'+url+'" target="_blank" style="color:#2b5f96;font-size:.82rem;">Cliquer ici si le dossier ne s\'est pas ouvert</a>';
+  st.className = 'success';
+  window.open(url, '_blank');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SYSTÈME ÉVALUATION PRONOTE - CODE COULEUR OFFICIEL
+// ══════════════════════════════════════════════════════════════════════════════
+
+const PRONOTE_NIVEAUX = [
+  {hex:'#275317', label:'Très bonne maîtrise',    pts:6, seuil:0.85},
+  {hex:'#4EA72E', label:'Maîtrise satisfaisante', pts:5, seuil:0.70},
+  {hex:'#92D050', label:'Presque maîtrisé',       pts:4, seuil:0.50},
+  {hex:'#FFFF00', label:'Maîtrise fragile',        pts:3, seuil:0.35},
+  {hex:'#FFC000', label:'Début de maîtrise',      pts:2, seuil:0.15},
+  {hex:'#EE0000', label:'Maîtrise insuffisante',  pts:1, seuil:0.00},
+];
+
+const COMP_CIP = {
+  CP01:"Communiquer en situation professionnelle et utiliser l'outil adapté pour rendre compte",
+  CP02:"S'informer et informer au cours de l'activité professionnelle",
+  CP03:"Préparer le travail au poste",
+  CP04:"Conduire l'installation à partir du poste de travail",
+  CP05:"Recueillir des données liées au produit et à la production",
+  CP06:"Identifier des risques au poste de travail",
+  CP07:"Appliquer des modes opératoires conformes aux objectifs de qualité et sécurité",
+};
+const COMP_PMIA = {
+  'CP1.1':"Décoder l'organisation de l'installation (structurelle, fonctionnelle, temporelle)",
+  'CP2.1':"Approvisionner et préparer les installations, matériels, produits et accessoires",
+  'CP2.2':"Préparer les documents nécessaires à la maintenance, organiser son intervention",
+  'CP2.3':"Identifier les risques pour les biens et les personnes",
+  'CP2.4':"Mettre en oeuvre les mesures de prévention associées aux risques identifiés",
+  'CP3.1':"Piloter une installation ou des modules en mode normal (démarrage)",
+  'CP3.2':"Piloter une installation ou des modules en mode normal (conduite)",
+  'CP3.3':"Assurer le suivi de la production (analyse des indicateurs, paramètres...)",
+  'CP4.1':"Réaliser des interventions de maintenance de niveau 1 (inspection, surveillance)",
+  'CP4.2':"Réaliser des interventions de maintenance de niveau 2 (dépose, repose pièces d'usure)",
+  'CP5.1':"Adopter une démarche éco-responsable",
+  'CP6.1':"Communiquer à l'écrit et/ou à l'oral dans son environnement professionnel",
+  'CP6.2':"Utiliser les outils numériques et informatiques",
+};
+const COMP_PLP = {
+  CP01:"Communiquer et rendre compte avec l'outil de communication adapté",
+  CP02:"S'informer et analyser la situation, informer au cours de l'activité professionnelle",
+  CP03:"Préparer le travail d'organisation et de réalisation du pilotage",
+  CP04:"Piloter une ligne ou un système de production",
+  CP05:"Assurer le suivi de production lié à l'analyse des indicateurs, paramètres et spécifications",
+  CP06:"Choisir et combiner des modes opératoires pour faire face aux situations",
+  CP07:"Gérer les compétences techniques des personnels affectés sur la ligne",
+  CP08:"Proposer des améliorations et des pistes de résolution de problèmes",
+  CP09:"Identifier des risques pour la production, les biens, l'environnement et la sécurité",
+  CP10:"Appliquer les mesures de prévention de tous les risques identifiés",
+};
+
+// Mapping qComp interne → référentiel réel (Conduite = conduire + sécurité + suivi)
+const QCOMP_TO_CIP_CO = {
+  q1:'CP06',q2:'CP03',q3:'CP02',q4:'CP04',q5:'CP04',
+  q6:'CP03',q7:'CP05',q8:'CP03',q9:'CP05',q10:'CP01',
+  q11:'CP03',q12:'CP04',q13:'CP04',q14:'CP04',q15:'CP04',
+  q16:'CP04',q17:'CP05',q18:'CP05',q19:'CP05',q20:'CP05'
+};
+const QCOMP_TO_PMIA_CO = {
+  q1:'CP2.3',q2:'CP2.2',q3:'CP1.1',q4:'CP3.1',q5:'CP3.1',
+  q6:'CP2.2',q7:'CP3.3',q8:'CP2.2',q9:'CP3.3',q10:'CP6.1',
+  q11:'CP2.2',q12:'CP3.1',q13:'CP3.1',q14:'CP3.1',q15:'CP3.1',
+  q16:'CP3.1',q17:'CP3.3',q18:'CP3.3',q19:'CP3.3',q20:'CP3.3'
+};
+const QCOMP_TO_PLP_CO = {
+  q1:'CP09',q2:'CP03',q3:'CP02',q4:'CP04',q5:'CP04',
+  q6:'CP03',q7:'CP05',q8:'CP03',q9:'CP05',q10:'CP01',
+  q11:'CP03',q12:'CP04',q13:'CP04',q14:'CP04',q15:'CP04',
+  q16:'CP04',q17:'CP05',q18:'CP05',q19:'CP05',q20:'CP06'
+};
+
+// Max 3 compétences retenues (Conduite = préparer + conduire + suivi/sécurité)
+const COMP_RETENUES_CO = {
+  CIP:  ['CP03','CP04','CP05'],
+  PMIA: ['CP2.2','CP3.1','CP3.3'],
+  PLP:  ['CP03','CP04','CP05'],
+};
+
+const FILIERE_LABEL = {
+  CIP:  "CAP CIP – Conduite d'Installation de Production",
+  PMIA: 'BAC PRO PMIA – Maintenance des Systèmes de Production',
+  PLP:  'BAC PRO PLP – Pilotage de Ligne de Production',
+};
+
+function getFiliere(classe) {
+  if(['2CIP G1','2CIP G2','1CIP G1','1CIP G2'].includes(classe)) return 'CIP';
+  if(['2PMIA1','2PMIA2','2PMIA3','2PMIA4','2PMIA5'].includes(classe)) return 'PMIA';
+  return 'PLP';
+}
+
+function getCompLib(code, filiere) {
+  if(filiere==='CIP')  return COMP_CIP[code]  || code;
+  if(filiere==='PMIA') return COMP_PMIA[code] || code;
+  return COMP_PLP[code] || code;
+}
+
+function getQCompMapCO(filiere) {
+  if(filiere==='CIP')  return QCOMP_TO_CIP_CO;
+  if(filiere==='PMIA') return QCOMP_TO_PMIA_CO;
+  return QCOMP_TO_PLP_CO;
+}
+
+function getPronoteNiveau(pct) {
+  for(const n of PRONOTE_NIVEAUX) { if(pct >= n.seuil) return n; }
+  return PRONOTE_NIVEAUX[PRONOTE_NIVEAUX.length-1];
+}
+
+function getScoresCO(filiere) {
+  const map = getQCompMapCO(filiere);
+  const ret = COMP_RETENUES_CO[filiere];
+  const cS={}, cT={};
+  ret.forEach(c=>{ cS[c]=0; cT[c]=0; });
+  Object.keys(scores).forEach(qid => {
+    const code = map[qid];
+    if(code && ret.includes(code)) { cS[code] += scores[qid]; cT[code]++; }
+  });
+  return {cS, cT};
+}
+
+function buildPronoteHTML(classe) {
+  const filiere  = getFiliere(classe);
+  const ret      = COMP_RETENUES_CO[filiere];
+  const {cS, cT} = getScoresCO(filiere);
+
+  let html = `<div class="eval-intro-box">`;
+  html += `<strong>📋 Filière :</strong> ${FILIERE_LABEL[filiere]}<br>`;
+  html += `<strong>🎯 Compétences évaluées :</strong> ${ret.join(' · ')}`;
+  html += `</div>`;
+
+  ret.forEach(code => {
+    const total = cT[code] || 0;
+    const ok    = total > 0 ? cS[code] : 0;
+    const pct   = total > 0 ? ok / total : 0;
+    const niv   = getPronoteNiveau(pct);
+    const lib   = getCompLib(code, filiere);
+    const scoreStr = total > 0 ? `${ok}/${total} questions` : 'Non évaluée';
+    const lightBg  = ['#FFFF00','#92D050','#FFC000'].includes(niv.hex);
+
+    html += `<div class="pronote-row" style="background:${niv.hex}22;border-color:${niv.hex};">`;
+    html += `<div class="pronote-dot" style="background:${niv.hex};"></div>`;
+    html += `<div class="pronote-info">`;
+    html += `<div class="pronote-comp-code">${code}</div>`;
+    html += `<div class="pronote-comp-lib">${lib}</div>`;
+    html += `<div class="pronote-score">${scoreStr}</div>`;
+    html += `</div>`;
+    html += `<div class="pronote-right">`;
+    html += `<div class="pronote-niveau" style="color:${lightBg?'#555':niv.hex};">${niv.label}</div>`;
+    html += `<div class="pronote-pts">${niv.pts} point${niv.pts>1?'s':''} Pronote</div>`;
+    html += `</div></div>`;
+  });
+
+  html += `<div class="pronote-legende">`;
+  html += `<div class="pronote-legende-title">Échelle Pronote complète</div>`;
+  html += `<div class="pronote-legende-grid">`;
+  PRONOTE_NIVEAUX.forEach(n => {
+    html += `<div class="pronote-leg-item">`;
+    html += `<div class="pronote-leg-dot" style="background:${n.hex};border:1px solid rgba(0,0,0,.15);"></div>`;
+    html += `<span>${n.label} (${n.pts} pt${n.pts>1?'s':''})</span>`;
+    html += `</div>`;
+  });
+  html += `</div></div>`;
+  return html;
+}
+
+// ── Validation identité ───────────────────────────────────────────────────────
+function validerIdentite() {
+  const nomEl    = document.getElementById('eleve-nom');
+  const prenomEl = document.getElementById('eleve-prenom');
+  const classeEl = document.getElementById('eleve-classe');
+  const nom    = nomEl    ? nomEl.value.trim()    : '';
+  const prenom = prenomEl ? prenomEl.value.trim() : '';
+  const classe = classeEl ? classeEl.value.trim() : '';
+  let ok = true;
+  [[nomEl,'hint-nom',!nom],[prenomEl,'hint-prenom',!prenom],[classeEl,'hint-classe',!classe]].forEach(([el,hid,err])=>{
+    if(!el) return;
+    const hd = document.getElementById(hid);
+    if(err){ el.classList.add('field-error'); if(hd) hd.classList.add('show'); ok=false; }
+    else   { el.classList.remove('field-error'); if(hd) hd.classList.remove('show'); }
+  });
+  if(!ok){ const box=document.querySelector('.eleve-box'); if(box) box.scrollIntoView({behavior:'smooth'}); }
+  return ok;
+}
+
+// ── showFinal unifié ──────────────────────────────────────────────────────────
+function showFinal() {
+  if(!validerIdentite()) return;
+  const classeEl = document.getElementById('eleve-classe');
+  const classe   = classeEl ? classeEl.value : '';
+  const container = document.getElementById('comp-eval-container');
+  if(container) container.innerHTML = buildPronoteHTML(classe);
+  const fs = document.getElementById('final-section');
+  if(fs){ fs.style.display='block'; fs.scrollIntoView({behavior:'smooth'}); }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP – Conduite &amp; Changement de format | Encartonneuse ERMAFLEX | Lycée Vaucanson</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vert:#4a9c5d;--vert-clair:#d4edda;--vert-fonce:#2d7a45;
+  --bleu:#4a87c0;--bleu-clair:#d0e6f7;--bleu-fonce:#2b5f96;
+  --gris:#8a9bac;--gris-clair:#e8ecf0;--gris-tres-clair:#f4f6f8;
+  --blanc:#ffffff;--rouge:#e05252;--rouge-clair:#fde8e8;
+  --orange:#e67e22;--orange-clair:#fef3e2;
+  --texte:#2c3e50;--radius:10px;--shadow:0 4px 16px rgba(44,62,80,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Barlow',sans-serif;background:var(--gris-tres-clair);color:var(--texte);min-height:100vh;}
+
+header{
+  background:
+    linear-gradient(135deg,rgba(43,95,150,0.65) 0%,rgba(45,122,69,0.62) 100%),
+    url("https://www.monolabsrl.com/images/prodotti/CM30-case-packer.jpg") center 30%/cover no-repeat;
+  color:#fff;padding:16px 28px;display:flex;align-items:center;gap:20px;
+  box-shadow:0 4px 22px rgba(0,0,0,.28);position:sticky;top:0;z-index:1000;
+}
+header img.logo{height:68px;border-radius:8px;background:#fff;padding:4px;box-shadow:0 2px 10px rgba(0,0,0,.3);}
+.header-text h1{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;line-height:1.2;}
+.header-text p{font-size:.82rem;opacity:.85;margin-top:2px;}
+.header-right{margin-left:auto;display:flex;gap:10px;align-items:flex-start;}
+.header-machine{flex:1;display:flex;align-items:center;justify-content:center;}
+.header-machine span{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,0.4),0 0 30px rgba(255,255,255,0.15);opacity:0.95;}
+.hbox{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;text-align:center;}
+.hbox-label{font-size:.68rem;opacity:.8;text-transform:uppercase;letter-spacing:1px;}
+#timer{font-family:'Barlow Condensed',monospace;font-size:1.75rem;font-weight:700;letter-spacing:2px;}
+#timer.urgent{color:#ffcc00;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+#score-display{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;}
+
+.progress-section{background:#fff;padding:13px 28px;border-bottom:2px solid var(--gris-clair);box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:101px;z-index:999;}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:7px;font-size:.8rem;color:var(--gris);font-weight:600;}
+.progress-bar-track{background:var(--gris-clair);border-radius:20px;height:13px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--bleu),var(--vert));transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+.progress-milestones{display:flex;justify-content:space-between;margin-top:7px;}
+.milestone{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.68rem;color:var(--gris);font-weight:600;transition:color .3s;}
+.milestone-dot{width:11px;height:11px;border-radius:50%;background:var(--gris-clair);border:2px solid var(--gris);transition:all .3s;}
+.milestone.done .milestone-dot{background:var(--vert);border-color:var(--vert-fonce);}
+.milestone.done{color:var(--vert-fonce);}
+
+.container{max-width:920px;margin:0 auto;padding:28px 18px 60px;}
+
+.intro-box{background:#fff;border-radius:var(--radius);padding:22px 26px;margin-bottom:26px;box-shadow:var(--shadow);border-left:5px solid var(--bleu);}
+.intro-box h2{font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;color:var(--bleu-fonce);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+.intro-box p{font-size:.93rem;line-height:1.6;color:#555;margin-bottom:7px;}
+.machine-info{background:var(--bleu-clair);border-radius:8px;padding:13px 16px;margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.machine-info-item{font-size:.84rem;}
+.machine-info-item strong{color:var(--bleu-fonce);}
+
+.section-block{background:#fff;border-radius:var(--radius);padding:0;margin-bottom:22px;box-shadow:var(--shadow);overflow:hidden;}
+.section-header{background:linear-gradient(135deg,var(--bleu-fonce),var(--bleu));color:#fff;padding:13px 22px;display:flex;align-items:center;gap:12px;}
+.section-header.vert{background:linear-gradient(135deg,var(--vert-fonce),var(--vert));}
+.section-header.orange{background:linear-gradient(135deg,#c0392b,var(--orange));}
+.section-header.violet{background:linear-gradient(135deg,#6c3483,#9b59b6);}
+.section-number{background:rgba(255,255,255,.25);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05rem;flex-shrink:0;}
+.section-title-block h2{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.section-title-block p{font-size:.75rem;opacity:.85;margin-top:2px;}
+.section-body{padding:20px 22px;}
+
+.question-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--gris-clair);}
+.question-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.question-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--bleu);margin-bottom:5px;}
+.competence-tag{display:inline-block;background:var(--bleu-clair);color:var(--bleu-fonce);font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:12px;margin-left:6px;text-transform:uppercase;}
+.question-text{font-size:.95rem;line-height:1.6;color:var(--texte);margin-bottom:12px;font-weight:500;}
+.context-box{background:var(--gris-tres-clair);border:1px solid var(--gris-clair);border-radius:8px;padding:11px 14px;margin-bottom:12px;font-size:.84rem;line-height:1.5;color:#555;}
+.context-box strong{color:var(--bleu-fonce);}
+.note-tableau{background:var(--orange-clair);border:2px solid var(--orange);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:.88rem;line-height:1.7;}
+.note-tableau strong{color:#c0392b;}
+.secu-note{background:#fde8e8;border:2px solid var(--rouge);border-radius:8px;padding:9px 13px;margin-bottom:12px;font-size:.84rem;font-weight:600;color:#c0392b;}
+
+.options-list{display:flex;flex-direction:column;gap:7px;}
+.option-item{display:flex;align-items:center;gap:11px;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;cursor:pointer;transition:all .2s;font-size:.89rem;}
+.option-item:hover{border-color:var(--bleu);background:var(--bleu-clair);}
+.option-item input[type=radio],.option-item input[type=checkbox]{width:17px;height:17px;accent-color:var(--bleu);cursor:pointer;flex-shrink:0;}
+.option-item.correct{border-color:var(--vert);background:var(--vert-clair);}
+.option-item.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+
+.text-input{width:100%;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.93rem;font-family:'Barlow',sans-serif;transition:border-color .2s;resize:vertical;}
+.text-input:focus{outline:none;border-color:var(--bleu);}
+.text-input.correct{border-color:var(--vert);background:var(--vert-clair);}
+.text-input.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.number-input-wrap{display:flex;align-items:center;gap:9px;margin-top:8px;}
+.number-input{width:110px;padding:9px 12px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.98rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-align:center;transition:border-color .2s;}
+.number-input:focus{outline:none;border-color:var(--bleu);}
+.number-input.correct{border-color:var(--vert);background:var(--vert-clair);}
+.number-input.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.unit-label{font-size:.88rem;color:var(--gris);}
+
+/* TABLEAU SUIVI PRODUCTION */
+.tbl-suivi{width:100%;border-collapse:collapse;font-size:.79rem;margin-bottom:8px;}
+.tbl-suivi th{background:#2c3e50;color:#fff;padding:8px 5px;text-align:center;font-weight:700;font-size:.74rem;border:1px solid #1a252f;}
+.tbl-suivi td{padding:5px 4px;border:1px solid var(--gris-clair);text-align:center;vertical-align:middle;}
+.tbl-suivi tr:nth-child(even) td{background:#f8fafc;}
+.tbl-suivi .col-num{width:36px;background:var(--bleu-fonce);color:#fff;font-weight:800;font-size:.88rem;}
+.tbl-suivi .col-format{background:#e8f4fd;font-weight:700;color:var(--bleu-fonce);font-size:.76rem;}
+.tbl-suivi input[type=text],.tbl-suivi input[type=number],.tbl-suivi select{padding:3px 5px;border:1.5px solid var(--gris-clair);border-radius:5px;font-size:.79rem;font-family:'Barlow',sans-serif;width:100%;min-width:55px;background:#fff;}
+
+.tbl{width:100%;border-collapse:collapse;font-size:.86rem;margin-bottom:8px;}
+.tbl th{background:var(--bleu-fonce);color:#fff;padding:9px 11px;text-align:left;font-weight:700;font-size:.8rem;}
+.tbl td{padding:8px 11px;border-bottom:1px solid var(--gris-clair);vertical-align:middle;}
+.tbl tr:nth-child(even) td{background:var(--gris-tres-clair);}
+.tbl select{width:100%;padding:5px 9px;border:1.5px solid var(--gris-clair);border-radius:6px;font-size:.86rem;font-family:'Barlow',sans-serif;background:#fff;}
+.tbl select.correct{border-color:var(--vert);background:var(--vert-clair);}
+.tbl select.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.tbl input.correct{border-color:var(--vert);background:var(--vert-clair);}
+.tbl input.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.tbl.orange th{background:#c0392b;}
+.tbl.vert th{background:var(--vert-fonce);}
+
+.order-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:8px;}
+.order-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--gris-tres-clair);border:1.5px solid var(--gris-clair);border-radius:8px;font-size:.88rem;}
+.order-item input[type=number]{width:55px;padding:5px 8px;border:2px solid var(--gris-clair);border-radius:6px;font-size:.9rem;font-weight:700;text-align:center;font-family:'Barlow Condensed',sans-serif;}
+.order-item input.correct{border-color:var(--vert);background:var(--vert-clair);}
+.order-item input.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:9px;margin:12px 0;}
+.step-card{background:#fff;border:2px solid var(--orange);border-radius:8px;padding:9px 12px;}
+.step-card strong{display:block;color:#c0392b;font-size:.78rem;margin-bottom:3px;}
+.step-card span{font-size:.8rem;color:#555;}
+
+.validate-btn{margin-top:11px;padding:8px 20px;background:var(--bleu);color:#fff;border:none;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.86rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+.validate-btn:hover{background:var(--bleu-fonce);transform:translateY(-1px);}
+.validate-btn:disabled{background:var(--gris);cursor:not-allowed;transform:none;}
+
+.feedback{display:none;margin-top:9px;padding:9px 13px;border-radius:8px;font-size:.86rem;font-weight:500;align-items:flex-start;gap:7px;}
+.feedback.show{display:flex;}
+.feedback.ok{background:var(--vert-clair);color:var(--vert-fonce);border:1px solid var(--vert);}
+.feedback.nok{background:var(--rouge-clair);color:var(--rouge);border:1px solid var(--rouge);}
+.feedback-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.feedback-content{line-height:1.5;}
+
+/* SECTION FINALE */
+.final-section{background:#fff;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);text-align:center;border:3px solid var(--vert);margin-top:24px;}
+.final-section h2{font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;color:var(--vert-fonce);margin-bottom:8px;}
+.comp-badge{padding:5px 13px;border-radius:20px;font-size:.8rem;font-weight:700;}
+.comp-badge.validated{background:var(--vert-clair);color:var(--vert-fonce);border:2px solid var(--vert);}
+.comp-badge.partial{background:#fff3cd;color:#856404;border:2px solid #ffc107;}
+.send-btn{margin:8px;padding:13px 28px;background:linear-gradient(135deg,var(--vert-fonce),var(--vert));color:#fff;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 4px 16px rgba(45,122,69,.3);letter-spacing:.5px;}
+.send-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,122,69,.4);}
+.send-btn.pdf-btn{background:linear-gradient(135deg,var(--bleu-fonce),var(--bleu));box-shadow:0 4px 16px rgba(43,95,150,.3);}
+.send-btn.pdf-btn:hover{box-shadow:0 8px 24px rgba(43,95,150,.4);}
+#send-status{margin-top:12px;font-size:.88rem;color:var(--gris);font-style:italic;}
+#send-status.success{color:var(--vert-fonce);font-style:normal;font-weight:600;}
+
+.eleve-box{background:#fff;border-radius:var(--radius);padding:18px 22px;margin-bottom:22px;box-shadow:var(--shadow);border-left:5px solid var(--vert);display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;}
+.eleve-box .form-group{flex:1;min-width:180px;}
+.eleve-box label{display:block;font-size:.76rem;font-weight:700;color:var(--gris);margin-bottom:4px;text-transform:uppercase;}
+.eleve-box input,.eleve-box select{width:100%;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.95rem;font-family:'Barlow',sans-serif;background:#fff;}
+.eleve-box input:focus,.eleve-box select:focus{outline:none;border-color:var(--vert);}
+
+.voir-note-btn{text-align:center;margin-top:22px;}
+.voir-note-btn button{padding:12px 28px;background:var(--bleu-fonce);color:#fff;border:none;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.98rem;font-weight:700;cursor:pointer;}
+
+@media(max-width:640px){
+  header{flex-wrap:wrap;padding:12px 14px;}
+  .header-right{flex-direction:row;margin-left:0;width:100%;justify-content:space-between;}
+  .machine-info{grid-template-columns:1fr;}
+  .steps-grid{grid-template-columns:1fr;}
+  .tbl-suivi{font-size:.7rem;}
+}
+
+/* ── VERROU IDENTITÉ ── */
+.field-error{border-color:#e74c3c!important;background:#fff5f5!important;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.required-hint{display:none;color:#e74c3c;font-size:.72rem;font-weight:700;margin-top:3px;}
+.required-hint.show{display:block;}
+.eleve-box label .req{color:#e74c3c;margin-left:2px;}
+
+/* ── ÉVALUATION PRONOTE ── */
+.pronote-block{background:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:10px;box-shadow:var(--shadow);border:2px solid var(--vert);}
+.pronote-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;margin-bottom:7px;border:2px solid rgba(0,0,0,.08);}
+.pronote-dot{width:28px;height:28px;border-radius:6px;flex-shrink:0;}
+.pronote-info{min-width:0;}
+.pronote-comp-code{font-weight:800;font-size:.82rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;}
+.pronote-comp-lib{font-size:.77rem;color:#555;margin-top:1px;line-height:1.3;}
+.pronote-right{text-align:right;flex-shrink:0;}
+.pronote-niveau{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;white-space:nowrap;}
+.pronote-pts{font-size:.7rem;color:#888;margin-top:1px;}
+.pronote-score{font-size:.72rem;color:#666;margin-top:2px;}
+.pronote-legende{margin-top:14px;border-top:1px solid var(--gris-clair);padding-top:12px;}
+.pronote-legende-title{font-size:.72rem;color:var(--gris);font-weight:700;text-transform:uppercase;margin-bottom:7px;letter-spacing:.5px;}
+.pronote-legende-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.pronote-leg-item{display:flex;align-items:center;gap:5px;font-size:.7rem;padding:3px 8px;border-radius:4px;background:var(--gris-tres-clair);}
+.pronote-leg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.eval-intro-box{background:var(--bleu-clair);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:.83rem;line-height:1.5;color:var(--bleu-fonce);}
+
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <img class="logo" src="https://services.ard.fr/fileadmin/users/grenoble-vaucanson/logo.jpg" alt="Lycée Vaucanson" onerror="this.style.display='none'">
+  <div class="header-text">
+    <h1>TP – Conduite &amp; Changement de format</h1>
+    <p>BAC PRO PLP &nbsp;·&nbsp; CAP CIP</p>
+    <p>Lycée Polyvalent Vaucanson – Grenoble</p>
+  </div>
+  <div class="header-machine">
+    <span>📦 Encartonneuse</span>
+  </div>
+  <div class="header-right">
+    <div class="hbox">
+      <div class="hbox-label">⏱ Temps restant</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div id="timer">2:00:00</div>
+        <button id="pause-btn" onclick="togglePause()" title="Pause/Reprendre" style="background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);border-radius:6px;color:#fff;font-size:1rem;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">⏸</button>
+      </div>
+    </div>
+    <div class="hbox">
+      <div class="hbox-label">Questions</div>
+      <div id="score-display">0 / 20</div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== BARRE DE PROGRESSION ===== -->
+<div class="progress-section">
+  <div class="progress-header">
+    <span>Avancement du TP</span>
+    <span id="progress-text">0 / 20 questions validées</span>
+  </div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+  <div class="progress-milestones">
+    <div class="milestone" id="m1"><div class="milestone-dot"></div>Partie 1</div>
+    <div class="milestone" id="m2"><div class="milestone-dot"></div>Partie 2</div>
+    <div class="milestone" id="m3"><div class="milestone-dot"></div>Partie 3</div>
+    <div class="milestone" id="m4"><div class="milestone-dot"></div>Suivi</div>
+    <div class="milestone" id="m5"><div class="milestone-dot"></div>Terminé ✓</div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- IDENTITÉ ÉLÈVE -->
+<div class="eleve-box">
+  <div class="form-group"><label>Nom <span class="req">*</span></label><input type="text" id="eleve-nom" placeholder="Votre nom..."></div>
+  <div class="form-group"><label>Prénom <span class="req">*</span></label><input type="text" id="eleve-prenom" placeholder="Votre prénom..."></div>
+  <div class="form-group">
+    <label>Classe <span class="req">*</span></label>
+    <select id="eleve-classe">
+      <option value="">-- Sélectionnez --</option>
+      <option>2PMIA1</option><option>2PMIA2</option><option>2PMIA3</option>
+      <option>2PMIA4</option><option>2PMIA5</option><option>1PLP</option>
+      <option>TPLP</option><option>1CIP G1</option><option>1CIP G2</option>
+      <option>2CIP G1</option><option>2CIP G2</option>
+    </select>
+      <div class="required-hint" id="hint-classe">⚠ La classe est obligatoire</div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div class="intro-box">
+  <h2>📋 Mise en situation</h2>
+  <p>Vous êtes <strong>conducteur de ligne de conditionnement</strong> sur l'<strong>Encartonneuse ERMAFLEX EB20</strong> (ERM Automatismes Industriels, Carpentras). Ce TP se déroule en 4 phases :</p>
+  <p>① Mise en route &amp; initialisation &nbsp;② Production de <strong>2 cartons de flacons</strong> (mode AUTO) &nbsp;③ <strong>Changement de format</strong> flacons → pots &nbsp;④ Production de <strong>2 cartons de pots</strong> + suivi &amp; compte-rendu.</p>
+  <p>Répondez à chaque question puis cliquez <strong>« Valider »</strong>. Feedback immédiat : <span style="color:var(--vert-fonce);font-weight:700;">vert = correct</span> · <span style="color:var(--rouge);font-weight:700;">rouge = à revoir</span>.</p>
+  <div class="machine-info">
+    <div class="machine-info-item"><strong>Machine :</strong> ENCARTONNEUSE EB20</div>
+    <div class="machine-info-item"><strong>Cadence maxi :</strong> 70 cartons / heure</div>
+    <div class="machine-info-item"><strong>Alimentation :</strong> 400 V triphasé + air comprimé 3 bars</div>
+    <div class="machine-info-item"><strong>Commande :</strong> Pupitre Magelis (F1 à F8 + REARM)</div>
+    <div class="machine-info-item"><strong>Format A :</strong> Barquettes 6 flacons (185×135×55 mm)</div>
+    <div class="machine-info-item"><strong>Format B :</strong> Barquettes 4 pots (160×135×55 mm)</div>
+  </div>
+</div>
+
+<!-- ========== PARTIE 1 – MISE EN ROUTE ========== -->
+<div class="section-block">
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <div class="section-title-block">
+      <h2>Mise en route et initialisation</h2>
+      <p>CP02 – S'informer · CP03 – Préparer · CP04 – Réaliser | Q1 à Q5</p>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- Q1 -->
+    <div class="question-block" id="qb1">
+      <div class="question-label">Question 1 <span class="competence-tag">CP02</span></div>
+      <div class="question-text">Avant la première mise en service, quelles sont les <strong>3 vérifications obligatoires</strong> ? (Cochez les 3 bonnes réponses)</div>
+      <div class="options-list" id="opts1">
+        <label class="option-item"><input type="checkbox" name="q1" value="a"> Vérifier les raccordements aux sources d'énergie et fermer l'interrupteur-sectionneur</label>
+        <label class="option-item"><input type="checkbox" name="q1" value="b"> Régler la pression pneumatique à 3 bars via le sectionneur pneumatique</label>
+        <label class="option-item"><input type="checkbox" name="q1" value="c"> Démonter les portes latérales pour accéder à la partie opérative</label>
+        <label class="option-item"><input type="checkbox" name="q1" value="d"> Vérifier les écartements des rives de guidage du convoyeur</label>
+        <label class="option-item"><input type="checkbox" name="q1" value="e"> Lubrifier quotidiennement les vérins pneumatiques</label>
+      </div>
+      <button class="validate-btn" onclick="valCheckbox(1,['a','b','d'],'Parfait ! Les 3 vérifications : (1) raccordements énergie + sectionneur fermé, (2) pression réglée à 3 bars (limite les efforts des vérins), (3) écartements rives de guidage vérifiés.','Fascicule 2.2.3 : vérifier raccordements + interrupteur, régler pression à 3 bars, vérifier rives guidage convoyeur. Les portes ne doivent JAMAIS être démontées – elles sont reliées aux capteurs de sécurité SSP1 et SSP2.')">✔ Valider</button>
+      <div class="feedback" id="fb1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block" id="qb2">
+      <div class="question-label">Question 2 <span class="competence-tag">CP03</span></div>
+      <div class="question-text">À la mise sous tension, quel message s'affiche sur le Magelis et quelle est la première action ?</div>
+      <div class="options-list" id="opts2">
+        <label class="option-item"><input type="radio" name="q2" value="a"> "MACHINE ARRETEE" → appuyer sur F3 pour démarrer directement</label>
+        <label class="option-item"><input type="radio" name="q2" value="b"> "ARRET D'URGENCE – Appuyer sur Réarm." → appuyer sur REARM puis F8 pour initialiser</label>
+        <label class="option-item"><input type="radio" name="q2" value="c"> "MACHINE REARMEE" → appuyer sur F8 sans réarmement préalable</label>
+        <label class="option-item"><input type="radio" name="q2" value="d"> "MODE AUTOMATIQUE" → valider avec F6</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(2,'b')">✔ Valider</button>
+      <div class="feedback" id="fb2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block" id="qb3">
+      <div class="question-label">Question 3 <span class="competence-tag">CP03</span></div>
+      <div class="question-text">Numérotez de 1 à 5 la séquence complète d'initialisation de l'EB20.</div>
+      <ul class="order-list">
+        <li class="order-item"><input type="number" id="ord3a" min="1" max="5" placeholder="N°"> Appuyer sur F8 pour lancer l'initialisation</li>
+        <li class="order-item"><input type="number" id="ord3b" min="1" max="5" placeholder="N°"> Vérifier que "MACHINE ARRETEE" s'affiche (conditions initiales atteintes)</li>
+        <li class="order-item"><input type="number" id="ord3c" min="1" max="5" placeholder="N°"> Ouvrir l'arrivée d'air et vérifier la pression à 3 bars</li>
+        <li class="order-item"><input type="number" id="ord3d" min="1" max="5" placeholder="N°"> Fermer l'interrupteur sectionneur électrique (position ON)</li>
+        <li class="order-item"><input type="number" id="ord3e" min="1" max="5" placeholder="N°"> Appuyer sur le bouton REARM</li>
+      </ul>
+      <button class="validate-btn" onclick="valOrder3()">✔ Valider</button>
+      <div class="feedback" id="fb3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block" id="qb4">
+      <div class="question-label">Question 4 <span class="competence-tag">CP02</span></div>
+      <div class="question-text">Associez chaque élément du pupitre Magelis à sa fonction.</div>
+      <table class="tbl">
+        <thead><tr><th>Élément</th><th>Fonction</th></tr></thead>
+        <tbody>
+          <tr><td>Bouton coup de poing rouge SAU1</td><td><select id="t4a"><option value="">-- choisir --</option><option value="AU">Déclencher un arrêt d'urgence immédiat</option><option value="REARM">Réarmer la machine après un arrêt d'urgence</option><option value="INIT">Effectuer l'initialisation de la machine</option><option value="IDX">Indexage plateau pour changer de carton</option></select></td></tr>
+          <tr><td>Bouton REARM (SREAR)</td><td><select id="t4b"><option value="">-- choisir --</option><option value="AU">Déclencher un arrêt d'urgence immédiat</option><option value="REARM">Réarmer la machine après un arrêt d'urgence</option><option value="INIT">Effectuer l'initialisation de la machine</option><option value="IDX">Indexage plateau pour changer de carton</option></select></td></tr>
+          <tr><td>Touche F8 Magelis (allumée)</td><td><select id="t4c"><option value="">-- choisir --</option><option value="AU">Déclencher un arrêt d'urgence immédiat</option><option value="REARM">Réarmer la machine après un arrêt d'urgence</option><option value="INIT">Effectuer l'initialisation de la machine</option><option value="IDX">Indexage plateau pour changer de carton</option></select></td></tr>
+          <tr><td>Touche F1 Magelis (allumée)</td><td><select id="t4d"><option value="">-- choisir --</option><option value="AU">Déclencher un arrêt d'urgence immédiat</option><option value="REARM">Réarmer la machine après un arrêt d'urgence</option><option value="INIT">Effectuer l'initialisation de la machine</option><option value="IDX">Indexage plateau pour changer de carton</option></select></td></tr>
+        </tbody>
+      </table>
+      <button class="validate-btn" onclick="valTable4()">✔ Valider</button>
+      <div class="feedback" id="fb4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block" id="qb5">
+      <div class="question-label">Question 5 <span class="competence-tag">CP03</span></div>
+      <div class="question-text">Séquence de touches pour sélectionner le <strong>mode AUTOMATIQUE</strong> depuis "MACHINE ARRETEE" ?</div>
+      <div class="options-list" id="opts5">
+        <label class="option-item"><input type="radio" name="q5" value="a"> F3 (Marche) → F1 (Desindexage) → F4 (Chang. format)</label>
+        <label class="option-item"><input type="radio" name="q5" value="b"> F2 (Paramétrage) → F5 (Mode marche) → F7 si besoin → F6 (Valid. MODE AUTOMATIQUE)</label>
+        <label class="option-item"><input type="radio" name="q5" value="c"> F8 (Init) → F6 (Valider) → F3 (Départ cycle)</label>
+        <label class="option-item"><input type="radio" name="q5" value="d"> F4 (Chang. format) → F5 → F6</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(5,'b')">✔ Valider</button>
+      <div class="feedback" id="fb5"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== PARTIE 2 – PRODUCTION FLACONS ========== -->
+<div class="section-block">
+  <div class="section-header vert">
+    <div class="section-number">2</div>
+    <div class="section-title-block">
+      <h2>Production de 2 cartons de flacons (Mode AUTO)</h2>
+      <p>CP04 – Réaliser · CP05 – Contrôler | Q6 à Q10</p>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- Q6 -->
+    <div class="question-block" id="qb6">
+      <div class="question-label">Question 6 <span class="competence-tag">CP04</span></div>
+      <div class="question-text">Mode AUTO, "MACHINE ARRETEE AUTO". Vous placez un carton de flacons sur le plateau et appuyez sur <strong>F1 (Desindexage)</strong>. Quel message s'affiche et que faites-vous ensuite ?</div>
+      <div class="options-list" id="opts6">
+        <label class="option-item"><input type="radio" name="q6" value="a"> "MACHINE EN MARCHE" → alimenter directement en produits</label>
+        <label class="option-item"><input type="radio" name="q6" value="b"> "AUTORISATION DE ROTATION DU PLATEAU" → faire tourner manuellement le plateau d'un demi-tour</label>
+        <label class="option-item"><input type="radio" name="q6" value="c"> "INDEXAGE PLATEAU OK(F3)" → appuyer F3 immédiatement</label>
+        <label class="option-item"><input type="radio" name="q6" value="d"> "MODE AUTOMATIQUE Valid(F6)" → appuyer F6</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(6,'b')">✔ Valider</button>
+      <div class="feedback" id="fb6"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block" id="qb7">
+      <div class="question-label">Question 7 <span class="competence-tag">CP04</span></div>
+      <div class="question-text">Le cycle est lancé, "MACHINE EN MARCHE". Lorsque le <strong>premier carton de flacons est plein</strong>, quel message s'affiche et quelle est l'action de l'opérateur ?</div>
+      <div class="options-list" id="opts7">
+        <label class="option-item"><input type="radio" name="q7" value="a"> "ARRET EN FIN DE CYCLE AUTOMATIQUE" → arrêt définitif, retirer le carton</label>
+        <label class="option-item"><input type="radio" name="q7" value="b"> "AUTORISATION DE ROTATION DU PLATEAU" → mettre un nouveau carton vide, tourner le plateau manuellement pour sortir le carton plein et entrer le nouveau</label>
+        <label class="option-item"><input type="radio" name="q7" value="c"> "MACHINE ARRETEE AUTO" → appuyer F3 pour continuer</label>
+        <label class="option-item"><input type="radio" name="q7" value="d"> "DEFAUT BARQUETTE DANS MACHINE" → vider et relancer</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(7,'b')">✔ Valider</button>
+      <div class="feedback" id="fb7"></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block" id="qb8">
+      <div class="question-label">Question 8 <span class="competence-tag">CP04</span></div>
+      <div class="question-text">Après vos 2 cartons de flacons, comment <strong>arrêtez-vous proprement</strong> la machine et quel message confirme l'arrêt correct ?</div>
+      <div class="options-list" id="opts8">
+        <label class="option-item"><input type="radio" name="q8" value="a"> Appuyer sur le bouton d'arrêt d'urgence rouge → "ARRET D'URGENCE"</label>
+        <label class="option-item"><input type="radio" name="q8" value="b"> Appuyer sur F4 (Arrêt) → attendre la fin du cycle → "ARRET EN FIN DE CYCLE AUTOMATIQUE"</label>
+        <label class="option-item"><input type="radio" name="q8" value="c"> Couper directement le sectionneur principal en cours de cycle</label>
+        <label class="option-item"><input type="radio" name="q8" value="d"> Appuyer sur F1 (Desindexage) pour stopper immédiatement</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(8,'b')">✔ Valider</button>
+      <div class="feedback" id="fb8"></div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-block" id="qb9">
+      <div class="question-label">Question 9 <span class="competence-tag">CP05</span></div>
+      <div class="question-text">Cadence maxi = <strong>70 cartons/heure</strong>. Vous avez produit vos 2 cartons de flacons en <strong>4 minutes</strong>. Calculez la cadence réelle.</div>
+      <div class="context-box"><strong>Formule :</strong> Cadence réelle = (Nombre de cartons ÷ Temps en min) × 60</div>
+      <textarea class="text-input" id="calc9" rows="2" placeholder="Posez votre calcul ici..."></textarea>
+      <div class="number-input-wrap">
+        <input type="number" class="number-input" id="num9" placeholder="?">
+        <span class="unit-label">cartons / heure</span>
+      </div>
+      <button class="validate-btn" onclick="valNum(9,30,2)">✔ Valider</button>
+      <div class="feedback" id="fb9"></div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block" id="qb10">
+      <div class="question-label">Question 10 <span class="competence-tag">CP05</span></div>
+      <div class="question-text">Le Magelis affiche <strong>"DEFAUT AIR COMPRIME"</strong>. Cause probable et conduite à tenir ?</div>
+      <div class="options-list" id="opts10">
+        <label class="option-item"><input type="radio" name="q10" value="a"> Un carton est mal positionné → retirer le carton et relancer</label>
+        <label class="option-item"><input type="radio" name="q10" value="b"> Pression pneumatique insuffisante → vérifier et régler à 3 bars sur le régulateur</label>
+        <label class="option-item"><input type="radio" name="q10" value="c"> Plateau non indexé → effectuer un indexage via F1</label>
+        <label class="option-item"><input type="radio" name="q10" value="d"> Capteur défaillant → se reporter aux schémas électriques</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(10,'b')">✔ Valider</button>
+      <div class="feedback" id="fb10"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== PARTIE 3 – CHANGEMENT DE FORMAT ========== -->
+<div class="section-block">
+  <div class="section-header orange">
+    <div class="section-number">3</div>
+    <div class="section-title-block">
+      <h2>Changement de format : Flacons → Pots</h2>
+      <p>CP03 – Préparer · CP04 – Réaliser · CP05 – Contrôler | Q11 à Q17</p>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div style="background:var(--orange-clair);border:2px solid var(--orange);border-radius:10px;padding:14px 18px;margin-bottom:16px;">
+      <strong style="color:#c0392b;font-size:.95rem;">⚙️ 7 éléments à modifier lors du changement de format FLACONS → POTS</strong>
+      <div class="steps-grid" style="margin-top:10px;">
+        <div class="step-card"><strong>① Rives de guidage convoyeur</strong><span>À régler selon la barquette (largeur/longueur)</span></div>
+        <div class="step-card"><strong>② Entonnoir du plateau (×2)</strong><span>À changer : entonnoir flacons → entonnoir pots</span></div>
+        <div class="step-card"><strong>③ Réglette / butée arrière carton</strong><span>À ajuster à 5 mm du fond du carton</span></div>
+        <div class="step-card"><strong>④ Vérin poussoir</strong><span>À régler selon la position du nouvel entonnoir</span></div>
+        <div class="step-card"><strong>⑤ Butée poussoir 2</strong><span>À centrer par rapport à la pile de boîtes pots</span></div>
+        <div class="step-card"><strong>⑥ Cale en bout de convoyeur (élévateur)</strong><span>À rajouter sur l'élévateur pour compenser la hauteur</span></div>
+        <div class="step-card"><strong>⑦ Écartement de l'élévateur</strong><span>À régler avec la molette selon le gabarit barquette pots</span></div>
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-block" id="qb11">
+      <div class="question-label">Question 11 <span class="competence-tag">CP03</span></div>
+      <div class="question-text"><strong>Première action obligatoire</strong> avant tout changement de format ?</div>
+      <div class="options-list" id="opts11">
+        <label class="option-item"><input type="radio" name="q11" value="a"> Retirer les cartons et produits de la machine, puis consigner les énergies (sectionneur électrique + purge pneumatique)</label>
+        <label class="option-item"><input type="radio" name="q11" value="b"> Appuyer directement sur F4 (Chang. format) depuis le Magelis sans arrêter la machine</label>
+        <label class="option-item"><input type="radio" name="q11" value="c"> Démonter immédiatement l'entonnoir sans arrêter la machine</label>
+        <label class="option-item"><input type="radio" name="q11" value="d"> Ouvrir les portes latérales et intervenir machine en marche</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(11,'a')">✔ Valider</button>
+      <div class="feedback" id="fb11"></div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block" id="qb12">
+      <div class="question-label">Question 12 <span class="competence-tag">CP04</span></div>
+      <div class="question-text">Barquettes flacons = <strong>185×135×55 mm</strong> / Barquettes pots = <strong>160×135×55 mm</strong>. Quel est l'impact sur le réglage des <strong>rives de guidage du convoyeur</strong> ?</div>
+      <div class="options-list" id="opts12">
+        <label class="option-item"><input type="radio" name="q12" value="a"> La largeur augmente car les barquettes pots sont plus larges</label>
+        <label class="option-item"><input type="radio" name="q12" value="b"> Les rives doivent être resserrées : la barquette pots (160 mm) est moins longue que la barquette flacons (185 mm) → différence de 25 mm</label>
+        <label class="option-item"><input type="radio" name="q12" value="c"> Aucun réglage des rives n'est nécessaire, la largeur (135 mm) est identique</label>
+        <label class="option-item"><input type="radio" name="q12" value="d"> Les rives doivent être complètement démontées</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(12,'b')">✔ Valider</button>
+      <div class="feedback" id="fb12"></div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block" id="qb13">
+      <div class="question-label">Question 13 <span class="competence-tag">CP04</span></div>
+      <div class="question-text">Cochez toutes les étapes correctes pour le <strong>changement d'entonnoir sur le plateau tournant</strong>.</div>
+      <div class="options-list" id="opts13">
+        <label class="option-item"><input type="checkbox" name="q13" value="a"> Desserrer les deux vis de fixation et démonter l'entonnoir flacons</label>
+        <label class="option-item"><input type="checkbox" name="q13" value="b"> Monter l'entonnoir pots en faisant attention au sens de montage</label>
+        <label class="option-item"><input type="checkbox" name="q13" value="c"> Effectuer la même opération pour le 2e entonnoir après désindexage du plateau</label>
+        <label class="option-item"><input type="checkbox" name="q13" value="d"> Desserrer la butée arrière, mettre un carton pots pour vérifier qu'il rentre bien dans l'entonnoir</label>
+        <label class="option-item"><input type="checkbox" name="q13" value="e"> Laisser un jeu de 5 mm entre le fond du carton et la butée, serrer les poignées, relever la cote sur les réglets</label>
+        <label class="option-item"><input type="checkbox" name="q13" value="f"> Les entonnoirs sont universels – aucun changement nécessaire</label>
+      </div>
+      <button class="validate-btn" onclick="valCheckbox(13,['a','b','c','d','e'],'Parfait ! Les 5 étapes a,b,c,d,e sont toutes correctes. Pour le 2e entonnoir : réarmer → désindexage (F1) → rotation plateau → même procédure. Jeu de 5 mm obligatoire pour que le carton puisse s\'enlever facilement. Noter les cotes sur les réglets pour les prochains changements.','Fascicule 2.3.3 : démonter entonnoir flacons (2 vis) → monter entonnoir pots (attention au sens) → butée arrière : carton dans entonnoir → jeu 5mm fond carton/butée → serrer 2 poignées → vérifier que le carton s\'enlève → relever cote réglets. Répéter pour le 2e entonnoir après désindexage.')">✔ Valider</button>
+      <div class="feedback" id="fb13"></div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block" id="qb14">
+      <div class="question-label">Question 14 <span class="competence-tag">CP04</span></div>
+      <div class="question-text">Séquence Magelis pour monter l'élévateur et placer la <strong>cale de changement de format</strong> ?</div>
+      <div class="options-list" id="opts14">
+        <label class="option-item"><input type="radio" name="q14" value="a"> REARM → F8 (Init) → F3 (Départ cycle) → ouvrir la porte</label>
+        <label class="option-item"><input type="radio" name="q14" value="b"> REARM → F8 (Init) → depuis "MACHINE ARRETEE" → F4 (Chang. format) → élévateur monte en position haute → ouvrir la porte → saisir l'élévateur → mettre la cale</label>
+        <label class="option-item"><input type="radio" name="q14" value="c"> F2 → F5 → F6 (AUTO) → F3 (Départ cycle)</label>
+        <label class="option-item"><input type="radio" name="q14" value="d"> F1 (Desindexage) → rotation plateau → REARM → F3</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(14,'b')">✔ Valider</button>
+      <div class="feedback" id="fb14"></div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question-block" id="qb15">
+      <div class="question-label">Question 15 <span class="competence-tag">CP04</span></div>
+      <div class="question-text">Complétez le tableau récapitulatif des réglages du changement de format FLACONS → POTS.</div>
+      <table class="tbl orange">
+        <thead><tr><th>Élément</th><th>Action : FLACONS → POTS</th></tr></thead>
+        <tbody>
+          <tr><td>Rives de guidage convoyeur</td><td><select id="t15a"><option value="">-- choisir --</option><option value="a">Resserrer (barquette pots plus courte : 160 vs 185 mm)</option><option value="b">Écarter (barquette pots plus large)</option><option value="c">Aucun réglage nécessaire</option></select></td></tr>
+          <tr><td>Entonnoir plateau tournant (×2)</td><td><select id="t15b"><option value="">-- choisir --</option><option value="a">Changer l'entonnoir flacons par l'entonnoir pots (attention au sens)</option><option value="b">Retirer les entonnoirs sans en remettre</option><option value="c">Aucun changement nécessaire</option></select></td></tr>
+          <tr><td>Réglette / butée arrière du carton</td><td><select id="t15c"><option value="">-- choisir --</option><option value="a">Ajuster avec 5 mm de jeu entre fond du carton et la butée</option><option value="b">Bloquer à fond contre le carton, sans jeu</option><option value="c">Démonter complètement la butée</option></select></td></tr>
+          <tr><td>Cale élévateur (bout du convoyeur)</td><td><select id="t15d"><option value="">-- choisir --</option><option value="a">Rajouter la cale de changement de format sur l'élévateur</option><option value="b">Retirer la cale de l'élévateur</option><option value="c">Aucune modification</option></select></td></tr>
+          <tr><td>Écartement de l'élévateur</td><td><select id="t15e"><option value="">-- choisir --</option><option value="a">Régler avec la molette selon le gabarit de la barquette pots</option><option value="b">Laisser l'écartement format flacons inchangé</option><option value="c">Démonter et remonter complètement l'élévateur</option></select></td></tr>
+        </tbody>
+      </table>
+      <button class="validate-btn" onclick="valTable15()">✔ Valider</button>
+      <div class="feedback" id="fb15"></div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question-block" id="qb16">
+      <div class="question-label">Question 16 <span class="competence-tag">CP04</span></div>
+      <div class="question-text">Intérêt du <strong>mode CPC (Coup Par Coup)</strong> pour valider les réglages après un changement de format ?</div>
+      <div class="options-list" id="opts16">
+        <label class="option-item"><input type="radio" name="q16" value="a"> Le mode CPC est plus rapide que le mode AUTO pour la production en série</label>
+        <label class="option-item"><input type="radio" name="q16" value="b"> Le mode CPC permet de tester le cycle pas à pas (F3 à chaque étape) pour vérifier les réglages avant la production automatique</label>
+        <label class="option-item"><input type="radio" name="q16" value="c"> Le mode CPC permet de modifier les paramètres pendant le cycle</label>
+        <label class="option-item"><input type="radio" name="q16" value="d"> Le mode CPC est réservé à la maintenance des capteurs</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(16,'b')">✔ Valider</button>
+      <div class="feedback" id="fb16"></div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block" id="qb17">
+      <div class="question-label">Question 17 <span class="competence-tag">CP05</span></div>
+      <div class="question-text">Quels sont les <strong>5 contrôles de validation</strong> du bon fonctionnement à effectuer sur les 2 premiers cartons de pots ? (Cochez 5)</div>
+      <div class="options-list" id="opts17">
+        <label class="option-item"><input type="checkbox" name="q17" value="a"> Paramétrer le mode marche automatique</label>
+        <label class="option-item"><input type="checkbox" name="q17" value="b"> Lancer l'encartonnage sur deux cartons</label>
+        <label class="option-item"><input type="checkbox" name="q17" value="c"> Vérifier si les produits circulent librement</label>
+        <label class="option-item"><input type="checkbox" name="q17" value="d"> Vérifier si l'encaissage est correct (barquettes bien positionnées dans le carton)</label>
+        <label class="option-item"><input type="checkbox" name="q17" value="e"> Vérifier si les produits ne sont pas marqués (pas de traces de choc ou de pression)</label>
+        <label class="option-item"><input type="checkbox" name="q17" value="f"> Peser chaque carton sur la balance de précision</label>
+      </div>
+      <button class="validate-btn" onclick="valCheckbox(17,['a','b','c','d','e'],'Parfait ! Les 5 contrôles : paramétrer AUTO → lancer 2 cartons → produits circulent librement → encaissage correct → produits non marqués. Si l\'un de ces contrôles n\'est pas satisfaisant, reprendre les réglages précédents.','Fascicule 2.3.3 Validation du bon fonctionnement : paramétrer mode marche automatique → lancer 2 cartons → 3 contrôles : circulation libre, encaissage correct, produits non marqués. La pesée n\'est pas dans la procédure officielle.')">✔ Valider</button>
+      <div class="feedback" id="fb17"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== PARTIE 4 – TABLEAU DE SUIVI ========== -->
+<div class="section-block">
+  <div class="section-header violet">
+    <div class="section-number">4</div>
+    <div class="section-title-block">
+      <h2>📊 Tableau de suivi de production – Compte-rendu</h2>
+      <p>CP05 – Contrôler · CP06 – Communiquer · CP08 – Qualité &amp; traçabilité | Q18 à Q20</p>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- Q18 – Tableau de suivi -->
+    <div class="question-block" id="qb18">
+      <div class="question-label">Question 18 <span class="competence-tag">CP05</span><span class="competence-tag">CP08</span></div>
+      <div class="question-text">Renseignez le <strong>tableau de suivi de production</strong> pour les 4 cartons réalisés (2 flacons + 2 pots). Complétez toutes les colonnes au fur et à mesure de la production.</div>
+
+      <div class="note-tableau">
+        <strong>📏 Critères de conformité d'un carton :</strong><br>
+        · <strong>Nombre de barquettes :</strong> 2 rangées de 4 produits = 8 barquettes par carton<br>
+        · <strong>Barquettes correctement positionnées :</strong> aucune barquette de travers, aucun produit renversé<br>
+        · <strong>Carton fermé correctement :</strong> rabats en place, pas d'ouverture intempestive<br>
+        · <strong>Produits non marqués :</strong> aucune trace de pression ou de choc sur les flacons/pots<br>
+        · <strong>Conformité globale :</strong> OUI si tous les critères sont respectés, NON sinon
+      </div>
+      <div class="secu-note">🔴 Pendant toute la production : cartérisation d'entrée ET cartérisation du plateau doivent être en place. Ne jamais retirer les carters machine en marche.</div>
+
+      <div style="overflow-x:auto;">
+        <table class="tbl-suivi" id="tableau-suivi">
+          <thead>
+            <tr>
+              <th class="col-num">N°</th>
+              <th>Format</th>
+              <th>Heure de production</th>
+              <th>Nb barquettes</th>
+              <th>Position correcte ?</th>
+              <th>Carton fermé ?</th>
+              <th>Produits non marqués ?</th>
+              <th>Conformité globale</th>
+              <th>Observations / incidents</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-suivi"></tbody>
+        </table>
+      </div>
+
+      <button class="validate-btn" id="vbtn18" onclick="validerSuivi()">✔ Valider le tableau de suivi</button>
+      <div class="feedback" id="fb18"></div>
+    </div>
+
+    <!-- Q19 – Alarme DEFAUT POUSSEE -->
+    <div class="question-block" id="qb19">
+      <div class="question-label">Question 19 <span class="competence-tag">CP05</span></div>
+      <div class="question-text">Pendant la production de cartons de pots, le Magelis affiche <strong>"DEFAUT POUSSEE"</strong>. Cause probable et conduite à tenir ?</div>
+      <div class="options-list" id="opts19">
+        <label class="option-item"><input type="radio" name="q19" value="a"> Pression insuffisante → régler à 3 bars</label>
+        <label class="option-item"><input type="radio" name="q19" value="b"> Un poussoir (P1 ou P2) ou l'élévateur ne peut pas terminer son mouvement → vérifier si un produit est bloqué dans le circuit</label>
+        <label class="option-item"><input type="radio" name="q19" value="c"> Plateau non indexé → effectuer un indexage F1</label>
+        <label class="option-item"><input type="radio" name="q19" value="d"> Barquettes manquantes → alimenter la machine en produits</label>
+      </div>
+      <button class="validate-btn" onclick="valRadio(19,'b')">✔ Valider</button>
+      <div class="feedback" id="fb19"></div>
+    </div>
+
+    <!-- Q20 – Compte-rendu -->
+    <div class="question-block" id="qb20">
+      <div class="question-label">Question 20 <span class="competence-tag">CP06</span><span class="competence-tag">CP08</span></div>
+      <div class="question-text">À partir de votre tableau de suivi, rédigez un <strong>compte-rendu de fin de production</strong>. Indiquez : nombre de cartons conformes sur 4, incidents éventuels rencontrés, réglages effectués lors du changement de format, état de la machine en fin de poste, et une proposition d'amélioration si nécessaire.</div>
+      <div class="context-box">
+        <strong>Votre compte-rendu doit mentionner :</strong><br>
+        · Nombre de cartons conformes sur les 4 produits (2 flacons + 2 pots)<br>
+        · Incidents éventuels (alarmes, blocages, arrêts d'urgence) et causes<br>
+        · Réglages réalisés lors du changement de format (cotes relevées)<br>
+        · État de la machine en fin de poste (nettoyage, vérifications)<br>
+        · Proposition d'amélioration ou d'ajustement de réglage
+      </div>
+      <textarea class="text-input" id="a20" style="min-height:130px;" placeholder="Exemple : Sur les 4 cartons produits (2 flacons + 2 pots), tous sont conformes. Le changement de format a nécessité... Un défaut POUSSEE est apparu lors de... Pour améliorer la cadence, je propose de..."></textarea>
+      <button class="validate-btn" id="vbtn20" onclick="valTexte20()">✔ Valider</button>
+      <div class="feedback" id="fb20"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOUTON PERMANENT VOIR MA NOTE -->
+<div class="voir-note-btn">
+  <button onclick="showFinal()">📊 Voir mon évaluation &amp; envoyer au professeur</button>
+</div>
+
+<!-- SECTION FINALE -->
+<div class="final-section" id="final-section" style="display:none;">
+  <h2>🎓 Récapitulatif du TP</h2>
+  <p style="color:#555;font-size:.93rem;">Évaluation par compétences :</p>
+    <div id="comp-eval-container"><p style="color:#aaa;font-size:.88rem;text-align:center;padding:12px;">Renseignez votre identité puis cliquez sur «&nbsp;Voir mon évaluation&nbsp;».</p></div>
+
+  <div style="background:var(--bleu-clair);border-radius:10px;padding:16px 20px;margin:18px 0;text-align:left;font-size:.88rem;line-height:1.8;">
+    <strong style="color:var(--bleu-fonce);">📌 Comment envoyer votre copie en 2 étapes :</strong><br>
+    <span style="color:#333;">
+      <b>Étape 1 —</b> Cliquez sur <em>« 📄 Télécharger ma correction en PDF »</em> : le fichier PDF se télécharge immédiatement.<br>
+      <b>Étape 2 —</b> Sélectionnez votre classe ci-dessous, cliquez sur <em>« 📤 Envoyer au professeur »</em> : le dossier NextCloud de votre classe s'ouvre → déposez-y le PDF.
+    </span>
+  </div>
+
+  <div style="margin:10px 0;">
+    <label style="font-size:.88rem;font-weight:700;color:var(--gris);display:block;margin-bottom:6px;">Confirmez votre classe :</label>
+    <select id="classe-envoi" style="padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.95rem;font-family:'Barlow',sans-serif;background:#fff;">
+      <option value="">-- Sélectionnez --</option>
+      <option>2PMIA1</option><option>2PMIA2</option><option>2PMIA3</option>
+      <option>2PMIA4</option><option>2PMIA5</option><option>1PLP</option>
+      <option>TPLP</option><option>1CIP G1</option><option>1CIP G2</option>
+      <option>2CIP G1</option><option>2CIP G2</option>
+    </select>
+  </div>
+
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+    <button class="send-btn pdf-btn" onclick="lancerPDF()">📄 Télécharger ma correction en PDF</button>
+    <button class="send-btn" id="send-btn" onclick="envoyerNC()">📤 Envoyer au professeur</button>
+  </div>
+  <div id="send-status"></div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ── GÉNÉRATION DU TABLEAU DE SUIVI ──────────────────────────
+var FORMATS=['Flacons (6)','Flacons (6)','Pots (4)','Pots (4)'];
+function genTableauSuivi(){
+  var tbody=document.getElementById('tbody-suivi');
+  tbody.innerHTML='';
+  for(var i=1;i<=4;i++){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="col-num">'+i+'</td>'+
+      '<td class="col-format">'+FORMATS[i-1]+'</td>'+
+      '<td><input type="text" id="s'+i+'_heure" placeholder="ex: 09h15" style="min-width:65px;"></td>'+
+      '<td><input type="number" id="s'+i+'_nb" min="1" max="8" placeholder="nb" style="min-width:45px;"></td>'+
+      '<td><select id="s'+i+'_pos"><option value="">--</option><option value="OUI">OUI ✅</option><option value="NON">NON ❌</option></select></td>'+
+      '<td><select id="s'+i+'_ferm"><option value="">--</option><option value="OUI">OUI ✅</option><option value="NON">NON ❌</option></select></td>'+
+      '<td><select id="s'+i+'_marq"><option value="">--</option><option value="OUI">OUI ✅</option><option value="NON">NON ❌</option></select></td>'+
+      '<td><select id="s'+i+'_conf" onchange="updConf('+i+')"><option value="">--</option><option value="OUI">OUI ✅</option><option value="NON">NON ❌</option></select></td>'+
+      '<td><input type="text" id="s'+i+'_obs" placeholder="RAS / incident…" style="min-width:80px;"></td>';
+    tbody.appendChild(tr);
+  }
+}
+genTableauSuivi();
+function updConf(i){
+  var v=document.getElementById('s'+i+'_conf').value;
+  var td=document.getElementById('s'+i+'_conf').parentElement;
+  td.style.background=v==='OUI'?'#d4edda':v==='NON'?'#fde8e8':'';
+}
+
+// ── CHRONO ──────────────────────────────────────────────────
+var DUREE=2*3600,secondes=DUREE,timerPaused=false;
+var timerEl=document.getElementById('timer');
+var timerInterval=setInterval(function(){
+  if(timerPaused)return;
+  secondes--;if(secondes<0){secondes=0;clearInterval(timerInterval);}
+  var h=Math.floor(secondes/3600),m=Math.floor((secondes%3600)/60),s=secondes%60;
+  timerEl.textContent=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if(secondes<900)timerEl.classList.add('urgent');
+},1000);
+function togglePause(){
+  timerPaused=!timerPaused;
+  var btn=document.getElementById('pause-btn');
+  btn.textContent=timerPaused?'▶':'⏸';
+  btn.style.background=timerPaused?'rgba(255,204,0,.4)':'rgba(255,255,255,.25)';
+  timerEl.style.opacity=timerPaused?'0.5':'1';
+}
+
+// ── TRACKING ────────────────────────────────────────────────
+var tpStartTime=Date.now(),keyCount=0,pasteCount=0,pasteDetails=[];
+var keyActiveMs=0,keyLastStart=null,inactiveMs=0,inactiveLastStart=null,inactivityTimer=null;
+var qTimestamps={};
+document.addEventListener('keydown',function(){if(!keyLastStart)keyLastStart=Date.now();resetInact();});
+document.addEventListener('keyup',function(){keyCount++;if(keyLastStart){keyActiveMs+=Date.now()-keyLastStart;keyLastStart=null;}resetInact();});
+document.addEventListener('paste',function(e){pasteCount++;var bl=e.target?e.target.closest('[id^="qb"]'):null;pasteDetails.push({zone:bl?bl.id.replace('qb','Q'):'?',heure:new Date().toLocaleTimeString('fr-FR')});resetInact();});
+function resetInact(){if(inactiveLastStart){inactiveMs+=Date.now()-inactiveLastStart;inactiveLastStart=null;}clearTimeout(inactivityTimer);inactivityTimer=setTimeout(function(){inactiveLastStart=Date.now();},30000);}
+resetInact();
+function recordQTime(id){var now=Date.now();if(!qTimestamps['q'+id])qTimestamps['q'+id]={start:tpStartTime};qTimestamps['q'+id].validated=now;qTimestamps['q'+id].seconds=Math.round((now-qTimestamps['q'+id].start)/1000);}
+function fmtDur(ms){if(ms<0)ms=0;var t=Math.round(ms/1000),h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=t%60;if(h>0)return h+'h '+String(m).padStart(2,'0')+'min '+String(s).padStart(2,'0')+'s';if(m>0)return m+'min '+String(s).padStart(2,'0')+'s';return s+'s';}
+function getStats(){var tot=Date.now()-tpStartTime;var km=keyActiveMs+(keyLastStart?Date.now()-keyLastStart:0);var im=inactiveMs+(inactiveLastStart?Date.now()-inactiveLastStart:0);return{totalMs:tot,keyMs:km,inactMs:im,keyCount:keyCount,pasteCount:pasteCount,pasteDetails:pasteDetails,elapsed:DUREE-secondes};}
+
+// ── SCORE ────────────────────────────────────────────────────
+var scores={};
+var TOTAL_Q=20;
+var qComp={1:'CP02',2:'CP03',3:'CP03',4:'CP02',5:'CP03',6:'CP04',7:'CP04',8:'CP04',9:'CP05',10:'CP05',11:'CP03',12:'CP04',13:'CP04',14:'CP04',15:'CP04',16:'CP04',17:'CP05',18:'CP05',19:'CP05',20:'CP06'};
+var qTitres=['','Vérifications mise en service (3 éléments)','Message Magelis à la mise sous tension','Ordre séquence initialisation','Constituants pupitre Magelis','Sélection mode AUTOMATIQUE','Rotation plateau F1 (mode AUTO)','Gestion carton plein en cycle','Arrêt propre F4 fin de production','Calcul cadence réelle','Alarme DEFAUT AIR COMPRIME','Première action avant changement de format','Réglage rives guidage (flacons→pots)','Changement entonnoir plateau (toutes étapes)','Séquence F4 Chang. format – cale élévateur','Tableau récapitulatif réglages','Intérêt mode CPC vs AUTO','Validation bon fonctionnement (5 contrôles)','Tableau suivi production 4 cartons','Alarme DEFAUT POUSSEE','Compte-rendu de fin de production'];
+
+// ── HELPERS FEEDBACK ────────────────────────────────────────
+function setFB(id,ok,okMsg,nokMsg){
+  recordQTime(id);
+  var el=document.getElementById('fb'+id);
+  if(ok){scores['q'+id]=1;el.className='feedback ok show';el.innerHTML='<span class="feedback-icon">✅</span><div class="feedback-content">'+okMsg+'</div>';}
+  else{el.className='feedback nok show';el.innerHTML='<span class="feedback-icon">❌</span><div class="feedback-content"><strong>À revoir.</strong> '+nokMsg+'</div>';}
+  disableQ(id);
+  updateScore();
+  var done=document.querySelectorAll('.feedback.show').length;
+  }
+function disableQ(id){
+  var block=document.getElementById('qb'+id);
+  if(block)block.querySelectorAll('input,select,textarea,button.validate-btn').forEach(function(e){e.disabled=true;});
+}
+function updateScore(){
+  var pts=Object.values(scores).reduce(function(a,b){return a+b;},0);
+  var done=document.querySelectorAll('.feedback.show').length;
+  document.getElementById('score-display').textContent=pts+' / '+TOTAL_Q;
+  document.getElementById('progress-fill').style.width=(done/TOTAL_Q*100)+'%';
+  document.getElementById('progress-text').textContent=done+' / '+TOTAL_Q+' questions validées';
+  var jalons=[[5,'m1'],[10,'m2'],[17,'m3'],[20,'m4']];
+  jalons.forEach(function(j){if(done>=j[0])document.getElementById(j[1]).classList.add('done');});
+  if(done>=TOTAL_Q)document.getElementById('m5').classList.add('done');
+}
+
+// ── TYPES DE VALIDATION ─────────────────────────────────────
+var FB={
+  2:['Correct ! À la mise sous tension, la machine passe en arrêt d\'urgence. Magelis affiche "ARRET D\'URGENCE – Appuyer sur Réarm." → appuyer sur REARM → "MACHINE REARMEE Marche(F3) Init.(F8)" → F8 pour initialiser.','Séquence : mise sous tension → ARRET D\'URGENCE → REARM → F8 (initialisation) → attendre "MACHINE ARRETEE". C\'est une séquence de sécurité obligatoire à chaque mise sous tension.'],
+  5:['Correct ! Séquence AUTO : depuis "MACHINE ARRETEE" → F2 (Paramétrage) → F5 (Mode marche) → F7 pour basculer AUTO/CPC → quand "MODE AUTOMATIQUE" apparaît → F6 (Valider). Le Magelis affiche alors "MACHINE ARRETEE AUTO" avec les options F1,F2,F3,F4.','Fascicule 2.3.2.3 : F2 → Paramétrage → F5 → Mode marche → F7 permet de basculer entre MODE AUTOMATIQUE et MODE COUP PAR COUP → F6 pour valider le mode affiché.'],
+  6:['Correct ! F1 affiche "AUTORISATION DE ROTATION DU PLATEAU". L\'opérateur tourne le plateau manuellement d\'un demi-tour → arrêt d\'urgence auto → REARM → "INDEXAGE PLATEAU OK(F3) RE-INDEX(F1) INITIALISATION(F8)" → F3 pour confirmer → "MACHINE ARRETEE AUTO" → F3 (Départ cycle).','Fascicule 2.3.2.3 : F1 = AUTORISATION ROTATION → rotation manuelle → arrêt d\'urgence auto → REARM → INDEXAGE PLATEAU → F3 (OK) → MACHINE ARRETEE AUTO → F3 (Départ cycle). La rotation du plateau est gérée en temps masqué.'],
+  7:['Exact ! Carton plein → "AUTORISATION DE ROTATION DU PLATEAU". Opérateur : (1) met un nouveau carton vide sur l\'autre position, (2) tourne le plateau manuellement → arrêt d\'urgence auto → REARM → INDEXAGE PLATEAU → F3 → cycle reprend → "MACHINE EN MARCHE".','La rotation en temps masqué permet de changer de carton pendant que le cycle se termine. Pendant la rotation : sortie du carton plein + entrée du carton vide simultanément.'],
+  8:['Correct ! Arrêt propre : F4 (Arrêt) → la machine finit le cycle en cours (carton plein sorti) → "ARRET EN FIN DE CYCLE AUTOMATIQUE". Puis rotation plateau → REARM → INDEXAGE → F3 → "MACHINE ARRETEE AUTO". Ne jamais couper brutalement le sectionneur en cours de cycle.','Fascicule 2.3.2.3 : F4 = arrêt demandé → fin du cycle en cours → "ARRET EN FIN DE CYCLE AUTOMATIQUE" → rotation plateau pour sortir le dernier carton → retour à "MACHINE ARRETEE AUTO".'],
+  10:['Exact ! "DEFAUT AIR COMPRIME" = pression insuffisante dans le circuit pneumatique. Conduite à tenir : vérifier la pression et la régler à 3 bars sur le régulateur pneumatique (vanne régulatrice). Cette pression est réglée à 3 bars pour limiter les efforts des vérins et préserver la matière d\'œuvre.','Fascicule 2.3.2.5 : DEFAUT AIR COMPRIME → vérifier pression d\'alimentation (3 bars). Pression trop basse = vérins insuffisants. La pression de 3 bars est fondamentale pour le bon fonctionnement de tous les vérins pneumatiques.'],
+  11:['Correct ! Avant tout changement de format : (1) retirer cartons et produits, (2) consigner les énergies : ouvrir et consigner l\'interrupteur sectionneur + désaccoupler et purger le circuit pneumatique. AUCUNE intervention mécanique hors énergie n\'est tolérée.','Fascicule 2.2.4 + 2.3.3 : consigner AVANT toute intervention. Respecter norme C18510 : séparation, condamnation, signalisation, purge, vérification. Si carters retirés → obligatoirement hors énergie (électrique + pneumatique).'],
+  12:['Correct ! En passant de flacons (185 mm) à pots (160 mm), la longueur diminue de 25 mm. Les barquettes circulent dans le sens de leur longueur sur le convoyeur → les rives doivent être resserrées de 25 mm pour guider correctement les barquettes pots.','Dossier produit : barquette 6 flacons = 185×135×55 mm / barquette 4 pots = 160×135×55 mm. La longueur diminue de 25 mm. La largeur (135 mm) est identique. Régler les rives selon la longueur de la barquette qui circule.'],
+  14:['Exact ! Séquence cale élévateur : REARM → F8 (Init) → "MACHINE ARRETEE" → F4 (Chang. format) → "CHANGEMENT DE FORMAT Retour(F7)" → l\'élévateur monte et reste en position haute → ouvrir la porte RAPIDEMENT → saisir l\'élévateur avant qu\'il redescende → mettre en place la cale de changement de format.','Fascicule 2.3.3 : après réarmement et initialisation, depuis "MACHINE ARRETEE", F4 = Chang. format. L\'élévateur monte en haut. Il faut être rapide pour placer la cale avant qu\'il redescende. La cale compense la différence de hauteur entre les deux types de barquettes.'],
+  16:['Correct ! Mode CPC = test séquentiel pas à pas. En appuyant successivement sur F3, le cycle évolue étape par étape. Cela permet de vérifier chaque réglage mécanique (centrage poussoir, jeu butée, entonnoir) avant de lancer la production en automatique.','Fascicule 2.3.2.3 : Mode CPC : même séquence que AUTO mais la machine s\'arrête après chaque étape et attend F3 pour continuer. Idéal pour vérifier les réglages mécaniques après un changement de format. Permite de détecter tout problème avant une production en série.'],
+  19:['Correct ! "DEFAUT POUSSEE" = un poussoir (P1 ou P2) ou l\'élévateur ne peut pas terminer sa course. Cause : produit coincé dans le circuit. Action : vérifier visuellement si une barquette est mal positionnée ou bloquée entre les guidages. Après résolution, réarmer la machine.','Fascicule 2.3.2.5 : DEFAUT POUSSEE = poussoir ou élévateur ne peut pas terminer son mouvement → vérifier si un produit n\'est pas coincé. Fréquent après un changement de format si poussoir 2 ou butée pas parfaitement centrés par rapport aux barquettes pots.']
+};
+function valRadio(id,correct){
+  var val=document.querySelector('input[name="q'+id+'"]:checked');
+  if(!val){alert('Veuillez sélectionner une réponse.');return;}
+  var ok=val.value===correct;
+  document.querySelectorAll('input[name="q'+id+'"]').forEach(function(r){
+    var li=r.closest('.option-item');
+    if(r.value===correct)li.classList.add('correct');
+    else if(r.checked&&!ok)li.classList.add('incorrect');
+  });
+  var msg=FB[id]||['Bonne réponse !','Réponse incorrecte. Consultez le fascicule correspondant.'];
+  setFB(id,ok,msg[0],msg[1]);
+}
+function valCheckbox(id,corrects,okMsg,nokMsg){
+  var checked=[];
+  document.querySelectorAll('input[name="q'+id+'"]:checked').forEach(function(r){checked.push(r.value);});
+  if(!checked.length){alert('Cochez au moins une réponse.');return;}
+  var ok=corrects.length===checked.length&&corrects.every(function(c){return checked.includes(c);});
+  document.querySelectorAll('input[name="q'+id+'"]').forEach(function(r){
+    var li=r.closest('.option-item');
+    if(corrects.includes(r.value))li.classList.add('correct');
+    else if(r.checked)li.classList.add('incorrect');
+  });
+  setFB(id,ok,okMsg,nokMsg);
+}
+function valNum(id,correct,tolerance){
+  var val=parseFloat(document.getElementById('num'+id).value);
+  if(isNaN(val)){alert('Entrez une valeur numérique.');return;}
+  var ok=Math.abs(val-correct)/correct*100<=tolerance;
+  var inp=document.getElementById('num'+id);
+  inp.classList.add(ok?'correct':'incorrect');
+  var ta=document.getElementById('calc'+id);if(ta)ta.disabled=true;
+  setFB(id,ok,'Correct ! Cadence réelle = (2 ÷ 4) × 60 = 30 cartons/heure. Inférieure à la cadence max (70 ct/h), ce qui est normal pour une petite production avec temps de changement de cartons.','Calcul : (2 cartons ÷ 4 min) × 60 = 30 ct/h. Vous avez répondu '+val+'. La cadence de 70 ct/h nécessite une alimentation continue et des changements de cartons très rapides.');
+}
+function valOrder3(){
+  var correct={ord3a:4,ord3b:5,ord3c:2,ord3d:1,ord3e:3};
+  var ok=true;
+  Object.keys(correct).forEach(function(k){
+    var el=document.getElementById(k);
+    var v=parseInt(el.value);
+    el.classList.remove('correct','incorrect');
+    if(v===correct[k])el.classList.add('correct');
+    else{el.classList.add('incorrect');ok=false;}
+  });
+  setFB(3,ok,'Parfait ! Ordre correct : 1) Sectionneur ON → 2) Air comprimé à 3 bars → 3) REARM → 4) F8 (Initialisation) → 5) Attendre "MACHINE ARRETEE".','Ordre attendu : 1) Fermer sectionneur électrique → 2) Ouvrir air comprimé + régler 3 bars → 3) REARM → 4) F8 (Initialisation) → 5) Vérifier "MACHINE ARRETEE" (conditions initiales atteintes).');
+}
+function valTable4(){
+  var correct={t4a:'AU',t4b:'REARM',t4c:'INIT',t4d:'IDX'};
+  var ok=true;
+  Object.keys(correct).forEach(function(k){
+    var el=document.getElementById(k);
+    el.classList.remove('correct','incorrect');
+    if(el.value===correct[k])el.classList.add('correct');
+    else{el.classList.add('incorrect');ok=false;}
+  });
+  setFB(4,ok,'Exact ! SAU1 = arrêt d\'urgence immédiat. REARM = réarmer après AU. F8 allumée = initialisation. F1 allumée = indexage plateau pour changer de carton.','SAU1 = déclencher AU (arrêt immédiat tous actionneurs). REARM = réarmer après AU. F8 allumée = initialiser la machine. F1 allumée = indexage plateau pour passer au carton suivant.');
+}
+function valTable15(){
+  var correct={t15a:'a',t15b:'a',t15c:'a',t15d:'a',t15e:'a'};
+  var ok=true;
+  Object.keys(correct).forEach(function(k){
+    var el=document.getElementById(k);
+    el.classList.remove('correct','incorrect');
+    if(el.value===correct[k])el.classList.add('correct');
+    else{el.classList.add('incorrect');ok=false;}
+  });
+  setFB(15,ok,'Parfait ! Tous les réglages du changement de format sont corrects : rives resserrées (−25mm), entonnoirs changés (attention au sens), réglette à 5mm de jeu, cale rajoutée sur l\'élévateur, écartement élévateur ajusté avec la molette selon les barquettes pots.','Fascicule 2.3.3 : rives resserrer (160 < 185 mm), entonnoir changer par entonnoir pots (attention sens), réglette 5mm jeu fond carton/butée, cale élévateur à rajouter, écartement élévateur régler avec molette.');
+}
+function validerSuivi(){
+  var lignes=0,conformes=0;
+  for(var i=1;i<=4;i++){
+    var h=document.getElementById('s'+i+'_heure').value.trim();
+    var c=document.getElementById('s'+i+'_conf').value;
+    if(h!==''&&c!=='')lignes++;
+    if(c==='OUI')conformes++;
+  }
+  var ok=lignes>=3;
+  setFB(18,ok,'Tableau de suivi validé ! '+lignes+'/4 lignes renseignées. '+conformes+' carton(s) conforme(s) sur '+lignes+' produits. Consultez votre tableau pour le bilan de production.','Tableau incomplet. Veuillez renseigner au minimum l\'heure et la conformité pour 3 cartons sur 4 (actuellement '+lignes+'/4 lignes complètes).');
+}
+function valTexte20(){
+  var txt=document.getElementById('a20').value.trim();
+  if(txt.length<50){alert('Veuillez rédiger une réponse plus complète (minimum 50 caractères).');return;}
+  document.getElementById('a20').classList.add('correct');
+  setFB(20,true,'Compte-rendu enregistré. Il sera évalué par votre professeur. Un bon compte-rendu mentionne : nombre de cartons conformes, incidents et causes, réglages effectués (changement de format), état machine fin de poste, et une proposition d\'amélioration.','');
+}
+
+// ── SECTION FINALE ──────────────────────────────────────────
+// showFinal remplacée par version Pronote
+
+// ====== RÉCUPÉRER ────────────────────────────────────────────────
+var classeTokens={'2PMIA1':'https://nuage01.apps.education.fr/index.php/s/SFkasij3W8ZdY6X','2PMIA2':'https://nuage01.apps.education.fr/index.php/s/KWTiQL5cLkQnRkw','2PMIA3':'https://nuage01.apps.education.fr/index.php/s/Exk55DptbrJHmL8','2PMIA4':'https://nuage01.apps.education.fr/index.php/s/NyFcyoajmiDHWBN','2PMIA5':'https://nuage01.apps.education.fr/index.php/s/wbF4sqQkLCCr5Nj','1PLP':'https://nuage01.apps.education.fr/index.php/s/Q2LF28DBwcDbaZ3','TPLP':'https://nuage01.apps.education.fr/index.php/s/rq7TaGNDJc7MxZn','1CIP G1':'https://nuage01.apps.education.fr/index.php/s/ZDYKjyNzsF4LNNC','1CIP G2':'https://nuage01.apps.education.fr/index.php/s/KQp5LCtEKJsGXRT','2CIP G1':'https://nuage01.apps.education.fr/index.php/s/kybKoENkrz9qKEo','2CIP G2':'https://nuage01.apps.education.fr/index.php/s/5XdDxzyAJDFSgF4'};
+function envoyerNC(){
+  var cl=document.getElementById('classe-envoi').value;
+  if(!cl){alert('Sélectionnez votre classe.');return;}
+  var url=classeTokens[cl];
+  if(url){window.open(url,'_blank');document.getElementById('send-status').textContent='✅ Dossier NextCloud ouvert pour la classe '+cl+'. Déposez-y votre PDF.';document.getElementById('send-status').className='success';}
+  else{document.getElementById('send-status').textContent='Classe non trouvée. Vérifiez votre sélection.';}
+}
+
+// ── GÉNÉRATION PDF ───────────────────────────────────────────
+function safe(s){
+  return String(s||'')
+    .replace(/[éèêëÉÈÊËæœ]/g,'e').replace(/[àâäÀÂÄ]/g,'a')
+    .replace(/[ùûüÙÛÜ]/g,'u').replace(/[îïÎÏ]/g,'i')
+    .replace(/[ôöÔÖ]/g,'o').replace(/[çÇ]/g,'c')
+    .replace(/[ñÑ]/g,'n').replace(/°/g,' ')
+    .replace(/[–—]/g,'-').replace(/[""«»]/g,'"')
+    .replace(/['']/g,"'").replace(/…/g,'...')
+    .replace(/✅|\[OK\]/g,'[OK]').replace(/❌|\[X\]/g,'[X]').replace(/⚠️|\[!\]/g,'[!]')
+    .replace(/[^\x20-\x7E]/g,'?')
+    .replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+}
+function wrapL(s,max){var w=String(s||'').split(' '),l=[],c='';w.forEach(function(wd){if(((c?c+' ':'')+wd).length<=max){c=(c?c+' ':'')+wd;}else{if(c)l.push(c);c=wd;}});if(c)l.push(c);return l.length?l:[''];}
+
+function lancerPDF(){
+  var nom=document.getElementById('eleve-nom').value.trim()||'(non renseigne)';
+  var prenom=document.getElementById('eleve-prenom').value.trim()||'(non renseigne)';
+  var classe=document.getElementById('eleve-classe').value||'(non renseigne)';
+  var pts=Object.values(scores).reduce(function(a,b){return a+b;},0);
+  var dateStr=new Date().toLocaleDateString('fr-FR');
+  var stats=getStats();
+
+  var W=595,H=842,ML=40,MR=40,MT=40;
+  var pages=[],curPage=null,y=0;
+  function newPage(){curPage={parts:[]};pages.push(curPage);y=H-MT;}
+  function chkY(n){if(!curPage||y<50+n)newPage();}
+  var CW=W-ML-MR;
+  function txt(s,x,yy,sz,bold,r,g,b){r=r||0;g=g||0;b=b||0;curPage.parts.push('BT '+(bold?'/F2':'/F1')+' '+sz+' Tf '+r+' '+g+' '+b+' rg '+x+' '+yy+' Td ('+safe(s)+') Tj ET');}
+  function rect(x,yy,w,h,r,g,b){curPage.parts.push(r+' '+g+' '+b+' rg '+x+' '+yy+' '+w+' '+h+' re f 0 0 0 rg');}
+  function hline(yy){curPage.parts.push('0.7 0.7 0.7 RG 0.5 w '+ML+' '+yy+' m '+(W-MR)+' '+yy+' l S 0 0 0 RG');}
+  function addT(s,sz,bold,r,g,b,ind){sz=sz||10;ind=ind||0;var mc=Math.floor((CW-ind)/(sz*0.52));var ls=wrapL(s,mc);ls.forEach(function(l){chkY(sz+5);txt(l,ML+ind,y,sz,bold||false,r||0,g||0,b||0);y-=(sz+4);});}
+  function addSp(h){y-=(h||8);}
+  function addHL(){chkY(8);hline(y);y-=8;}
+  function addH2(s,r,g,b){chkY(20);rect(ML,y-2,CW,16,r,g,b);txt(s,ML+5,y+1,10,true,1,1,1);y-=20;}
+  function addRow(cells,widths,isHdr,even){var rh=13;chkY(rh+2);var ry=y-2;if(isHdr)rect(ML,ry,CW,rh,0.17,0.37,0.59);else if(even)rect(ML,ry,CW,rh,0.94,0.96,0.97);var x=ML;cells.forEach(function(c,i){txt(String(c||'').substring(0,widths[i]>120?70:28),x+2,y,8,isHdr,isHdr?1:0,isHdr?1:0,isHdr?1:0);x+=widths[i];});y-=rh;}
+
+  newPage();
+  // En-tête
+  rect(ML,y-4,CW,28,0.17,0.37,0.59);
+  txt('TP - Conduite & Changement de format - Encartonneuse ERMAFLEX EB20',ML+5,y+10,10,true,1,1,1);
+  txt(nom.toUpperCase()+' '+prenom+' | Classe: '+classe+' | Date: '+dateStr,ML+5,y-1,9,false,0.85,0.95,1);
+  y-=36;
+  // Note
+  chkY(30);rect(ML,y-4,CW,26,0.93,0.97,0.93);
+  txt('NOTE OBTENUE : '+pts+' / '+TOTAL_Q+'   |   Questions validees : '+Object.keys(scores).length+' / '+TOTAL_Q,ML+5,y+6,12,true,0.1,0.4,0.15);
+  var men=pts>=16?'Tres bon':pts>=12?'Satisfaisant':pts>=8?'En cours d acquisition':'A consolider';
+  txt(men,ML+5,y-5,9,false,0.3,0.3,0.3);
+  y-=36;addSp(4);
+
+  // Compétences
+  var cS={},cT={};
+  for(var i=1;i<=TOTAL_Q;i++){var c=qComp[''+i];if(!cT[c]){cS[c]=0;cT[c]=0;}cT[c]++;if(scores['q'+i])cS[c]++;}
+  addHeader2('EVALUATION PAR COMPETENCES - CODE PRONOTE', 0.15,0.33,0.07);
+  addRow(['Competence','Score','Resultat'],[80,60,CW-140],true);
+  var ev=false;
+  Object.keys(cT).sort().forEach(function(c){var pct=cT[c]>0?cS[c]/cT[c]:0;addRow([c,cS[c]+'/'+cT[c],pct>=0.5?'[OK] VALIDEE':'[!] PARTIELLE'],[80,60,CW-140],false,ev);ev=!ev;});
+  addSp(6);addHL();addSp(4);
+
+  // Détail 20 questions
+  addH2('DETAIL DES 20 QUESTIONS',0.18,0.48,0.27);
+  var wQ=[20,130,45,50,CW-245];
+  addRow(['N','Question','Comp.','Resultat','Reponse'],wQ,true);
+  for(var q=1;q<=TOTAL_Q;q++){
+    var ok=scores['q'+q];
+    var res=ok===undefined?'- N/R':(ok===1?'[OK] Juste':'[X] Faux');
+    var rep='';
+    if(q<=5||q===6||q===7||q===8||q===10||q===11||q===12||q===14||q===16||q===19){var sel=document.querySelector('input[name="q'+q+'"]:checked');rep=sel?'Option '+sel.value:'-';}
+    if(q===9)rep=document.getElementById('num9').value||'-';
+    if(q===13||q===17){var cc=[];document.querySelectorAll('input[name="q'+q+'"]:checked').forEach(function(r){cc.push(r.value);});rep=cc.join(',')||'-';}
+    if(q===20)rep=(document.getElementById('a20').value||'').substring(0,60);
+    if(q===18){var ligs=0,conf=0;for(var k=1;k<=4;k++){if(document.getElementById('s'+k+'_heure').value&&document.getElementById('s'+k+'_conf').value)ligs++;if(document.getElementById('s'+k+'_conf').value==='OUI')conf++;}rep=ligs+'/4 lignes, '+conf+' conforme(s)';}
+    addRow([q,qTitres[q].substring(0,42),qComp[''+q]||'-',res,rep.substring(0,50)],wQ,false,q%2===0);
+  }
+  addSp(8);addHL();addSp(4);
+
+  // Tableau de suivi
+  addH2('TABLEAU DE SUIVI DE PRODUCTION - 4 CARTONS',0.6,0.2,0.6);
+  var wS=[20,65,50,40,55,50,65,55,CW-400];
+  addRow(['N','Format','Heure','Nb.barq.','Position OK?','Ferm e?','Non marques?','Conforme?','Observations'],wS,true);
+  for(var k=1;k<=4;k++){
+    addRow([k,FORMATS[k-1],document.getElementById('s'+k+'_heure').value||'-',document.getElementById('s'+k+'_nb').value||'-',document.getElementById('s'+k+'_pos').value||'-',document.getElementById('s'+k+'_ferm').value||'-',document.getElementById('s'+k+'_marq').value||'-',document.getElementById('s'+k+'_conf').value||'-',(document.getElementById('s'+k+'_obs').value||'').substring(0,25)],wS,false,k%2===0);
+  }
+  addSp(8);
+
+  // Compte-rendu
+  addH2('COMPTE-RENDU DE FIN DE PRODUCTION',0.18,0.48,0.27);
+  var rep20=document.getElementById('a20').value.trim();
+  wrapL(rep20,95).forEach(function(l){chkY(12);txt(l,ML,y,9,false,0.2,0.2,0.2);y-=13;});
+  addSp(8);addHL();addSp(4);
+
+  // Indicateurs
+  addH2('INDICATEURS DE COMPORTEMENT',0.17,0.37,0.59);
+  var hh=Math.floor(stats.elapsed/3600),mm=Math.floor((stats.elapsed%3600)/60),ss=stats.elapsed%60;
+  addT('Temps total : '+fmtDur(stats.totalMs)+' | Temps chrono ecoule : '+hh+'h '+String(mm).padStart(2,'0')+'min '+String(ss).padStart(2,'0')+'s',9,true);
+  addT('Temps actif clavier : '+fmtDur(stats.keyMs)+' | Inactivite >30s : '+fmtDur(stats.inactMs),9,false,0.3,0.3,0.3);
+  addSp(3);
+  addT('Frappes clavier : '+stats.keyCount,9,false);
+  addSp(2);
+  if(stats.pasteCount===0){addT('Copier-coller : aucun detecte',9,false,0.18,0.48,0.27);}
+  else{addT('Copier-coller detectes : '+stats.pasteCount+' occurrence(s)',9,true,0.7,0.1,0.1);stats.pasteDetails.forEach(function(p){addT('  - Coller dans '+p.zone+' a '+p.heure,8,false,0.5,0.1,0.1,8);});}
+  addSp(8);
+  // Horodatage questions
+  addH2('HORODATAGE PAR QUESTION',0.17,0.37,0.59);
+  var wH=[20,140,60,CW-220];
+  addRow(['N','Question','Comp.','Heure validation'],wH,true);
+  for(var q=1;q<=TOTAL_Q;q++){
+    var qt=qTimestamps['q'+q];
+    var hv=qt&&qt.validated?new Date(qt.validated).toLocaleTimeString('fr-FR'):'-';
+    addRow([q,qTitres[q].substring(0,48),qComp[''+q]||'-',hv],wH,false,q%2===0);
+  }
+  addSp(10);
+
+  // Pied de page
+  pages.forEach(function(pg,pi){
+    var txt2='TP Conduite Encartonneuse EB20 | Lycee Vaucanson Grenoble | '+dateStr+' | Page '+(pi+1)+'/'+pages.length;
+    pg.parts.push('BT /F1 7 Tf 0.5 0.5 0.5 rg '+ML+' 20 Td ('+safe(txt2)+') Tj ET');
+    pg.parts.push('0.7 0.7 0.7 RG 0.5 w '+ML+' 30 m '+(W-MR)+' 30 l S');
+  });
+
+  // Assemblage PDF
+  var objs=[];
+  objs.push('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj');
+  objs.push('2 0 obj\n<< /Type /Pages /Kids [] /Count 0 >>\nendobj');
+  var pageIds=[];var nextId=3;
+  pages.forEach(function(pg){
+    var content=pg.parts.join('\n');
+    var cid=nextId++;var pid=nextId++;
+    pageIds.push(pid);
+    objs.push(cid+' 0 obj\n<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream\nendobj');
+    objs.push(pid+' 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+W+' '+H+']\n/Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> /F2 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> >> >>\n/Contents '+cid+' 0 R >>\nendobj');
+  });
+  objs[1]='2 0 obj\n<< /Type /Pages /Kids ['+pageIds.join(' 0 R ')+' 0 R] /Count '+pages.length+' >>\nendobj';
+  var body='%PDF-1.4\n';var offs=[];
+  objs.forEach(function(o){offs.push(body.length);body+=o+'\n';});
+  var xref='xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n';
+  offs.forEach(function(o){xref+=(Array(11).join('0')+o).slice(-10)+' 00000 n \n';});
+  var full=body+xref+'trailer\n<< /Size '+(objs.length+1)+' /Root 1 0 R >>\nstartxref\n'+body.length+'\n%%EOF';
+  var fn='TP_Encartonneuse_EB20_'+classe+'_'+(nom+'_'+prenom+'_'+pts+'sur20').replace(/\s+/g,'_')+'.pdf';
+  var blob=new Blob([full],{type:'application/pdf'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download=fn;a.click();
+  setTimeout(function(){URL.revokeObjectURL(url);},3000);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SYSTÈME ÉVALUATION PRONOTE - CODE COULEUR OFFICIEL
+// ══════════════════════════════════════════════════════════════════════════════
+
+const PRONOTE_NIVEAUX = [
+  {hex:'#275317', label:'Très bonne maîtrise',    pts:6, seuil:0.85},
+  {hex:'#4EA72E', label:'Maîtrise satisfaisante', pts:5, seuil:0.70},
+  {hex:'#92D050', label:'Presque maîtrisé',       pts:4, seuil:0.50},
+  {hex:'#FFFF00', label:'Maîtrise fragile',        pts:3, seuil:0.35},
+  {hex:'#FFC000', label:'Début de maîtrise',      pts:2, seuil:0.15},
+  {hex:'#EE0000', label:'Maîtrise insuffisante',  pts:1, seuil:0.00},
+];
+
+const COMP_CIP = {
+  CP01:"Communiquer en situation professionnelle et utiliser l'outil adapté pour rendre compte",
+  CP02:"S'informer et informer au cours de l'activité professionnelle",
+  CP03:"Préparer le travail au poste",
+  CP04:"Conduire l'installation à partir du poste de travail",
+  CP05:"Recueillir des données liées au produit et à la production",
+  CP06:"Identifier des risques au poste de travail",
+  CP07:"Appliquer des modes opératoires conformes aux objectifs de qualité et sécurité",
+};
+const COMP_PMIA = {
+  'CP1.1':"Décoder l'organisation de l'installation (structurelle, fonctionnelle, temporelle)",
+  'CP2.1':"Approvisionner et préparer les installations, matériels, produits et accessoires",
+  'CP2.2':"Préparer les documents nécessaires à la maintenance, organiser son intervention",
+  'CP2.3':"Identifier les risques pour les biens et les personnes",
+  'CP2.4':"Mettre en oeuvre les mesures de prévention associées aux risques identifiés",
+  'CP3.1':"Piloter une installation ou des modules en mode normal (démarrage)",
+  'CP3.2':"Piloter une installation ou des modules en mode normal (conduite)",
+  'CP3.3':"Assurer le suivi de la production (analyse des indicateurs, paramètres...)",
+  'CP4.1':"Réaliser des interventions de maintenance de niveau 1 (inspection, surveillance)",
+  'CP4.2':"Réaliser des interventions de maintenance de niveau 2 (dépose, repose pièces d'usure)",
+  'CP5.1':"Adopter une démarche éco-responsable",
+  'CP6.1':"Communiquer à l'écrit et/ou à l'oral dans son environnement professionnel",
+  'CP6.2':"Utiliser les outils numériques et informatiques",
+};
+const COMP_PLP = {
+  CP01:"Communiquer et rendre compte avec l'outil de communication adapté",
+  CP02:"S'informer et analyser la situation, informer au cours de l'activité professionnelle",
+  CP03:"Préparer le travail d'organisation et de réalisation du pilotage",
+  CP04:"Piloter une ligne ou un système de production",
+  CP05:"Assurer le suivi de production lié à l'analyse des indicateurs, paramètres et spécifications",
+  CP06:"Choisir et combiner des modes opératoires pour faire face aux situations",
+  CP07:"Gérer les compétences techniques des personnels affectés sur la ligne",
+  CP08:"Proposer des améliorations et des pistes de résolution de problèmes",
+  CP09:"Identifier des risques pour la production, les biens, l'environnement et la sécurité",
+  CP10:"Appliquer les mesures de prévention de tous les risques identifiés",
+};
+
+// Mapping qComp interne → référentiel réel (Conduite = conduire + sécurité + suivi)
+const QCOMP_TO_CIP_CO = {
+  q1:'CP06',q2:'CP03',q3:'CP02',q4:'CP04',q5:'CP04',
+  q6:'CP03',q7:'CP05',q8:'CP03',q9:'CP05',q10:'CP01',
+  q11:'CP03',q12:'CP04',q13:'CP04',q14:'CP04',q15:'CP04',
+  q16:'CP04',q17:'CP05',q18:'CP05',q19:'CP05',q20:'CP05'
+};
+const QCOMP_TO_PMIA_CO = {
+  q1:'CP2.3',q2:'CP2.2',q3:'CP1.1',q4:'CP3.1',q5:'CP3.1',
+  q6:'CP2.2',q7:'CP3.3',q8:'CP2.2',q9:'CP3.3',q10:'CP6.1',
+  q11:'CP2.2',q12:'CP3.1',q13:'CP3.1',q14:'CP3.1',q15:'CP3.1',
+  q16:'CP3.1',q17:'CP3.3',q18:'CP3.3',q19:'CP3.3',q20:'CP3.3'
+};
+const QCOMP_TO_PLP_CO = {
+  q1:'CP09',q2:'CP03',q3:'CP02',q4:'CP04',q5:'CP04',
+  q6:'CP03',q7:'CP05',q8:'CP03',q9:'CP05',q10:'CP01',
+  q11:'CP03',q12:'CP04',q13:'CP04',q14:'CP04',q15:'CP04',
+  q16:'CP04',q17:'CP05',q18:'CP05',q19:'CP05',q20:'CP06'
+};
+
+// Max 3 compétences retenues (Conduite = préparer + conduire + suivi/sécurité)
+const COMP_RETENUES_CO = {
+  CIP:  ['CP03','CP04','CP05'],
+  PMIA: ['CP2.2','CP3.1','CP3.3'],
+  PLP:  ['CP03','CP04','CP05'],
+};
+
+const FILIERE_LABEL = {
+  CIP:  "CAP CIP – Conduite d'Installation de Production",
+  PMIA: 'BAC PRO PMIA – Maintenance des Systèmes de Production',
+  PLP:  'BAC PRO PLP – Pilotage de Ligne de Production',
+};
+
+function getFiliere(classe) {
+  if(['2CIP G1','2CIP G2','1CIP G1','1CIP G2'].includes(classe)) return 'CIP';
+  if(['2PMIA1','2PMIA2','2PMIA3','2PMIA4','2PMIA5'].includes(classe)) return 'PMIA';
+  return 'PLP';
+}
+
+function getCompLib(code, filiere) {
+  if(filiere==='CIP')  return COMP_CIP[code]  || code;
+  if(filiere==='PMIA') return COMP_PMIA[code] || code;
+  return COMP_PLP[code] || code;
+}
+
+function getQCompMapCO(filiere) {
+  if(filiere==='CIP')  return QCOMP_TO_CIP_CO;
+  if(filiere==='PMIA') return QCOMP_TO_PMIA_CO;
+  return QCOMP_TO_PLP_CO;
+}
+
+function getPronoteNiveau(pct) {
+  for(const n of PRONOTE_NIVEAUX) { if(pct >= n.seuil) return n; }
+  return PRONOTE_NIVEAUX[PRONOTE_NIVEAUX.length-1];
+}
+
+function getScoresCO(filiere) {
+  const map = getQCompMapCO(filiere);
+  const ret = COMP_RETENUES_CO[filiere];
+  const cS={}, cT={};
+  ret.forEach(c=>{ cS[c]=0; cT[c]=0; });
+  Object.keys(scores).forEach(qid => {
+    const code = map[qid];
+    if(code && ret.includes(code)) { cS[code] += scores[qid]; cT[code]++; }
+  });
+  return {cS, cT};
+}
+
+function buildPronoteHTML(classe) {
+  const filiere  = getFiliere(classe);
+  const ret      = COMP_RETENUES_CO[filiere];
+  const {cS, cT} = getScoresCO(filiere);
+
+  let html = `<div class="eval-intro-box">`;
+  html += `<strong>📋 Filière :</strong> ${FILIERE_LABEL[filiere]}<br>`;
+  html += `<strong>🎯 Compétences évaluées :</strong> ${ret.join(' · ')}`;
+  html += `</div>`;
+
+  ret.forEach(code => {
+    const total = cT[code] || 0;
+    const ok    = total > 0 ? cS[code] : 0;
+    const pct   = total > 0 ? ok / total : 0;
+    const niv   = getPronoteNiveau(pct);
+    const lib   = getCompLib(code, filiere);
+    const scoreStr = total > 0 ? `${ok}/${total} questions` : 'Non évaluée';
+    const lightBg  = ['#FFFF00','#92D050','#FFC000'].includes(niv.hex);
+
+    html += `<div class="pronote-row" style="background:${niv.hex}22;border-color:${niv.hex};">`;
+    html += `<div class="pronote-dot" style="background:${niv.hex};"></div>`;
+    html += `<div class="pronote-info">`;
+    html += `<div class="pronote-comp-code">${code}</div>`;
+    html += `<div class="pronote-comp-lib">${lib}</div>`;
+    html += `<div class="pronote-score">${scoreStr}</div>`;
+    html += `</div>`;
+    html += `<div class="pronote-right">`;
+    html += `<div class="pronote-niveau" style="color:${lightBg?'#555':niv.hex};">${niv.label}</div>`;
+    html += `<div class="pronote-pts">${niv.pts} point${niv.pts>1?'s':''} Pronote</div>`;
+    html += `</div></div>`;
+  });
+
+  html += `<div class="pronote-legende">`;
+  html += `<div class="pronote-legende-title">Échelle Pronote complète</div>`;
+  html += `<div class="pronote-legende-grid">`;
+  PRONOTE_NIVEAUX.forEach(n => {
+    html += `<div class="pronote-leg-item">`;
+    html += `<div class="pronote-leg-dot" style="background:${n.hex};border:1px solid rgba(0,0,0,.15);"></div>`;
+    html += `<span>${n.label} (${n.pts} pt${n.pts>1?'s':''})</span>`;
+    html += `</div>`;
+  });
+  html += `</div></div>`;
+  return html;
+}
+
+// ── Validation identité ───────────────────────────────────────────────────────
+function validerIdentite() {
+  const nomEl    = document.getElementById('eleve-nom');
+  const prenomEl = document.getElementById('eleve-prenom');
+  const classeEl = document.getElementById('eleve-classe');
+  const nom    = nomEl    ? nomEl.value.trim()    : '';
+  const prenom = prenomEl ? prenomEl.value.trim() : '';
+  const classe = classeEl ? classeEl.value.trim() : '';
+  let ok = true;
+  [[nomEl,'hint-nom',!nom],[prenomEl,'hint-prenom',!prenom],[classeEl,'hint-classe',!classe]].forEach(([el,hid,err])=>{
+    if(!el) return;
+    const hd = document.getElementById(hid);
+    if(err){ el.classList.add('field-error'); if(hd) hd.classList.add('show'); ok=false; }
+    else   { el.classList.remove('field-error'); if(hd) hd.classList.remove('show'); }
+  });
+  if(!ok){ const box=document.querySelector('.eleve-box'); if(box) box.scrollIntoView({behavior:'smooth'}); }
+  return ok;
+}
+
+// ── showFinal unifié ──────────────────────────────────────────────────────────
+function showFinal() {
+  if(!validerIdentite()) return;
+  const classeEl = document.getElementById('eleve-classe');
+  const classe   = classeEl ? classeEl.value : '';
+  const container = document.getElementById('comp-eval-container');
+  if(container) container.innerHTML = buildPronoteHTML(classe);
+  const fs = document.getElementById('final-section');
+  if(fs){ fs.style.display='block'; fs.scrollIntoView({behavior:'smooth'}); }
+}
+
+</script>
+</body>
+</html>

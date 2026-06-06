@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP – Conduite EcolCafé EasyCup + Cobot – Production boîtes | Lycée Vaucanson</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vert:#4a9c5d;--vert-clair:#d4edda;--vert-fonce:#2d7a45;
+  --bleu:#4a87c0;--bleu-clair:#d0e6f7;--bleu-fonce:#2b5f96;
+  --gris:#8a9bac;--gris-clair:#e8ecf0;--gris-tres-clair:#f4f6f8;
+  --blanc:#ffffff;--rouge:#e05252;--rouge-clair:#fde8e8;
+  --orange:#e67e22;--orange-clair:#fef3e2;
+  --cafe:#6f3b2a;--cafe-clair:#f5ede8;
+  --texte:#2c3e50;--radius:10px;--shadow:0 4px 16px rgba(44,62,80,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Barlow',sans-serif;background:var(--gris-tres-clair);color:var(--texte);min-height:100vh;}
+
+/* HEADER */
+header{
+  background:
+    linear-gradient(135deg,rgba(43,95,150,0.65) 0%,rgba(111,59,42,0.70) 100%),
+    url("https://img.pikbest.com/wp/202343/coffee-bean-background-isolated-frame-perfect-for-backgrounds-or-textures_9974791.jpg!sw800") center/cover no-repeat;
+  color:#fff;padding:16px 28px;display:flex;align-items:center;gap:20px;
+  box-shadow:0 4px 22px rgba(0,0,0,.28);position:sticky;top:0;z-index:1000;
+}
+header img.logo{height:68px;border-radius:8px;background:#fff;padding:4px;box-shadow:0 2px 10px rgba(0,0,0,.3);}
+.header-text h1{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;line-height:1.2;}
+.header-text p{font-size:.82rem;opacity:.85;margin-top:2px;}
+.header-right{margin-left:auto;display:flex;gap:10px;align-items:flex-start;}
+.header-machine{flex:1;display:flex;align-items:center;justify-content:center;}
+.header-machine span{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,0.4),0 0 30px rgba(255,255,255,0.15);opacity:0.95;}
+.hbox{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;text-align:center;}
+.hbox-label{font-size:.68rem;opacity:.8;text-transform:uppercase;letter-spacing:1px;}
+#timer{font-family:'Barlow Condensed',monospace;font-size:1.75rem;font-weight:700;letter-spacing:2px;}
+#timer.urgent{color:#ffcc00;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+#score-display{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;}
+
+/* PROGRESS */
+.progress-section{background:#fff;padding:13px 28px;border-bottom:2px solid var(--gris-clair);box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:101px;z-index:999;}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:7px;font-size:.8rem;color:var(--gris);font-weight:600;}
+.progress-bar-track{background:var(--gris-clair);border-radius:20px;height:13px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--bleu),var(--cafe));transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+.progress-milestones{display:flex;justify-content:space-between;margin-top:7px;}
+.milestone{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.68rem;color:var(--gris);font-weight:600;transition:color .3s;}
+.milestone-dot{width:11px;height:11px;border-radius:50%;background:var(--gris-clair);border:2px solid var(--gris);transition:all .3s;}
+.milestone.done .milestone-dot{background:var(--vert);border-color:var(--vert-fonce);}
+.milestone.done{color:var(--vert-fonce);}
+
+/* CONTAINER */
+.container{max-width:900px;margin:0 auto;padding:28px 18px 60px;}
+
+/* ELEVE BOX */
+.eleve-box{background:#fff;border-radius:var(--radius);padding:18px 22px;margin-bottom:22px;box-shadow:var(--shadow);border-left:5px solid var(--vert);display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;}
+.eleve-box .form-group{flex:1;min-width:180px;}
+.eleve-box label{display:block;font-size:.76rem;font-weight:700;color:var(--gris);margin-bottom:4px;text-transform:uppercase;}
+.eleve-box input,.eleve-box select{width:100%;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.95rem;font-family:'Barlow',sans-serif;background:#fff;}
+.eleve-box input:focus,.eleve-box select:focus{outline:none;border-color:var(--vert);}
+
+/* INTRO */
+.intro-box{background:#fff;border-radius:var(--radius);padding:22px 26px;margin-bottom:26px;box-shadow:var(--shadow);border-left:5px solid var(--bleu);}
+.intro-box h2{font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;color:var(--bleu-fonce);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+.intro-box p{font-size:.93rem;line-height:1.6;color:#555;margin-bottom:7px;}
+
+/* ALERTE */
+.alerte-secu{background:var(--cafe-clair);border:2px solid var(--cafe);border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:.93rem;line-height:1.7;}
+.alerte-secu .titre-secu{color:var(--cafe);font-size:1.05rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+
+/* SECTION */
+.section-block{background:#fff;border-radius:var(--radius);padding:0;margin-bottom:22px;box-shadow:var(--shadow);overflow:hidden;}
+.section-header{background:linear-gradient(135deg,var(--bleu-fonce),var(--bleu));color:#fff;padding:13px 22px;display:flex;align-items:center;gap:12px;}
+.section-header.cafe{background:linear-gradient(135deg,#5a2d1a,var(--cafe));}
+.section-header.vert{background:linear-gradient(135deg,var(--vert-fonce),var(--vert));}
+.section-header.violet{background:linear-gradient(135deg,#5a3080,#8e44ad);}
+.section-number{background:rgba(255,255,255,.25);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05rem;flex-shrink:0;}
+.section-title-block h2{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.section-title-block p{font-size:.75rem;opacity:.85;margin-top:2px;}
+.section-body{padding:20px 22px;}
+
+/* QUESTION */
+.question-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--gris-clair);}
+.question-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.question-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--bleu);margin-bottom:5px;}
+.competence-tag{display:inline-block;background:var(--bleu-clair);color:var(--bleu-fonce);font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:12px;margin-left:6px;text-transform:uppercase;}
+.question-text{font-size:.95rem;line-height:1.6;color:var(--texte);margin-bottom:12px;font-weight:500;}
+.context-box{background:var(--gris-tres-clair);border:1px solid var(--gris-clair);border-radius:8px;padding:11px 14px;margin-bottom:12px;font-size:.84rem;line-height:1.5;color:#555;}
+.context-box strong{color:var(--bleu-fonce);}
+.secu-note{background:var(--cafe-clair);border-left:4px solid var(--cafe);border-radius:0 8px 8px 0;padding:8px 14px;margin-bottom:10px;font-size:.85rem;}
+
+/* DOSETTES */
+.dos-rouge{display:inline-block;background:#c0392b;color:#fff;border-radius:20px;padding:2px 10px;font-size:.82rem;font-weight:700;}
+.dos-bleu{display:inline-block;background:#5dade2;color:#fff;border-radius:20px;padding:2px 10px;font-size:.82rem;font-weight:700;}
+
+/* OPTIONS */
+.options-list{display:flex;flex-direction:column;gap:7px;}
+.option-item{display:flex;align-items:center;gap:11px;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;cursor:pointer;transition:all .2s;font-size:.89rem;}
+.option-item:hover:not(.disabled){border-color:var(--bleu);background:var(--bleu-clair);}
+.option-item input[type=radio],.option-item input[type=checkbox]{width:17px;height:17px;accent-color:var(--bleu);cursor:pointer;flex-shrink:0;}
+.option-item.correct{border-color:var(--vert)!important;background:var(--vert-clair)!important;}
+.option-item.incorrect{border-color:var(--rouge)!important;background:var(--rouge-clair)!important;}
+.option-item.disabled{cursor:default;opacity:.7;}
+
+/* INPUTS */
+.text-input{width:100%;padding:9px 13px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.93rem;font-family:'Barlow',sans-serif;transition:border-color .2s;resize:vertical;}
+.text-input:focus{outline:none;border-color:var(--bleu);}
+.text-input.correct{border-color:var(--vert);background:var(--vert-clair);}
+.text-input.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.calc-zone{width:100%;padding:8px 13px;border:1.5px dashed var(--bleu);border-radius:8px;font-size:.88rem;font-family:monospace;resize:vertical;min-height:50px;background:#f9fbff;margin-bottom:8px;}
+.calc-zone:focus{outline:none;border-color:var(--bleu-fonce);}
+.number-input{width:120px;padding:9px 12px;border:2px solid var(--gris-clair);border-radius:8px;font-size:.98rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-align:center;}
+.number-input:focus{outline:none;border-color:var(--bleu);}
+.number-input.correct{border-color:var(--vert);background:var(--vert-clair);}
+.number-input.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.unit-label{font-size:.88rem;color:var(--gris);}
+
+/* TABLEAU SUIVI */
+.tbl-suivi{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:12px;}
+.tbl-suivi th{background:#2c3e50;color:#fff;padding:9px 8px;text-align:center;font-weight:700;font-size:.77rem;border:1px solid #1a252f;}
+.tbl-suivi td{padding:6px 5px;border:1px solid var(--gris-clair);text-align:center;vertical-align:middle;}
+.tbl-suivi tr:nth-child(even) td{background:#f8fafc;}
+.tbl-suivi input[type=text],.tbl-suivi input[type=number],.tbl-suivi select{padding:4px 6px;border:1.5px solid var(--gris-clair);border-radius:5px;font-size:.82rem;font-family:'Barlow',sans-serif;width:100%;min-width:55px;}
+.tbl-suivi .col-num{width:38px;background:var(--bleu-fonce);color:#fff;font-weight:800;font-size:.9rem;}
+.col-prod{background:#5a2d1a;color:#fff;font-weight:700;font-size:.78rem;}
+.conformite-select{appearance:none;-webkit-appearance:none;padding:4px 8px;border-radius:5px;font-weight:700;font-size:.8rem;text-align:center;cursor:pointer;}
+
+/* TABLE RECETTE */
+.tbl{width:100%;border-collapse:collapse;font-size:.86rem;margin-bottom:8px;}
+.tbl th{background:var(--bleu-fonce);color:#fff;padding:9px 11px;text-align:left;font-weight:700;font-size:.8rem;}
+.tbl td{padding:8px 11px;border-bottom:1px solid var(--gris-clair);vertical-align:middle;}
+.tbl tr:nth-child(even) td{background:var(--gris-tres-clair);}
+.tbl input[type=text],.tbl input[type=number],.tbl select{padding:5px 9px;border:1.5px solid var(--gris-clair);border-radius:6px;font-size:.86rem;font-family:'Barlow',sans-serif;width:100%;}
+.tbl input.correct,.tbl select.correct{border-color:var(--vert);background:var(--vert-clair);}
+.tbl input.incorrect,.tbl select.incorrect{border-color:var(--rouge);background:var(--rouge-clair);}
+.tbl.cafe th{background:var(--cafe);}
+
+/* NOTE TABLEAU */
+.note-tableau{background:var(--cafe-clair);border:2px solid var(--cafe);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:.88rem;line-height:1.6;}
+
+/* RFID BOX */
+.rfid-box{background:#f0f0ff;border:2px solid #6c63ff;border-radius:10px;padding:16px 20px;margin:12px 0;font-size:.88rem;line-height:1.7;}
+.rfid-box h4{color:#3b3699;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;margin-bottom:10px;text-transform:uppercase;}
+.rfid-field{background:#fff;border:1.5px solid #c5c3f0;border-radius:7px;padding:8px 12px;margin-bottom:8px;}
+.rfid-field label{display:block;font-size:.72rem;font-weight:700;color:#6c63ff;text-transform:uppercase;margin-bottom:4px;}
+.rfid-field input,.rfid-field select,.rfid-field textarea{width:100%;padding:6px 10px;border:1px solid #ddd;border-radius:5px;font-family:'Barlow',sans-serif;font-size:.88rem;}
+.rfid-field input.correct,.rfid-field select.correct{border-color:var(--vert);background:var(--vert-clair);}
+
+/* VALIDATE BTN */
+.validate-btn{margin-top:11px;padding:8px 20px;background:var(--bleu);color:#fff;border:none;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.86rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+.validate-btn:hover{background:var(--bleu-fonce);transform:translateY(-1px);}
+.validate-btn:disabled{background:var(--gris);cursor:not-allowed;transform:none;}
+
+/* FEEDBACK */
+.feedback{display:none;margin-top:9px;padding:9px 13px;border-radius:8px;font-size:.86rem;font-weight:600;align-items:center;gap:7px;line-height:1.5;}
+.feedback.show{display:flex;}
+.feedback.ok{background:var(--vert-clair);color:var(--vert-fonce);border:1px solid var(--vert);}
+.feedback.nok{background:var(--rouge-clair);color:var(--rouge);border:1px solid var(--rouge);}
+
+/* FINAL */
+.final-section{background:#fff;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);text-align:center;border:3px solid var(--vert);margin-top:24px;}
+.final-section h2{font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;color:var(--vert-fonce);margin-bottom:8px;}
+.comp-badge{padding:5px 13px;border-radius:20px;font-size:.8rem;font-weight:700;}
+.comp-badge.validated{background:var(--vert-clair);color:var(--vert-fonce);border:2px solid var(--vert);}
+.comp-badge.partial{background:#fff3cd;color:#856404;border:2px solid #ffc107;}
+.send-btn{margin-top:18px;padding:13px 34px;background:linear-gradient(135deg,var(--vert-fonce),var(--vert));color:#fff;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 4px 16px rgba(45,122,69,.3);letter-spacing:.5px;}
+.send-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,122,69,.4);}
+#send-status{margin-top:12px;font-size:.88rem;color:var(--gris);font-style:italic;}
+#send-status.success{color:var(--vert-fonce);font-style:normal;font-weight:600;}
+
+@media(max-width:600px){
+  header{flex-wrap:wrap;padding:12px 14px;}
+  .header-right{flex-direction:row;margin-left:0;width:100%;justify-content:space-between;}
+  .tbl-suivi{font-size:.72rem;}
+}
+
+/* ── VERROU IDENTITÉ ── */
+.field-error{border-color:#e74c3c!important;background:#fff5f5!important;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.required-hint{display:none;color:#e74c3c;font-size:.72rem;font-weight:700;margin-top:3px;}
+.required-hint.show{display:block;}
+.eleve-box label .req{color:#e74c3c;margin-left:2px;}
+
+/* ── ÉVALUATION PRONOTE ── */
+.pronote-block{background:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:10px;box-shadow:var(--shadow);border:2px solid var(--vert);}
+.pronote-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;margin-bottom:7px;border:2px solid rgba(0,0,0,.08);}
+.pronote-dot{width:28px;height:28px;border-radius:6px;flex-shrink:0;}
+.pronote-info{min-width:0;}
+.pronote-comp-code{font-weight:800;font-size:.82rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;}
+.pronote-comp-lib{font-size:.77rem;color:#555;margin-top:1px;line-height:1.3;}
+.pronote-right{text-align:right;flex-shrink:0;}
+.pronote-niveau{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;white-space:nowrap;}
+.pronote-pts{font-size:.7rem;color:#888;margin-top:1px;}
+.pronote-score{font-size:.72rem;color:#666;margin-top:2px;}
+.pronote-legende{margin-top:14px;border-top:1px solid var(--gris-clair);padding-top:12px;}
+.pronote-legende-title{font-size:.72rem;color:var(--gris);font-weight:700;text-transform:uppercase;margin-bottom:7px;letter-spacing:.5px;}
+.pronote-legende-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.pronote-leg-item{display:flex;align-items:center;gap:5px;font-size:.7rem;padding:3px 8px;border-radius:4px;background:var(--gris-tres-clair);}
+.pronote-leg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.eval-intro-box{background:var(--bleu-clair);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:.83rem;line-height:1.5;color:var(--bleu-fonce);}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <img class="logo" src="https://services.ard.fr/fileadmin/users/grenoble-vaucanson/logo.jpg" alt="Lycée Vaucanson" onerror="this.style.display='none'">
+  <div class="header-text">
+    <h1>TP – Conduite &amp; Production de boîtes de café</h1>
+    <p>BAC PRO PLP &nbsp;·&nbsp; CAP CIP</p>
+    <p>Lycée Polyvalent Vaucanson – Grenoble</p>
+  </div>
+  <div class="header-machine">
+    <span>☕ EcolCafé</span>
+  </div>
+  <div class="header-right">
+    <div class="hbox">
+      <div class="hbox-label">⏱ Temps restant</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div id="timer">2:00:00</div>
+        <button id="pause-btn" onclick="togglePause()" title="Pause / Reprendre" style="background:rgba(255,255,255,0.25);border:2px solid rgba(255,255,255,0.5);border-radius:6px;color:#fff;font-size:1rem;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0;">⏸</button>
+      </div>
+    </div>
+    <div class="hbox">
+      <div class="hbox-label">Questions</div>
+      <div id="score-display">0 / 9</div>
+    </div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-section">
+  <div class="progress-header">
+    <span>Avancement du TP</span>
+    <span id="progress-text">0 / 10 questions validées</span>
+  </div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-milestones">
+    <div class="milestone" id="m1"><div class="milestone-dot"></div>Sécurité</div>
+    <div class="milestone" id="m2"><div class="milestone-dot"></div>Mise en route</div>
+    <div class="milestone" id="m3"><div class="milestone-dot"></div>Production</div>
+    <div class="milestone" id="m4"><div class="milestone-dot"></div>Étiquette & RFID</div>
+    <div class="milestone" id="m5"><div class="milestone-dot"></div>Fin ✓</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- IDENTITE ELEVE -->
+  <div class="eleve-box">
+    <div class="form-group">
+      <label>Nom <span class="req">*</span></label>
+      <input type="text" id="eleve-nom" placeholder="Votre nom...">
+      <div class="required-hint" id="hint-nom">⚠ Le nom est obligatoire</div>
+    </div>
+    <div class="form-group">
+      <label>Prénom <span class="req">*</span></label>
+      <input type="text" id="eleve-prenom" placeholder="Votre prénom...">
+      <div class="required-hint" id="hint-prenom">⚠ Le prénom est obligatoire</div>
+    </div>
+    <div class="form-group">
+      <label>Classe <span class="req">*</span></label>
+      <select id="eleve-classe">
+        <option value="">-- Sélectionnez votre classe --</option>
+        <option value="2PMIA1">2PMIA1</option><option value="2PMIA2">2PMIA2</option>
+        <option value="2PMIA3">2PMIA3</option><option value="2PMIA4">2PMIA4</option>
+        <option value="2PMIA5">2PMIA5</option><option value="1PLP">1PLP</option>
+        <option value="TPLP">TPLP</option><option value="1CIP G1">1CIP G1</option>
+        <option value="1CIP G2">1CIP G2</option><option value="2CIP G1">2CIP G1</option>
+        <option value="2CIP G2">2CIP G2</option>
+      </select>
+      <div class="required-hint" id="hint-classe">⚠ La classe est obligatoire</div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    <h2>📋 Présentation du TP</h2>
+    <p>Dans ce TP, vous allez <strong>conduire l'EasyCup et le Cobot UR3</strong> afin de réaliser <strong>4 boîtes de café</strong> selon 3 recettes différentes exploitant la ligne de production et les 3 magasins de capsules.</p>
+    <p>Vous devrez effectuer les vérifications préalables, paramétrer les recettes, lancer les productions, renseigner le tableau de suivi qualité, puis <strong>personnaliser l'étiquette et le tag RFID</strong> de chaque boîte.</p>
+  </div>
+
+  <!-- CONSIGNES PRODUCTIONS -->
+  <div class="alerte-secu">
+    <div class="titre-secu">☕ Récapitulatif des 4 productions à réaliser</div>
+    <table style="width:100%;border-collapse:collapse;font-size:.88rem;">
+      <tr style="background:rgba(111,59,42,0.15);">
+        <th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--cafe);">Boîte</th>
+        <th style="padding:7px 10px;border-bottom:2px solid var(--cafe);">Source capsules</th>
+        <th style="padding:7px 10px;border-bottom:2px solid var(--cafe);">Type</th>
+        <th style="padding:7px 10px;border-bottom:2px solid var(--cafe);">Nb capsules</th>
+        <th style="padding:7px 10px;border-bottom:2px solid var(--cafe);">Recette HMI</th>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;font-weight:700;">Boîte A</td>
+        <td style="padding:7px 10px;text-align:center;">Ligne EasyCup</td>
+        <td style="padding:7px 10px;text-align:center;"><span class="dos-rouge">● Rouge</span></td>
+        <td style="padding:7px 10px;text-align:center;font-weight:700;">10</td>
+        <td style="padding:7px 10px;text-align:center;">Capsules de base : <strong>10</strong> · Mag1/2/3 : 0</td>
+      </tr>
+      <tr style="background:#f8f5f3;">
+        <td style="padding:7px 10px;font-weight:700;">Boîte B</td>
+        <td style="padding:7px 10px;text-align:center;">Ligne EasyCup</td>
+        <td style="padding:7px 10px;text-align:center;"><span class="dos-rouge">● Rouge</span></td>
+        <td style="padding:7px 10px;text-align:center;font-weight:700;">10</td>
+        <td style="padding:7px 10px;text-align:center;">Capsules de base : <strong>10</strong> · Mag1/2/3 : 0</td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;font-weight:700;">Boîte C</td>
+        <td style="padding:7px 10px;text-align:center;">Magasin 1</td>
+        <td style="padding:7px 10px;text-align:center;"><span class="dos-rouge">● Rouge</span></td>
+        <td style="padding:7px 10px;text-align:center;font-weight:700;">8</td>
+        <td style="padding:7px 10px;text-align:center;">Capsules de base : 0 · Mag1 : <strong>8</strong> · Mag2/3 : 0</td>
+      </tr>
+      <tr style="background:#f8f5f3;">
+        <td style="padding:7px 10px;font-weight:700;">Boîte D</td>
+        <td style="padding:7px 10px;text-align:center;">Magasin 2 + Magasin 3</td>
+        <td style="padding:7px 10px;text-align:center;"><span class="dos-rouge">● Rouge</span> + <span class="dos-bleu">● Bleu</span></td>
+        <td style="padding:7px 10px;text-align:center;font-weight:700;">4 + 4 = 8</td>
+        <td style="padding:7px 10px;text-align:center;">Capsules de base : 0 · Mag2 : <strong>4</strong> · Mag3 : <strong>4</strong></td>
+      </tr>
+    </table>
+    <p style="margin-top:10px;font-size:.82rem;color:var(--cafe);font-weight:600;">⚠️ Chaque boîte nécessite une recette Cobot distincte. Chaque boîte recevra une étiquette personnalisée et un tag RFID tracé.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PARTIE 1 – SECURITE & MISE EN SERVICE -->
+  <!-- ============================================================ -->
+  <div class="section-block">
+    <div class="section-header cafe">
+      <div class="section-number">1</div>
+      <div class="section-title-block">
+        <h2>🛡️ Sécurité et mise en service EasyCup + Cobot</h2>
+        <p>Compétences : CP02, CP03, CP10 · Questions 1 à 3</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- Q1 -->
+      <div class="question-block" id="qb1">
+        <div class="question-label">Question 1 <span class="competence-tag">CP10</span><span class="competence-tag">CP02</span></div>
+        <div class="question-text">Quelles sont les vérifications préalables à effectuer avant de démarrer l'EasyCup et le Cobot UR3 ? <em style="font-size:.85rem;color:var(--gris)">(Cochez toutes les bonnes réponses)</em></div>
+        <div class="options-list" id="opts1">
+          <label class="option-item"><input type="checkbox" name="q1" value="a"> Vider le bac de déchets de la machine EasyCup</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="b"> Remplir le magasin de dosettes vides</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="c"> Vérifier le rouleau de papier d'operculage</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="d"> Appuyer directement sur démarrage sans vérifier les portes</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="e"> Faire le plein de café en grain et régler la mouture du moulin</label>
+          <label class="option-item"><input type="checkbox" name="q1" value="f"> Vérifier que le magasin de boîtes vides du Cobot est approvisionné</label>
+        </div>
+        <button class="validate-btn" onclick="valider(1)">✔ Valider</button>
+        <div class="feedback" id="fb1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question-block" id="qb2">
+        <div class="question-label">Question 2 <span class="competence-tag">CP03</span></div>
+        <div class="question-text">Numérotez les étapes de mise en service de l'EasyCup dans le bon ordre (1 = première étape).</div>
+        <table class="tbl" style="margin-bottom:10px;">
+          <tr><th style="width:70px">Ordre</th><th>Action</th></tr>
+          <tr><td><input type="number" id="o2_a" min="1" max="5" style="width:55px;text-align:center;"></td><td>Appuyer sur le bouton <strong>« Réarmement »</strong> sur l'écran HMI</td></tr>
+          <tr><td><input type="number" id="o2_b" min="1" max="5" style="width:55px;text-align:center;"></td><td>Fermer le sectionneur (voyant blanc « Sous tension » s'allume)</td></tr>
+          <tr><td><input type="number" id="o2_c" min="1" max="5" style="width:55px;text-align:center;"></td><td>Vérifier le bouton d'arrêt d'urgence et fermer les portes d'accès</td></tr>
+          <tr><td><input type="number" id="o2_d" min="1" max="5" style="width:55px;text-align:center;"></td><td>Raccorder l'alimentation électrique 230V mono</td></tr>
+          <tr><td><input type="number" id="o2_e" min="1" max="5" style="width:55px;text-align:center;"></td><td>Raccorder le réseau pneumatique (5 bars · 30 L/min)</td></tr>
+        </table>
+        <button class="validate-btn" onclick="valider(2)">✔ Valider</button>
+        <div class="feedback" id="fb2"></div>
+      </div>
+
+            <!-- Q4 -->
+      <div class="question-block" id="qb3">
+        <div class="question-label">Question 3 <span class="competence-tag">CP04</span></div>
+        <div class="question-text">Complétez le tableau de paramétrage des 4 recettes à saisir dans le HMI du Cobot pour réaliser les boîtes A, B, C et D.</div>
+        <div class="context-box"><strong>Rappel :</strong> La recette Cobot contient : <em>Capsules de base</em> (ligne EasyCup) · <em>Capsule Mag1</em> · <em>Capsule Mag2</em> · <em>Capsule Mag3</em> · <em>Nombre de boîtes</em>.<br>Le total capsules/boîte ne doit pas dépasser la capacité maxi de la boîte.</div>
+        <table class="tbl">
+          <tr><th>Boîte</th><th>Capsules de base (EasyCup)</th><th>Capsule Mag1</th><th>Capsule Mag2</th><th>Capsule Mag3</th><th>Nb boîtes</th></tr>
+          <tr>
+            <td><strong>A</strong> <span class="dos-rouge" style="font-size:.75rem;">●×10</span></td>
+            <td><input type="number" id="r4_a_base" min="0" max="20" placeholder="0-20" style="width:70px;"></td>
+            <td><input type="number" id="r4_a_m1" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_a_m2" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_a_m3" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_a_nb" min="1" max="99" placeholder="nb" style="width:60px;"></td>
+          </tr>
+          <tr style="background:#f8f5f3;">
+            <td><strong>B</strong> <span class="dos-rouge" style="font-size:.75rem;">●×10</span></td>
+            <td><input type="number" id="r4_b_base" min="0" max="20" placeholder="0-20" style="width:70px;"></td>
+            <td><input type="number" id="r4_b_m1" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_b_m2" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_b_m3" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_b_nb" min="1" max="99" placeholder="nb" style="width:60px;"></td>
+          </tr>
+          <tr>
+            <td><strong>C</strong> <span class="dos-rouge" style="font-size:.75rem;">●×8</span></td>
+            <td><input type="number" id="r4_c_base" min="0" max="20" placeholder="0-20" style="width:70px;"></td>
+            <td><input type="number" id="r4_c_m1" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_c_m2" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_c_m3" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_c_nb" min="1" max="99" placeholder="nb" style="width:60px;"></td>
+          </tr>
+          <tr style="background:#f8f5f3;">
+            <td><strong>D</strong> <span class="dos-rouge" style="font-size:.75rem;">●×4</span>+<span class="dos-bleu" style="font-size:.75rem;">●×4</span></td>
+            <td><input type="number" id="r4_d_base" min="0" max="20" placeholder="0-20" style="width:70px;"></td>
+            <td><input type="number" id="r4_d_m1" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_d_m2" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_d_m3" min="0" max="20" placeholder="0" style="width:60px;"></td>
+            <td><input type="number" id="r4_d_nb" min="1" max="99" placeholder="nb" style="width:60px;"></td>
+          </tr>
+        </table>
+        <button class="validate-btn" onclick="valider(3)">✔ Valider</button>
+        <div class="feedback" id="fb3"></div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="question-block" id="qb4">
+        <div class="question-label">Question 3 <span class="competence-tag">CP04</span></div>
+        <div class="question-text">Calculez le nombre total de capsules nécessaires pour les 4 boîtes (A + B + C + D).</div>
+        <textarea class="calc-zone" id="calc5" placeholder="Boîte A : 10 capsules&#10;Boîte B : 10 capsules&#10;Boîte C : 8 capsules&#10;Boîte D : 4 + 4 = 8 capsules&#10;Total = ..."></textarea>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+          <input type="number" class="number-input" id="n5" min="1" max="200" placeholder="…">
+          <span class="unit-label">capsules au total</span>
+        </div>
+        <button class="validate-btn" onclick="valider(4)">✔ Valider</button>
+        <div class="feedback" id="fb4"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PARTIE 3 – TABLEAU DE SUIVI DE PRODUCTION -->
+  <!-- ============================================================ -->
+  <div class="section-block">
+    <div class="section-header vert">
+      <div class="section-number">3</div>
+      <div class="section-title-block">
+        <h2>📊 Suivi de production – 4 boîtes</h2>
+        <p>Compétences : CP04, CP05 · Questions 5 à 6</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- Q6 -->
+      <div class="question-block" id="qb5">
+        <div class="question-label">Question 3 <span class="competence-tag">CP05</span></div>
+        <div class="question-text">Renseignez le tableau de suivi de production au fur et à mesure que le Cobot produit chaque boîte. Complétez toutes les colonnes.</div>
+
+        <div class="note-tableau">
+          <strong>📏 Critères de conformité :</strong><br>
+          · <strong>Nb capsules :</strong> conforme si égal au nombre demandé dans la recette<br>
+          · <strong>Opercule :</strong> toutes les capsules correctement scellées (papier non décollé)<br>
+          · <strong>Boîte :</strong> fermée, couvercle bien posé, pas de capsule déplacée<br>
+          · <strong>Étiquette :</strong> présente et lisible · <strong>RFID :</strong> tag écrit (LED verte Cobot)<br>
+          · <strong>Conformité globale :</strong> OUI si tous les critères sont respectés
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="tbl-suivi">
+            <thead>
+              <tr>
+                <th class="col-num">Boîte</th>
+                <th>Heure production</th>
+                <th>Source capsules</th>
+                <th>Nb capsules réelles</th>
+                <th>Opercule OK ?</th>
+                <th>Boîte fermée OK ?</th>
+                <th>Étiquette posée ?</th>
+                <th>RFID écrit ?</th>
+                <th>Conformité globale</th>
+                <th>Observations</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-suivi"></tbody>
+          </table>
+        </div>
+
+        <button class="validate-btn" onclick="valider(5)">✔ Valider le tableau de suivi</button>
+        <div class="feedback" id="fb5"></div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="question-block" id="qb6">
+        <div class="question-label">Question 3 <span class="competence-tag">CP05</span></div>
+        <div class="question-text">En fin de production, l'écran EasyCup affiche : <strong>Demandées : 20 · Réalisées : 18 · Rebuts : 2</strong>. Calculez le taux de rebut et indiquez si la production est conforme (objectif &lt; 5%).</div>
+        <textarea class="calc-zone" id="calc7" placeholder="Taux de rebut = (rebuts / demandées) × 100 = (2 / 20) × 100 = ... %"></textarea>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+          <input type="number" class="number-input" id="n7" min="0" max="100" step="0.1" placeholder="…">
+          <span class="unit-label">% de rebut</span>
+        </div>
+        <button class="validate-btn" onclick="valider(6)">✔ Valider</button>
+        <div class="feedback" id="fb6"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PARTIE 4 – ÉTIQUETTE & RFID -->
+  <!-- ============================================================ -->
+  <div class="section-block">
+    <div class="section-header violet">
+      <div class="section-number">4</div>
+      <div class="section-title-block">
+        <h2>🏷️ Personnalisation – Étiquette &amp; Tag RFID</h2>
+        <p>Compétences : CP03, CP04, CP05 · Questions 7 à 9</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- Q8 -->
+      <div class="question-block" id="qb7">
+        <div class="question-label">Question 3 <span class="competence-tag">CP04</span></div>
+        <div class="question-text">La documentation du Cobot EolCafé précise que l'imprimante thermique permet l'impression d'un message personnalisé sur l'étiquette. Quelles informations doit obligatoirement contenir l'étiquette d'une boîte de café produite ? <em style="font-size:.85rem;color:var(--gris)">(Cochez toutes les bonnes réponses)</em></div>
+        <div class="options-list" id="opts7">
+          <label class="option-item"><input type="checkbox" name="q7" value="a"> Le type de café (corsé / doux) et la source des capsules (ligne / magasin)</label>
+          <label class="option-item"><input type="checkbox" name="q7" value="b"> Le nombre de capsules dans la boîte</label>
+          <label class="option-item"><input type="checkbox" name="q7" value="c"> La couleur préférée de l'opérateur</label>
+          <label class="option-item"><input type="checkbox" name="q7" value="d"> La date de production</label>
+          <label class="option-item"><input type="checkbox" name="q7" value="e"> Le numéro de lot de production (lien avec commande Odoo)</label>
+          <label class="option-item"><input type="checkbox" name="q7" value="f"> Le nom de l'opérateur ou l'identifiant du poste</label>
+        </div>
+        <button class="validate-btn" onclick="valider(7)">✔ Valider</button>
+        <div class="feedback" id="fb7"></div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="question-block" id="qb8">
+        <div class="question-label">Question 3 <span class="competence-tag">CP03</span><span class="competence-tag">CP04</span></div>
+        <div class="question-text">Le Cobot est équipé d'un lecteur RFID. Complétez la fiche de traçage RFID pour la Boîte D (assortiment Mag2+Mag3) en renseignant les informations à écrire dans le tag.</div>
+        <div class="context-box"><strong>Rappel doc technique :</strong> Le lecteur RFID permet la mémorisation de la commande dans une puce RFID contenue dans la boîte. Le numéro de série et le type sont des informations liées à Odoo (lien avec la commande du site marchand). Les noms des cafés sont modifiables depuis l'écran HMI (système gérant 30 types de café).</div>
+        <div class="rfid-box">
+          <h4>🔖 Fiche de traçage RFID – Boîte D (Assortiment Mag2+Mag3)</h4>
+          <div class="rfid-field">
+            <label>Numéro de série (format : ANNEE-LOT-NUMéRO)</label>
+            <input type="text" id="rfid_serie" placeholder="Ex : 2026-TP01-004">
+          </div>
+          <div class="rfid-field">
+            <label>Type de produit / nom de la recette</label>
+            <input type="text" id="rfid_type" placeholder="Ex : Assortiment Corsé+Doux – Vaucanson">
+          </div>
+          <div class="rfid-field">
+            <label>Contenu de la boîte</label>
+            <input type="text" id="rfid_contenu" placeholder="Ex : 4 capsules Rouge (Mag2) + 4 capsules Bleu ciel (Mag3)">
+          </div>
+          <div class="rfid-field">
+            <label>Date et heure de production</label>
+            <input type="text" id="rfid_date" placeholder="Ex : 10/04/2026 – 09h45">
+          </div>
+          <div class="rfid-field">
+            <label>Identifiant opérateur</label>
+            <input type="text" id="rfid_operateur" placeholder="Ex : votre nom / login EasyCup">
+          </div>
+          <div class="rfid-field">
+            <label>Lien commande Odoo (si applicable)</label>
+            <input type="text" id="rfid_odoo" placeholder="Ex : ORD-2026-0042 ou N/A si hors commande">
+          </div>
+        </div>
+        <p style="font-size:.84rem;color:var(--gris);margin-top:8px;font-style:italic;">💡 Sur l'HMI Cobot : depuis l'écran de production, saisir le numéro de série, le type, puis appuyer sur « Lance le cycle » pour que le Cobot écrive automatiquement le tag RFID lors de la mise en boîte.</p>
+        <button class="validate-btn" onclick="valider(8)">✔ Valider la fiche RFID</button>
+        <div class="feedback" id="fb8"></div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="question-block" id="qb9">
+        <div class="question-label">Question 3 <span class="competence-tag">CP05</span><span class="competence-tag">CP08</span></div>
+        <div class="question-text">Rédigez un compte-rendu de fin de production. Indiquez les 4 boîtes produites, le taux de rebut EasyCup, l'état des compteurs (meules/couteau), les informations inscrites dans les tags RFID, et une proposition d'amélioration si nécessaire.</div>
+        <textarea class="text-input" id="a10" style="min-height:130px;" placeholder="Compte-rendu : Boîtes A/B (10 caps EasyCup), C (8 caps Mag1), D (4 caps Mag2 + 4 caps Mag3). Taux rebut EasyCup : 10%. RFID écrits sur chaque boîte. Compteurs meules / couteau : ... Proposition amélioration : ..."></textarea>
+        <button class="validate-btn" onclick="valider(9)">✔ Valider</button>
+        <div class="feedback" id="fb9"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION FINALE -->
+  <div class="final-section" id="final-section" style="display:none;">
+    <h2>🎓 Récapitulatif du TP</h2>
+    <p style="color:#555;font-size:.93rem;">Évaluation par compétences :</p>
+    <div id="comp-eval-container"><p style="color:#aaa;font-size:.88rem;text-align:center;padding:12px;">Renseignez votre identité puis cliquez sur «&nbsp;Voir mon évaluation&nbsp;».</p></div>
+
+    <div style="background:var(--bleu-clair);border-radius:10px;padding:16px 20px;margin:18px 0;text-align:left;font-size:.88rem;line-height:1.8;">
+      <strong style="color:var(--bleu-fonce);">📌 Comment envoyer votre copie en 2 étapes :</strong><br>
+      <span style="color:#333;">
+        <b>Étape 1 —</b> Cliquez sur <em>« 📄 Télécharger ma correction en PDF »</em> : le fichier PDF se télécharge immédiatement.<br>
+        <b>Étape 2 —</b> Cliquez sur <em>« 📤 Envoyer au professeur »</em> : le dossier de votre classe s'ouvre → déposez-y le fichier PDF.
+      </span>
+    </div>
+
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:6px;">
+      <button class="send-btn" style="background:linear-gradient(135deg,var(--bleu-fonce),var(--bleu));" onclick="lancerPDF()">📄 Télécharger ma correction en PDF</button>
+      <button class="send-btn" id="send-btn" onclick="envoyerNC()">📤 Envoyer au professeur</button>
+    </div>
+    <div id="send-status"></div>
+  </div>
+
+  <!-- BOUTON PERMANENT -->
+  <div style="text-align:center;margin-top:22px;">
+    <button onclick="showFinal()" style="padding:12px 28px;background:var(--bleu-fonce);color:#fff;border:none;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.98rem;font-weight:700;cursor:pointer;">
+      📊 Voir mon évaluation &amp; envoyer
+    </button>
+  </div>
+
+</div><!-- fin container -->
+
+<script>
+// ====== GÉNÉRATION DU TABLEAU DE SUIVI 4 BOÎTES ======
+const BOITES = [
+  { id:'A', source:'Ligne EasyCup', type:'Rouge ×10' },
+  { id:'B', source:'Ligne EasyCup', type:'Rouge ×10' },
+  { id:'C', source:'Magasin 1',     type:'Rouge ×8' },
+  { id:'D', source:'Mag2 + Mag3',   type:'Rouge×4 + Bleu×4' }
+];
+
+function genTableauSuivi() {
+  const tbody = document.getElementById('tbody-suivi');
+  tbody.innerHTML = '';
+  BOITES.forEach((b, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="col-num">Boîte ${b.id}</td>
+      <td><input type="text" id="s${b.id}_heure" placeholder="ex: 09h15" style="min-width:65px;"></td>
+      <td style="font-size:.78rem;color:var(--gris);font-style:italic;">${b.source}</td>
+      <td><input type="number" id="s${b.id}_nb" min="0" max="20" placeholder="nb" style="min-width:50px;"></td>
+      <td>
+        <select id="s${b.id}_ope" class="conformite-select">
+          <option value="">--</option>
+          <option value="OUI">OUI ✅</option>
+          <option value="NON">NON ❌</option>
+        </select>
+      </td>
+      <td>
+        <select id="s${b.id}_boite" class="conformite-select">
+          <option value="">--</option>
+          <option value="OUI">OUI ✅</option>
+          <option value="NON">NON ❌</option>
+        </select>
+      </td>
+      <td>
+        <select id="s${b.id}_etiq" class="conformite-select">
+          <option value="">--</option>
+          <option value="OUI">OUI ✅</option>
+          <option value="NON">NON ❌</option>
+        </select>
+      </td>
+      <td>
+        <select id="s${b.id}_rfid" class="conformite-select">
+          <option value="">--</option>
+          <option value="OUI">OUI ✅</option>
+          <option value="NON">NON ❌</option>
+        </select>
+      </td>
+      <td>
+        <select id="s${b.id}_conf" class="conformite-select" onchange="updateConf('${b.id}')">
+          <option value="">--</option>
+          <option value="OUI">OUI ✅</option>
+          <option value="NON">NON ❌</option>
+        </select>
+      </td>
+      <td><input type="text" id="s${b.id}_obs" placeholder="RAS / pb…" style="min-width:80px;"></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+genTableauSuivi();
+
+function updateConf(id) {
+  const conf = document.getElementById('s'+id+'_conf').value;
+  const td = document.getElementById('s'+id+'_conf').parentElement;
+  if (conf === 'OUI') td.style.background = '#d4edda';
+  else if (conf === 'NON') td.style.background = '#fde8e8';
+  else td.style.background = '';
+}
+
+// ====== TIMER ======
+const DUREE = 2 * 3600;
+let secondes = DUREE, timerPaused = false;
+const timerEl = document.getElementById('timer');
+let timerInterval = setInterval(() => {
+  if (timerPaused) return;
+  secondes--;
+  if (secondes < 0) { secondes = 0; clearInterval(timerInterval); }
+  let h = Math.floor(secondes/3600), m = Math.floor((secondes%3600)/60), s = secondes%60;
+  timerEl.textContent = h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if (secondes < 900) timerEl.classList.add('urgent');
+}, 1000);
+
+function togglePause() {
+  timerPaused = !timerPaused;
+  const btn = document.getElementById('pause-btn');
+  if (timerPaused) { btn.textContent='▶'; btn.style.background='rgba(255,204,0,0.4)'; timerEl.style.opacity='0.5'; }
+  else { btn.textContent='⏸'; btn.style.background='rgba(255,255,255,0.25)'; timerEl.style.opacity='1'; }
+}
+
+// ====== TRACKING ======
+const tpStartTime = Date.now();
+let keyCount=0,pasteCount=0,pasteDetails=[],keyActiveMs=0,keyLastStart=null;
+let inactiveMs=0,inactiveLastStart=null,inactivityTimer=null;
+const qTimestamps={};
+document.addEventListener('keydown',()=>{if(!keyLastStart)keyLastStart=Date.now();resetInactivity();});
+document.addEventListener('keyup',()=>{keyCount++;if(keyLastStart){keyActiveMs+=Date.now()-keyLastStart;keyLastStart=null;}resetInactivity();});
+document.addEventListener('paste',(e)=>{pasteCount++;const block=e.target?e.target.closest('[id^="qb"]'):null;pasteDetails.push({zone:block?block.id.replace('qb','Q'):'inconnue',heure:new Date().toLocaleTimeString('fr-FR')});resetInactivity();});
+function resetInactivity(){if(inactiveLastStart){inactiveMs+=Date.now()-inactiveLastStart;inactiveLastStart=null;}clearTimeout(inactivityTimer);inactivityTimer=setTimeout(()=>{inactiveLastStart=Date.now();},30000);}
+resetInactivity();
+function recordQTime(id){const now=Date.now();if(!qTimestamps['q'+id])qTimestamps['q'+id]={start:tpStartTime};qTimestamps['q'+id].validated=now;qTimestamps['q'+id].seconds=Math.round((now-qTimestamps['q'+id].start)/1000);}
+function fmtDuration(ms){if(ms<0)ms=0;const tot=Math.round(ms/1000),h=Math.floor(tot/3600),m=Math.floor((tot%3600)/60),s=tot%60;if(h>0)return h+'h '+String(m).padStart(2,'0')+'min '+String(s).padStart(2,'0')+'s';if(m>0)return m+'min '+String(s).padStart(2,'0')+'s';return s+'s';}
+function getTrackingStats(){const totalMs=Date.now()-tpStartTime;let keyMs=keyActiveMs+(keyLastStart?Date.now()-keyLastStart:0);let inactMs=inactiveMs+(inactiveLastStart?Date.now()-inactiveLastStart:0);return{totalMs,keyMs,inactMs,keyCount,pasteCount,pasteDetails,tempsPasseElapsed:DUREE-secondes};}
+
+// ====== SCORE ======
+const scores = {};
+const TOTAL_Q = 9;
+const qComp = {
+  q1:'CP10',q2:'CP03',q3:'CP04',q4:'CP04',
+  q5:'CP05',q6:'CP05',q7:'CP04',q8:'CP03',q9:'CP08'
+};
+const qTitres = ['',
+  'Verifications prealables EasyCup + Cobot',
+  'Ordre mise en service EasyCup',
+  'Parametrage des 4 recettes HMI Cobot',
+  'Calcul total capsules 4 boites',
+  'Tableau de suivi de production (4 boites)',
+  'Calcul taux de rebut EasyCup',
+  'Informations obligatoires etiquette boite',
+  'Fiche de tracage RFID Boite D',
+  'Compte-rendu de fin de production'
+];
+
+// ====== FEEDBACK ======
+function fb(id, ok, msg) {
+  const el = document.getElementById('fb'+id);
+  el.innerHTML = (ok ? '✅ ' : '❌ ') + msg;
+  el.className = 'feedback show ' + (ok ? 'ok' : 'nok');
+}
+
+function disableQ(id) {
+  const block = document.getElementById('qb'+id);
+  block.querySelectorAll('input,select,textarea,button.validate-btn').forEach(el=>el.disabled=true);
+  if ([1,7].includes(id)) block.querySelectorAll('.option-item').forEach(o=>o.classList.add('disabled'));
+}
+
+// ====== VALIDATION ======
+function valider(id) {
+  recordQTime(id);
+  let ok = false;
+
+  if (id === 1) {
+    const checked = Array.from(document.querySelectorAll('input[name="q1"]:checked')).map(e=>e.value);
+    const bons = ['a','b','c','e','f'];
+    ok = bons.every(v=>checked.includes(v)) && checked.every(v=>bons.includes(v));
+    document.querySelectorAll('#opts1 .option-item').forEach(li=>{
+      const val=li.querySelector('input').value;
+      if(bons.includes(val))li.classList.add('correct');
+      else if(checked.includes(val))li.classList.add('incorrect');
+    });
+    fb(id, ok, ok
+      ? 'Parfait ! Les 5 vérifications correctes : vider bac déchets (a), remplir magasin dosettes (b), vérifier rouleau papier (c), plein café + réglage mouture (e), magasin boîtes Cobot approvisionné (f).'
+      : 'Vérifications incorrectes. Selon la fiche de poste officielle : vider bac (a), remplir magasin (b), vérifier papier opercule (c), plein café + mouture (e), magasin boîtes Cobot (f). Ne jamais démarrer sans vérifier les portes !');
+  }
+
+  else if (id === 2) {
+    const vals = {
+      o2_a: parseInt(document.getElementById('o2_a').value),
+      o2_b: parseInt(document.getElementById('o2_b').value),
+      o2_c: parseInt(document.getElementById('o2_c').value),
+      o2_d: parseInt(document.getElementById('o2_d').value),
+      o2_e: parseInt(document.getElementById('o2_e').value)
+    };
+    // Ordre : élec=1, pneum=2, sectionneur=3, vérif AU+portes=4, réarmement=5 (approx)
+    ok = vals.o2_d===1 && vals.o2_e===2 && vals.o2_b===3 && vals.o2_c===4 && vals.o2_a===5;
+    fb(id, ok, ok
+      ? 'Ordre correct ! 1-Raccorder 230V → 2-Raccorder pneumatique (5 bars) → 3-Fermer sectionneur → 4-Vérifier AU + fermer portes → 5-Appuyer sur Réarmement HMI.'
+      : 'Ordre incorrect. Selon la doc EasyCup : 1-Raccorder 230V, 2-Raccorder pneumatique 5 bars, 3-Fermer sectionneur, 4-Vérifier AU + fermer portes, 5-Appuyer sur Réarmement. Le voyant vert « En service » doit s\'allumer.');
+  }
+
+  else if (id === 3) {
+    const sel = document.querySelector('input[name="q3"]:checked');
+    ok = sel && sel.value === 'c';
+    document.querySelectorAll('#opts3 .option-item').forEach(li=>{
+      const val=li.querySelector('input').value;
+      if(val==='c')li.classList.add('correct');
+      else if(sel&&val===sel.value&&val!=='c')li.classList.add('incorrect');
+    });
+    fb(id, ok, ok
+      ? 'Correct ! LED verte = bras sous tension et prêt pour le fonctionnement normal. LED rouge = état arrêté. LED jaune = sous tension mais pas prêt. Documentation Cobot UR3 page 1.8.'
+      : 'Incorrect. La bonne réponse est (c) : LED verte = le bras est sous tension et prêt. LED rouge = arrêté, LED jaune = sous tension non prêt.');
+  }
+
+  else if (id === 4) {
+    // Boîte A : base=10, M1=0, M2=0, M3=0, nb=1
+    // Boîte B : base=10, M1=0, M2=0, M3=0, nb=1
+    // Boîte C : base=0,  M1=8, M2=0, M3=0, nb=1
+    // Boîte D : base=0,  M1=0, M2=4, M3=4, nb=1
+    const r = (id2) => parseInt(document.getElementById(id2).value) || 0;
+    const okA = r('r4_a_base')===10 && r('r4_a_m1')===0 && r('r4_a_m2')===0 && r('r4_a_m3')===0 && r('r4_a_nb')===1;
+    const okB = r('r4_b_base')===10 && r('r4_b_m1')===0 && r('r4_b_m2')===0 && r('r4_b_m3')===0 && r('r4_b_nb')===1;
+    const okC = r('r4_c_base')===0  && r('r4_c_m1')===8 && r('r4_c_m2')===0 && r('r4_c_m3')===0 && r('r4_c_nb')===1;
+    const okD = r('r4_d_base')===0  && r('r4_d_m1')===0 && r('r4_d_m2')===4 && r('r4_d_m3')===4 && r('r4_d_nb')===1;
+    ok = okA && okB && okC && okD;
+    fb(id, ok, ok
+      ? 'Recettes correctes ! A: base=10/0/0/0×1 boîte · B: base=10/0/0/0×1 · C: 0/Mag1=8/0/0×1 · D: 0/0/Mag2=4/Mag3=4×1.'
+      : `Recettes incorrectes. Valeurs attendues :<br>A: base=10, Mag1=0, Mag2=0, Mag3=0, nb=1<br>B: base=10, Mag1=0, Mag2=0, Mag3=0, nb=1<br>C: base=0, Mag1=8, Mag2=0, Mag3=0, nb=1<br>D: base=0, Mag1=0, Mag2=4, Mag3=4, nb=1`);
+  }
+
+  else if (id === 5) {
+    const v = parseInt(document.getElementById('n5').value);
+    ok = v === 36;
+    document.getElementById('n5').classList.add(ok ? 'correct' : 'incorrect');
+    fb(id, ok, ok
+      ? 'Correct ! A(10) + B(10) + C(8) + D(4+4) = 10+10+8+8 = 36 capsules au total.'
+      : `Incorrect. Calcul : Boîte A=10, Boîte B=10, Boîte C=8, Boîte D=4+4=8. Total = 10+10+8+8 = 36 capsules. Votre réponse : ${v||'vide'}.`);
+  }
+
+  else if (id === 6) {
+    let remplies = 0, conformes = 0;
+    BOITES.forEach(b => {
+      const heure = document.getElementById('s'+b.id+'_heure').value.trim();
+      const conf  = document.getElementById('s'+b.id+'_conf').value;
+      if (heure !== '' && conf !== '') remplies++;
+      if (conf === 'OUI') conformes++;
+    });
+    ok = remplies >= 3;
+    fb(id, ok, ok
+      ? `Tableau validé ! ${remplies}/4 boîtes renseignées. ${conformes} boîte(s) conforme(s). Consultez votre tableau pour le bilan complet.`
+      : `Tableau incomplet. Renseignez au minimum l'heure et la conformité pour 3 boîtes sur 4 (actuellement ${remplies}/4).`);
+  }
+
+  else if (id === 7) {
+    const v = parseFloat(document.getElementById('n7').value);
+    ok = Math.abs(v - 10) < 0.5;
+    document.getElementById('n7').classList.add(ok ? 'correct' : 'incorrect');
+    fb(id, ok, ok
+      ? 'Correct ! (2/20) × 100 = 10% de rebut. Ce taux dépasse l\'objectif de 5% : une action corrective est nécessaire (vérifier remplissage mini/maxi dans la recette, cellule laser, meules du moulin).'
+      : `Incorrect. Taux rebut = (2/20) × 100 = 10%. Votre réponse : ${v||'vide'}%.`);
+  }
+
+  else if (id === 8) {
+    const checked = Array.from(document.querySelectorAll('input[name="q7"]:checked')).map(e=>e.value);
+    const bons = ['a','b','d','e','f'];
+    ok = bons.every(v=>checked.includes(v)) && checked.every(v=>bons.includes(v));
+    document.querySelectorAll('#opts8 .option-item').forEach(li=>{
+      const val=li.querySelector('input').value;
+      if(bons.includes(val))li.classList.add('correct');
+      else if(checked.includes(val))li.classList.add('incorrect');
+    });
+    fb(id, ok, ok
+      ? 'Parfait ! Étiquette obligatoire : type de café + source (a), nb capsules (b), date production (d), n° lot Odoo (e), identifiant opérateur (f). La couleur préférée n\'est pas une information de traçabilité.'
+      : 'Informations obligatoires sur l\'étiquette : type + source (a), nb capsules (b), date (d), n° lot Odoo (e), opérateur (f). La couleur préférée n\'est pas requise.');
+  }
+
+  else if (id === 9) {
+    const serie     = document.getElementById('rfid_serie').value.trim();
+    const type      = document.getElementById('rfid_type').value.trim();
+    const contenu   = document.getElementById('rfid_contenu').value.trim();
+    const date      = document.getElementById('rfid_date').value.trim();
+    const operateur = document.getElementById('rfid_operateur').value.trim();
+    ok = serie.length > 3 && type.length > 3 && contenu.length > 5 && date.length > 3 && operateur.length > 2;
+    if (ok) {
+      ['rfid_serie','rfid_type','rfid_contenu','rfid_date','rfid_operateur'].forEach(id2=>{
+        document.getElementById(id2).classList.add('correct');
+      });
+    }
+    fb(id, ok, ok
+      ? 'Fiche RFID complète ! Ces informations seront écrites automatiquement par le Cobot dans le tag RFID lors du cycle de mise en boîte. La LED verte du Cobot confirme l\'écriture réussie du tag.'
+      : 'Fiche incomplète. Renseignez tous les champs obligatoires : numéro de série, type de produit, contenu de la boîte, date/heure, et identifiant opérateur.');
+  }
+
+  else if (id === 10) {
+    const txt = document.getElementById('a10').value.trim();
+    ok = txt.length >= 60;
+    document.getElementById('a10').classList.add(ok ? 'correct' : 'incorrect');
+    fb(id, ok, ok
+      ? 'Compte-rendu enregistré. Il sera évalué par votre professeur. Excellent travail sur l\'ensemble du TP !'
+      : 'Réponse trop courte. Développez : 4 boîtes produites (A/B/C/D), taux de rebut, état compteurs, infos RFID, proposition d\'amélioration (minimum 60 caractères).');
+  }
+
+  if (ok) scores['q'+id] = 1;
+  disableQ(id);
+  updateScore();
+  }
+
+function updateScore() {
+  const pts = Object.values(scores).reduce((a,b)=>a+b,0);
+  const done = document.querySelectorAll('.feedback.show').length;
+  document.getElementById('score-display').textContent = pts + ' / ' + TOTAL_Q;
+  document.getElementById('progress-fill').style.width = (done / TOTAL_Q * 100) + '%';
+  document.getElementById('progress-text').textContent = done + ' / ' + TOTAL_Q + ' questions validées';
+  const jalons = [[1,2,'m1'],[3,4,'m2'],[5,6,'m3'],[7,9,'m4']];
+  jalons.forEach(([from,to,mid])=>{
+    let cnt=0;
+    for(let i=from;i<=to;i++) if(document.querySelector('#fb'+i+'.show')) cnt++;
+    if(cnt===(to-from+1)) document.getElementById(mid).classList.add('done');
+  });
+  if(done>=TOTAL_Q) document.getElementById('m5').classList.add('done');
+}
+
+// ====== SECTION FINALE ======
+// showFinal remplacée par version Pronote
+
+// ====== RÉCUPÉRER RÉPONSES POUR PDF ======
+function getAns(i) {
+  if (i===1) return Array.from(document.querySelectorAll('input[name="q1"]:checked')).map(e=>e.value).join(',') || '-';
+  if (i===2) return `230V:${document.getElementById('o2_d').value||'?'} Air:${document.getElementById('o2_e').value||'?'} Sect:${document.getElementById('o2_b').value||'?'} AU+Portes:${document.getElementById('o2_c').value||'?'} Rearm:${document.getElementById('o2_a').value||'?'}`;
+  if (i===3) {
+    const r=(id)=>document.getElementById(id).value||'?';
+    return `A:${r('r4_a_base')}/${r('r4_a_m1')}/${r('r4_a_m2')}/${r('r4_a_m3')}x${r('r4_a_nb')} B:${r('r4_b_base')}/${r('r4_b_m1')}/${r('r4_b_m2')}/${r('r4_b_m3')}x${r('r4_b_nb')} C:${r('r4_c_base')}/${r('r4_c_m1')}/${r('r4_c_m2')}/${r('r4_c_m3')}x${r('r4_c_nb')} D:${r('r4_d_base')}/${r('r4_d_m1')}/${r('r4_d_m2')}/${r('r4_d_m3')}x${r('r4_d_nb')}`;
+  }
+  if (i===5) return (document.getElementById('n5').value||'-') + ' capsules';
+  if (i===5) {
+    let r='';
+    BOITES.forEach(b=>{
+      const conf=document.getElementById('s'+b.id+'_conf').value||'--';
+      const nb=document.getElementById('s'+b.id+'_nb').value||'?';
+      r+=`Boite${b.id}:${conf}(${nb}caps) `;
+    });
+    return r.trim();
+  }
+  if (i===7) return (document.getElementById('n7').value||'-') + '%';
+  if (i===8) return Array.from(document.querySelectorAll('input[name="q7"]:checked')).map(e=>e.value).join(',') || '-';
+  if (i===9) return `Serie:${document.getElementById('rfid_serie').value||'-'} Type:${document.getElementById('rfid_type').value||'-'} Op:${document.getElementById('rfid_operateur').value||'-'}`;
+  if (i===10) return document.getElementById('a10').value.trim() || '-';
+  return '-';
+}
+
+// ====== GÉNÉRATION PDF ======
+function lancerPDF() {
+  const nom = document.getElementById('eleve-nom').value.trim() || '(non renseigne)';
+  const prenom = document.getElementById('eleve-prenom').value.trim() || '(non renseigne)';
+  const classe = document.getElementById('eleve-classe').value || '(non renseigne)';
+  const pts = Object.values(scores).reduce((a,b)=>a+b,0);
+  const dateStr = new Date().toLocaleDateString('fr-FR');
+  const stats = getTrackingStats();
+  const pdfStr = genPDF(nom, prenom, classe, pts, dateStr, stats);
+  const blob = new Blob([pdfStr], {type:'application/pdf'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'TP_EcolCafe_Conduite_' + classe + '_' + nom.toUpperCase() + '_' + prenom + '_' + pts + 'sur9.pdf';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function genPDF(nom, prenom, classe, pts, dateStr, stats) {
+  const W=595,H=842,ML=40,MR=40,MT=40;
+  let pages=[],curPage=null,y=0;
+  function newPage(){curPage={parts:[]};pages.push(curPage);y=H-MT;}
+  function checkY(needed){if(!curPage||y<40+needed)newPage();}
+  function safe(s){return String(s||'').replace(/[éèêëÉÈÊË]/g,'e').replace(/[àâäÀÂÄ]/g,'a').replace(/[ùûüÙÛÜ]/g,'u').replace(/[îïÎÏ]/g,'i').replace(/[ôöÔÖ]/g,'o').replace(/[çÇ]/g,'c').replace(/°/g,' ').replace(/[–—]/g,'-').replace(/[""«»]/g,'"').replace(/['']/g,"'").replace(/…/g,'...').replace(/✅|\[OK\]/g,'[OK]').replace(/❌|\[X\]/g,'[X]').replace(/⚠️|\[!\]/g,'[!]').replace(/[^\x20-\x7E]/g,'?').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');}
+  function txt(s,x,yy,sz,bold,r,g,b){r=r===undefined?0:r;g=g===undefined?0:g;b=b===undefined?0:b;const fn=bold?'/F2':'/F1';curPage.parts.push(`BT ${fn} ${sz} Tf ${r} ${g} ${b} rg ${x} ${yy} Td (${safe(s)}) Tj ET`);}
+  function filledRect(x,yy,w,h,r,g,b){curPage.parts.push(`${r} ${g} ${b} rg ${x} ${yy} ${w} ${h} re f 0 0 0 rg`);}
+  function hLine(x1,yy,x2,lw,r,g,b){r=r||0.7;g=g||0.7;b=b||0.7;lw=lw||0.5;curPage.parts.push(`${r} ${g} ${b} RG ${lw} w ${x1} ${yy} m ${x2} ${yy} l S 0 0 0 RG`);}
+  const CW=W-ML-MR;
+  function wrapLines(s,maxChars){const words=String(s||'').split(' ');const lines=[];let cur='';for(const w of words){if(((cur?cur+' ':'')+w).length<=maxChars){cur=(cur?cur+' ':'')+w;}else{if(cur)lines.push(cur);cur=w;}}if(cur)lines.push(cur);return lines.length?lines:[''];}
+  function addTxt(s,sz,bold,r,g,b,indent){sz=sz||10;indent=indent||0;const maxChars=Math.floor((CW-indent)/(sz*0.52));const lines=wrapLines(s,maxChars);for(const l of lines){checkY(sz+5);txt(l,ML+indent,y,sz,bold||false,r||0,g||0,b||0);y-=(sz+4);}}
+  function addSp(h){y-=(h||8);}
+  function addHLine(){checkY(8);hLine(ML,y,W-MR);y-=8;}
+  function addHeader2(s,r,g,b){checkY(20);const h=16;filledRect(ML,y-2,CW,h,r,g,b);txt(s,ML+5,y+1,10,true,1,1,1);y-=(h+4);}
+  function addTableRow(cells,widths,isHdr,isEven){const rh=13;checkY(rh+2);const rowY=y-2;if(isHdr)filledRect(ML,rowY,CW,rh,0.17,0.37,0.59);else if(isEven)filledRect(ML,rowY,CW,rh,0.94,0.96,0.97);let x=ML;cells.forEach((c,i)=>{txt(String(c||'').substring(0,widths[i]>100?60:25),x+2,y,8,isHdr,isHdr?1:0,isHdr?1:0,isHdr?1:0);x+=widths[i];});y-=rh;}
+  newPage();
+  const headerH=28;
+  filledRect(ML,y-4,CW,headerH,0.17,0.37,0.59);
+  txt('TP - Conduite EcolCafe EasyCup + Cobot UR3 - Production 4 boites',ML+6,y+10,10,true,1,1,1);
+  txt(nom.toUpperCase()+' '+prenom+' | Classe: '+classe+' | Date: '+dateStr,ML+6,y-1,9,false,0.85,0.95,1);
+  y-=(headerH+8);
+  checkY(30);
+  filledRect(ML,y-4,CW,26,0.93,0.97,0.93);
+  txt('NOTE OBTENUE : '+pts+' / 9   |   Questions validees : '+Object.keys(scores).length+' / 9',ML+6,y+6,12,true,0.1,0.4,0.15);
+  const mention='';
+  // mention supprimée
+  y-=36;addSp(4);
+  const cS={},cT={};
+  for(let i=1;i<=TOTAL_Q;i++){const c=qComp['q'+i];if(!cT[c]){cS[c]=0;cT[c]=0;}cT[c]++;if(scores['q'+i])cS[c]++;}
+  addHeader2('EVALUATION PAR COMPETENCES - CODE PRONOTE', 0.15,0.33,0.07);
+  const _fil2=getFiliere(document.getElementById('eleve-classe').value||'');
+  const _ret2=COMP_RETENUES_CO[_fil2];
+  const _sc2=getScoresCO(_fil2);
+  addTxt('Filiere : '+FILIERE_LABEL[_fil2], 9, true, 0.1,0.23,0.42);
+  addSp(3);
+  addTableRow(['Code','Competence evaluee','Score','Niveau Pronote','Points'],[35,155,45,100,CW-335],true);
+  let _ev2=false;
+  _ret2.forEach(c=>{
+    const t=_sc2.cT[c]||0; const ok=t>0?_sc2.cS[c]:0;
+    const pct=t>0?ok/t:0; const niv=getPronoteNiveau(pct);
+    addTableRow([c,getCompLib(c,_fil2).substring(0,38),(t>0?ok+'/'+t:'N/A'),niv.label,niv.pts+' pt'+(niv.pts>1?'s':'')],[35,155,45,100,CW-335],false,_ev2);
+    _ev2=!_ev2;
+  });
+  addSp(8);addHLine();addSp(4);
+  addHeader2('DETAIL DES REPONSES',0.18,0.48,0.27);
+  const wQ=[22,130,50,50,CW-252];
+  addTableRow(['N','Question','Comp.','Resultat','Reponse donnee'],wQ,true);
+  for(let i=1;i<=TOTAL_Q;i++){const ok=scores['q'+i];const res=ok===undefined?'- N/R':(ok===1?'[OK] Juste':'[X] Faux');addTableRow([i,qTitres[i].substring(0,40),qComp['q'+i]||'-',res,getAns(i).substring(0,45)],wQ,false,i%2===0);}
+  addSp(8);addHLine();addSp(4);
+  addHeader2('TABLEAU DE SUIVI - 4 BOITES DE CAFE',0.17,0.37,0.59);
+  const wS=[30,55,80,45,50,55,50,45,CW-410];
+  addTableRow(['Boite','Heure','Source','Nb caps','Opercule','Boite OK','Etiquette','RFID','Conf.'],wS,true);
+  BOITES.forEach((b,idx)=>{
+    const heure=document.getElementById('s'+b.id+'_heure').value||'-';
+    const nb=document.getElementById('s'+b.id+'_nb').value||'-';
+    const ope=document.getElementById('s'+b.id+'_ope').value||'-';
+    const boite=document.getElementById('s'+b.id+'_boite').value||'-';
+    const etiq=document.getElementById('s'+b.id+'_etiq').value||'-';
+    const rfid=document.getElementById('s'+b.id+'_rfid').value||'-';
+    const conf=document.getElementById('s'+b.id+'_conf').value||'-';
+    addTableRow(['Boite '+b.id,heure,b.source.substring(0,15),nb,ope,boite,etiq,rfid,conf],wS,false,idx%2===0);
+  });
+  addSp(6);
+  addHeader2('FICHE RFID - BOITE D',0.42,0.25,0.60);
+  addTxt('Serie: '+safe(document.getElementById('rfid_serie').value||'-'),9,false,0,0,0,0);
+  addTxt('Type: '+safe(document.getElementById('rfid_type').value||'-'),9,false,0,0,0,0);
+  addTxt('Contenu: '+safe(document.getElementById('rfid_contenu').value||'-'),9,false,0,0,0,0);
+  addTxt('Date: '+safe(document.getElementById('rfid_date').value||'-'),9,false,0,0,0,0);
+  addTxt('Operateur: '+safe(document.getElementById('rfid_operateur').value||'-'),9,false,0,0,0,0);
+  addTxt('Odoo: '+safe(document.getElementById('rfid_odoo').value||'-'),9,false,0,0,0,0);
+  addSp(8);
+  addHeader2('COMPTE-RENDU DE FIN DE PRODUCTION',0.18,0.48,0.27);
+  const rep10=document.getElementById('a10').value.trim();
+  const lines10=wrapLines(rep10,95);
+  for(const l of lines10){checkY(12);txt(l,ML,y,9,false,0.2,0.2,0.2);y-=13;}
+  addSp(8);addHLine();addSp(4);
+  if(stats){
+    addHeader2('INDICATEURS DE COMPORTEMENT DURANT LE TP',0.17,0.37,0.59);
+    const totalStr=fmtDuration(stats.totalMs),keyStr=fmtDuration(stats.keyMs),inactStr=fmtDuration(stats.inactMs);
+    const hh=Math.floor(stats.tempsPasseElapsed/3600),mm=Math.floor((stats.tempsPasseElapsed%3600)/60),ss=stats.tempsPasseElapsed%60;
+    const chronoStr=hh+'h '+String(mm).padStart(2,'0')+'min '+String(ss).padStart(2,'0')+'s';
+    addTxt('Temps total sur le TP : '+totalStr+' | Temps chrono ecoule : '+chronoStr,9,true,0,0,0,0);
+    addTxt('Temps actif clavier : '+keyStr+' | Inactivite detectee (>30s) : '+inactStr,9,false,0.3,0.3,0.3,0);
+    addSp(4);
+    addTxt('Frappes clavier enregistrees : '+stats.keyCount,9,false,0,0,0,0);addSp(2);
+    if(stats.pasteCount===0){addTxt('Copier-coller : aucun coller detecte',9,false,0.18,0.48,0.27,0);}
+    else{addTxt('Copier-coller detecte : '+stats.pasteCount+' occurrence(s)',9,true,0.7,0.1,0.1,0);stats.pasteDetails.forEach(p=>{addTxt('  - Coller dans '+p.zone+' a '+p.heure,8,false,0.5,0.1,0.1,8);});}
+    addSp(6);
+    addHeader2('HORODATAGE DES VALIDATIONS',0.18,0.48,0.27);
+    const wT=[22,150,65,65,CW-302];
+    addTableRow(['N','Question','Heure valid.','Tps ecoule','Observation'],wT,true);
+    let rowEven=false;
+    for(let i=1;i<=TOTAL_Q;i++){const qt=qTimestamps['q'+i];let heureStr='-',dureeStr='-',obs='';if(qt&&qt.validated){const d=new Date(qt.validated);heureStr=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');dureeStr=fmtDuration(qt.seconds*1000);if(qt.seconds<8)obs='[!] Tres rapide';else if(qt.seconds>600)obs='Long (>10min)';}else{obs='Non repondu';}addTableRow([i,qTitres[i].substring(0,35),heureStr,dureeStr,obs],wT,false,rowEven);rowEven=!rowEven;}
+    addSp(8);
+  }
+  pages.forEach((p,pi)=>{p.parts.push(`0.6 0.6 0.6 rg`);p.parts.push(`BT /F1 7 Tf 0.5 0.5 0.5 rg ${ML} 22 Td (TP EcolCafe Conduite - EasyCup + Cobot UR3 - Lycee Vaucanson - ${safe(dateStr)} - Page ${pi+1}/${pages.length}) Tj ET`);p.parts.push(`0 0 0 rg`);});
+  let pdf='%PDF-1.4\n%\xff\xff\xff\xff\n';
+  const rebuiltOffsets={};
+  function addObj(content){const idx=Object.keys(rebuiltOffsets).length+1;rebuiltOffsets[idx]=pdf.length;pdf+=`${idx} 0 obj\n${content}\nendobj\n`;return idx;}
+  const f1=addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  const f2=addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  const fd=`<< /F1 ${f1} 0 R /F2 ${f2} 0 R >>`;
+  const pageRefs=[];
+  for(const p of pages){const stream=p.parts.join('\n');const cIdx=addObj(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);const pIdx=addObj(`<< /Type /Page /Parent __PAGES__ /MediaBox [0 0 ${W} ${H}] /Contents ${cIdx} 0 R /Resources << /Font ${fd} >> >>`);pageRefs.push(pIdx);}
+  const pagesIdx=addObj(`<< /Type /Pages /Kids [${pageRefs.map(r=>r+' 0 R').join(' ')}] /Count ${pages.length} >>`);
+  const catIdx=addObj(`<< /Type /Catalog /Pages ${pagesIdx} 0 R >>`);
+  pdf=pdf.split('__PAGES__').join(`${pagesIdx} 0 R`);
+  const finalOffsets={};let pos=0;
+  for(const line of pdf.split('\n')){const m=line.match(/^(\d+) 0 obj$/);if(m)finalOffsets[parseInt(m[1])]=pos;pos+=line.length+1;}
+  const xrefPos=pdf.length,numObjs=Object.keys(finalOffsets).length+1;
+  let xref=`xref\n0 ${numObjs}\n`;xref+='0000000000 65535 f \n';
+  for(let i=1;i<numObjs;i++)xref+=String(finalOffsets[i]||0).padStart(10,'0')+' 00000 n \n';
+  xref+=`trailer\n<< /Size ${numObjs} /Root ${catIdx} 0 R >>\nstartxref\n${xrefPos}\n%%EOF`;
+  pdf+=xref;return pdf;
+}
+
+// ====== ENVOI NEXTCLOUD ======
+function envoyerNC() {
+  const classeTokens = {
+    '2PMIA1':'SFkasij3W8ZdY6X','2PMIA2':'KWTiQL5cLkQnRkw','2PMIA3':'Exk55DptbrJHmL8',
+    '2PMIA4':'NyFcyoajmiDHWBN','2PMIA5':'wbF4sqQkLCCr5Nj','1PLP':'Q2LF28DBwcDbaZ3',
+    'TPLP':'rq7TaGNDJc7MxZn','1CIP G1':'ZDYKjyNzsF4LNNC','1CIP G2':'KQp5LCtEKJsGXRT',
+    '2CIP G1':'kybKoENkrz9qKEo','2CIP G2':'5XdDxzyAJDFSgF4'
+  };
+  const classe = document.getElementById('eleve-classe').value;
+  if (!classe) { alert('Sélectionnez votre classe en haut du TP.'); return; }
+  const token = classeTokens[classe];
+  if (!token) { alert('Classe non reconnue.'); return; }
+  const url = 'https://nuage01.apps.education.fr/index.php/s/'+token;
+  const st = document.getElementById('send-status');
+  st.innerHTML = '✅ Dossier de la classe <strong>'+classe+'</strong> ouvert dans un nouvel onglet.<br>'
+    +'<span style="font-size:.84rem;">Déposez-y votre fichier PDF.</span><br>'
+    +'<a href="'+url+'" target="_blank" style="color:#2b5f96;font-size:.82rem;">Cliquer ici si le dossier ne s\'est pas ouvert</a>';
+  st.className = 'success';
+  window.open(url, '_blank');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SYSTÈME ÉVALUATION PRONOTE - CODE COULEUR OFFICIEL
+// ══════════════════════════════════════════════════════════════════════════════
+
+const PRONOTE_NIVEAUX = [
+  {hex:'#275317', label:'Très bonne maîtrise',    pts:6, seuil:0.85},
+  {hex:'#4EA72E', label:'Maîtrise satisfaisante', pts:5, seuil:0.70},
+  {hex:'#92D050', label:'Presque maîtrisé',       pts:4, seuil:0.50},
+  {hex:'#FFFF00', label:'Maîtrise fragile',        pts:3, seuil:0.35},
+  {hex:'#FFC000', label:'Début de maîtrise',      pts:2, seuil:0.15},
+  {hex:'#EE0000', label:'Maîtrise insuffisante',  pts:1, seuil:0.00},
+];
+
+const COMP_CIP = {
+  CP01:"Communiquer en situation professionnelle et utiliser l'outil adapté pour rendre compte",
+  CP02:"S'informer et informer au cours de l'activité professionnelle",
+  CP03:"Préparer le travail au poste",
+  CP04:"Conduire l'installation à partir du poste de travail",
+  CP05:"Recueillir des données liées au produit et à la production",
+  CP06:"Identifier des risques au poste de travail",
+  CP07:"Appliquer des modes opératoires conformes aux objectifs de qualité et sécurité",
+};
+const COMP_PMIA = {
+  'CP1.1':"Décoder l'organisation de l'installation (structurelle, fonctionnelle, temporelle)",
+  'CP2.1':"Approvisionner et préparer les installations, matériels, produits et accessoires",
+  'CP2.2':"Préparer les documents nécessaires à la maintenance, organiser son intervention",
+  'CP2.3':"Identifier les risques pour les biens et les personnes",
+  'CP2.4':"Mettre en oeuvre les mesures de prévention associées aux risques identifiés",
+  'CP3.1':"Piloter une installation ou des modules en mode normal (démarrage)",
+  'CP3.2':"Piloter une installation ou des modules en mode normal (conduite)",
+  'CP3.3':"Assurer le suivi de la production (analyse des indicateurs, paramètres...)",
+  'CP4.1':"Réaliser des interventions de maintenance de niveau 1 (inspection, surveillance)",
+  'CP4.2':"Réaliser des interventions de maintenance de niveau 2 (dépose, repose pièces d'usure)",
+  'CP5.1':"Adopter une démarche éco-responsable",
+  'CP6.1':"Communiquer à l'écrit et/ou à l'oral dans son environnement professionnel",
+  'CP6.2':"Utiliser les outils numériques et informatiques",
+};
+const COMP_PLP = {
+  CP01:"Communiquer et rendre compte avec l'outil de communication adapté",
+  CP02:"S'informer et analyser la situation, informer au cours de l'activité professionnelle",
+  CP03:"Préparer le travail d'organisation et de réalisation du pilotage",
+  CP04:"Piloter une ligne ou un système de production",
+  CP05:"Assurer le suivi de production lié à l'analyse des indicateurs, paramètres et spécifications",
+  CP06:"Choisir et combiner des modes opératoires pour faire face aux situations",
+  CP07:"Gérer les compétences techniques des personnels affectés sur la ligne",
+  CP08:"Proposer des améliorations et des pistes de résolution de problèmes",
+  CP09:"Identifier des risques pour la production, les biens, l'environnement et la sécurité",
+  CP10:"Appliquer les mesures de prévention de tous les risques identifiés",
+};
+
+// Mapping qComp interne → référentiel réel (Conduite = conduire + sécurité + suivi)
+const QCOMP_TO_CIP_CO = {
+  q1:'CP06',q2:'CP03',q3:'CP02',q4:'CP04',q5:'CP04',
+  q6:'CP03',q7:'CP05',q8:'CP03',q9:'CP05',q10:'CP01',
+  q11:'CP03',q12:'CP04',q13:'CP04',q14:'CP04',q15:'CP04',
+  q16:'CP04',q17:'CP05',q18:'CP05',q19:'CP05',q20:'CP05'
+};
+const QCOMP_TO_PMIA_CO = {
+  q1:'CP2.3',q2:'CP2.2',q3:'CP1.1',q4:'CP3.1',q5:'CP3.1',
+  q6:'CP2.2',q7:'CP3.3',q8:'CP2.2',q9:'CP3.3',q10:'CP6.1',
+  q11:'CP2.2',q12:'CP3.1',q13:'CP3.1',q14:'CP3.1',q15:'CP3.1',
+  q16:'CP3.1',q17:'CP3.3',q18:'CP3.3',q19:'CP3.3',q20:'CP3.3'
+};
+const QCOMP_TO_PLP_CO = {
+  q1:'CP09',q2:'CP03',q3:'CP02',q4:'CP04',q5:'CP04',
+  q6:'CP03',q7:'CP05',q8:'CP03',q9:'CP05',q10:'CP01',
+  q11:'CP03',q12:'CP04',q13:'CP04',q14:'CP04',q15:'CP04',
+  q16:'CP04',q17:'CP05',q18:'CP05',q19:'CP05',q20:'CP06'
+};
+
+// Max 3 compétences retenues (Conduite = préparer + conduire + suivi/sécurité)
+const COMP_RETENUES_CO = {
+  CIP:  ['CP03','CP04','CP05'],
+  PMIA: ['CP2.2','CP3.1','CP3.3'],
+  PLP:  ['CP03','CP04','CP05'],
+};
+
+const FILIERE_LABEL = {
+  CIP:  "CAP CIP – Conduite d'Installation de Production",
+  PMIA: 'BAC PRO PMIA – Maintenance des Systèmes de Production',
+  PLP:  'BAC PRO PLP – Pilotage de Ligne de Production',
+};
+
+function getFiliere(classe) {
+  if(['2CIP G1','2CIP G2','1CIP G1','1CIP G2'].includes(classe)) return 'CIP';
+  if(['2PMIA1','2PMIA2','2PMIA3','2PMIA4','2PMIA5'].includes(classe)) return 'PMIA';
+  return 'PLP';
+}
+
+function getCompLib(code, filiere) {
+  if(filiere==='CIP')  return COMP_CIP[code]  || code;
+  if(filiere==='PMIA') return COMP_PMIA[code] || code;
+  return COMP_PLP[code] || code;
+}
+
+function getQCompMapCO(filiere) {
+  if(filiere==='CIP')  return QCOMP_TO_CIP_CO;
+  if(filiere==='PMIA') return QCOMP_TO_PMIA_CO;
+  return QCOMP_TO_PLP_CO;
+}
+
+function getPronoteNiveau(pct) {
+  for(const n of PRONOTE_NIVEAUX) { if(pct >= n.seuil) return n; }
+  return PRONOTE_NIVEAUX[PRONOTE_NIVEAUX.length-1];
+}
+
+function getScoresCO(filiere) {
+  const map = getQCompMapCO(filiere);
+  const ret = COMP_RETENUES_CO[filiere];
+  const cS={}, cT={};
+  ret.forEach(c=>{ cS[c]=0; cT[c]=0; });
+  Object.keys(scores).forEach(qid => {
+    const code = map[qid];
+    if(code && ret.includes(code)) { cS[code] += scores[qid]; cT[code]++; }
+  });
+  return {cS, cT};
+}
+
+function buildPronoteHTML(classe) {
+  const filiere  = getFiliere(classe);
+  const ret      = COMP_RETENUES_CO[filiere];
+  const {cS, cT} = getScoresCO(filiere);
+
+  let html = `<div class="eval-intro-box">`;
+  html += `<strong>📋 Filière :</strong> ${FILIERE_LABEL[filiere]}<br>`;
+  html += `<strong>🎯 Compétences évaluées :</strong> ${ret.join(' · ')}`;
+  html += `</div>`;
+
+  ret.forEach(code => {
+    const total = cT[code] || 0;
+    const ok    = total > 0 ? cS[code] : 0;
+    const pct   = total > 0 ? ok / total : 0;
+    const niv   = getPronoteNiveau(pct);
+    const lib   = getCompLib(code, filiere);
+    const scoreStr = total > 0 ? `${ok}/${total} questions` : 'Non évaluée';
+    const lightBg  = ['#FFFF00','#92D050','#FFC000'].includes(niv.hex);
+
+    html += `<div class="pronote-row" style="background:${niv.hex}22;border-color:${niv.hex};">`;
+    html += `<div class="pronote-dot" style="background:${niv.hex};"></div>`;
+    html += `<div class="pronote-info">`;
+    html += `<div class="pronote-comp-code">${code}</div>`;
+    html += `<div class="pronote-comp-lib">${lib}</div>`;
+    html += `<div class="pronote-score">${scoreStr}</div>`;
+    html += `</div>`;
+    html += `<div class="pronote-right">`;
+    html += `<div class="pronote-niveau" style="color:${lightBg?'#555':niv.hex};">${niv.label}</div>`;
+    html += `<div class="pronote-pts">${niv.pts} point${niv.pts>1?'s':''} Pronote</div>`;
+    html += `</div></div>`;
+  });
+
+  html += `<div class="pronote-legende">`;
+  html += `<div class="pronote-legende-title">Échelle Pronote complète</div>`;
+  html += `<div class="pronote-legende-grid">`;
+  PRONOTE_NIVEAUX.forEach(n => {
+    html += `<div class="pronote-leg-item">`;
+    html += `<div class="pronote-leg-dot" style="background:${n.hex};border:1px solid rgba(0,0,0,.15);"></div>`;
+    html += `<span>${n.label} (${n.pts} pt${n.pts>1?'s':''})</span>`;
+    html += `</div>`;
+  });
+  html += `</div></div>`;
+  return html;
+}
+
+// ── Validation identité ───────────────────────────────────────────────────────
+function validerIdentite() {
+  const nomEl    = document.getElementById('eleve-nom');
+  const prenomEl = document.getElementById('eleve-prenom');
+  const classeEl = document.getElementById('eleve-classe');
+  const nom    = nomEl    ? nomEl.value.trim()    : '';
+  const prenom = prenomEl ? prenomEl.value.trim() : '';
+  const classe = classeEl ? classeEl.value.trim() : '';
+  let ok = true;
+  [[nomEl,'hint-nom',!nom],[prenomEl,'hint-prenom',!prenom],[classeEl,'hint-classe',!classe]].forEach(([el,hid,err])=>{
+    if(!el) return;
+    const hd = document.getElementById(hid);
+    if(err){ el.classList.add('field-error'); if(hd) hd.classList.add('show'); ok=false; }
+    else   { el.classList.remove('field-error'); if(hd) hd.classList.remove('show'); }
+  });
+  if(!ok){ const box=document.querySelector('.eleve-box'); if(box) box.scrollIntoView({behavior:'smooth'}); }
+  return ok;
+}
+
+// ── showFinal unifié ──────────────────────────────────────────────────────────
+function showFinal() {
+  if(!validerIdentite()) return;
+  const classeEl = document.getElementById('eleve-classe');
+  const classe   = classeEl ? classeEl.value : '';
+  const container = document.getElementById('comp-eval-container');
+  if(container) container.innerHTML = buildPronoteHTML(classe);
+  const fs = document.getElementById('final-section');
+  if(fs){ fs.style.display='block'; fs.scrollIntoView({behavior:'smooth'}); }
+}
+
+</script>
+</body>
+</html>
